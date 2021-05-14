@@ -271,6 +271,7 @@ namespace Aws
                 ClientConnection m_connection;
                 Crt::Io::ClientBootstrap& m_clientBootstrap;
                 Crt::Allocator *m_allocator;
+                MessageAmendment m_connectAmendment;
             };
         } // namespace Ipc
 

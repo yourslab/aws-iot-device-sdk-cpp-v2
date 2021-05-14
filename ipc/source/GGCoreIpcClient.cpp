@@ -1,6 +1,7 @@
 #include <aws/crt/Api.h>
 #include <aws/ipc/GGCoreIpcClient.h>
 
+#include <iostream>
 #include <sstream>
 
 namespace Aws
@@ -387,8 +388,8 @@ namespace Aws
                 connectionOptions.HostName = finalIpcSocket;
                 connectionOptions.Port = 0;
 
-                MessageAmendment connectionAmendment(Crt::ByteBufFromCString(authTokenPayloadSS.str().c_str()));
-                auto messageAmender = [&](void) -> MessageAmendment & { return connectionAmendment; };
+                m_connectAmendment.SetPayload(Crt::ByteBufFromCString(authTokenPayloadSS.str().c_str()));
+                auto messageAmender = [&](void) -> MessageAmendment & { return m_connectAmendment; };
 
                 return m_connection.Connect(connectionOptions, lifecycleHandler, messageAmender);
             }
