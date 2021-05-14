@@ -1180,19 +1180,23 @@ namespace Aws
             m_closedPromise = std::promise<void>();
 
             Crt::List<EventStreamHeader> headers;
-            headers.push_back(EventStreamHeader(
-                Crt::String(CONTENT_TYPE_HEADER), Crt::String(CONTENT_TYPE_APPLICATION_JSON), m_allocator));
-            headers.push_back(EventStreamHeader(Crt::String(SERVICE_MODEL_TYPE_HEADER), GetModelName(), m_allocator));
+            auto contentTypeHeader = EventStreamHeader(
+                Crt::String(CONTENT_TYPE_HEADER), Crt::String(CONTENT_TYPE_APPLICATION_JSON), m_allocator);
+            auto serviceModelTypeHeader =
+                EventStreamHeader(Crt::String(SERVICE_MODEL_TYPE_HEADER), GetModelName(), m_allocator);
+            headers.push_back(contentTypeHeader);
+            headers.push_back(serviceModelTypeHeader);
             Crt::JsonObject payloadObject;
             shape->SerializeToJsonObject(payloadObject);
             Crt::String payloadString = payloadObject.View().WriteCompact();
-            return m_clientContinuation.Activate(
+            auto future = m_clientContinuation.Activate(
                 GetModelName(),
                 headers,
                 Crt::ByteBufFromCString(payloadString.c_str()),
                 AWS_EVENT_STREAM_RPC_MESSAGE_TYPE_APPLICATION_MESSAGE,
                 0,
                 onMessageFlushCallback);
+            return future;
         }
 
         void ClientOperation::OnContinuationClosed()

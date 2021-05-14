@@ -348,7 +348,7 @@ namespace Aws
             {
                 std::promise<EventStreamRpcStatus> initializationPromise;
 
-                Crt::String finalIpcSocket;
+                /*Crt::String finalIpcSocket;
                 if (ipcSocket.has_value())
                 {
                     finalIpcSocket = ipcSocket.value();
@@ -356,7 +356,7 @@ namespace Aws
                 else
                 {
                     finalIpcSocket = Crt::String(std::getenv("AWS_GG_NUCLEUS_DOMAIN_SOCKET_FILEPATH_FOR_COMPONENT"));
-                }
+                }*/
 
                 Crt::String finalAuthToken;
                 if (authToken.has_value())
@@ -379,14 +379,12 @@ namespace Aws
                 }
 
                 Crt::Io::SocketOptions socketOptions;
-                socketOptions.SetSocketDomain(Crt::Io::SocketDomain::Local);
-                socketOptions.SetSocketType(Crt::Io::SocketType::Stream);
 
                 ClientConnectionOptions connectionOptions;
                 connectionOptions.Bootstrap = &m_clientBootstrap;
                 connectionOptions.SocketOptions = std::move(socketOptions);
-                connectionOptions.HostName = finalIpcSocket;
-                connectionOptions.Port = 0;
+                connectionOptions.HostName = Crt::String("127.0.0.1");
+                connectionOptions.Port = 8033;
 
                 m_connectAmendment.SetPayload(Crt::ByteBufFromCString(authTokenPayloadSS.str().c_str()));
                 auto messageAmender = [&](void) -> MessageAmendment & { return m_connectAmendment; };
