@@ -101,15 +101,23 @@ namespace Aws
         class AWS_EVENTSTREAMRPC_API MessageAmendment final
         {
           public:
-            MessageAmendment() = default;
             MessageAmendment(const MessageAmendment &lhs) = default;
             MessageAmendment(MessageAmendment &&rhs) = default;
+            ~MessageAmendment() noexcept;
+            explicit MessageAmendment(Crt::Allocator *allocator = Crt::g_allocator);
             explicit MessageAmendment(
                 const Crt::List<EventStreamHeader> &headers,
-                Crt::Optional<Crt::ByteBuf> &payload) noexcept;
-            explicit MessageAmendment(const Crt::List<EventStreamHeader> &headers) noexcept;
-            explicit MessageAmendment(Crt::List<EventStreamHeader> &&headers) noexcept;
-            explicit MessageAmendment(const Crt::ByteBuf &payload) noexcept;
+                Crt::Optional<Crt::ByteBuf> &payload,
+                Crt::Allocator *allocator) noexcept;
+            explicit MessageAmendment(
+                const Crt::List<EventStreamHeader> &headers,
+                Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+            explicit MessageAmendment(
+                Crt::List<EventStreamHeader> &&headers,
+                Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+            explicit MessageAmendment(
+                const Crt::ByteBuf &payload,
+                Crt::Allocator *allocator = Crt::g_allocator) noexcept;
             void AddHeader(EventStreamHeader &&header) noexcept;
             void SetPayload(const Crt::Optional<Crt::ByteBuf> &payload) noexcept;
             Crt::List<EventStreamHeader> &GetHeaders() noexcept;
@@ -118,6 +126,7 @@ namespace Aws
           private:
             Crt::List<EventStreamHeader> m_headers;
             Crt::Optional<Crt::ByteBuf> m_payload;
+            Crt::Allocator *m_allocator;
         };
 
         class AWS_CRT_CPP_API UnixSocketResolver final : public Crt::Io::HostResolver
@@ -126,7 +135,10 @@ namespace Aws
             /**
              * Resolves UNIX sockets.
              */
-            UnixSocketResolver(Crt::Io::EventLoopGroup &elGroup, size_t maxHosts, Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+            UnixSocketResolver(
+                Crt::Io::EventLoopGroup &elGroup,
+                size_t maxHosts,
+                Crt::Allocator *allocator = Crt::g_allocator) noexcept;
             ~UnixSocketResolver();
             UnixSocketResolver(const UnixSocketResolver &) = delete;
             UnixSocketResolver &operator=(const UnixSocketResolver &) = delete;
@@ -155,11 +167,11 @@ namespace Aws
             bool m_initialized;
 
             static void s_onHostResolved(
-                    struct aws_host_resolver *resolver,
-                    const struct aws_string *host_name,
-                    int err_code,
-                    const struct aws_array_list *host_addresses,
-                    void *user_data);
+                struct aws_host_resolver *resolver,
+                const struct aws_string *host_name,
+                int err_code,
+                const struct aws_array_list *host_addresses,
+                void *user_data);
         };
 
         /**
@@ -285,7 +297,7 @@ namespace Aws
             ~ClientConnection() noexcept;
             ClientConnection(const ClientConnection &) noexcept = delete;
             ClientConnection &operator=(const ClientConnection &) noexcept = delete;
-            ClientConnection(ClientConnection &&) noexcept;
+            ClientConnection(ClientConnection &&) noexcept = default;
             ClientConnection &operator=(ClientConnection &&) noexcept;
 
             std::future<EventStreamRpcStatus> Connect(

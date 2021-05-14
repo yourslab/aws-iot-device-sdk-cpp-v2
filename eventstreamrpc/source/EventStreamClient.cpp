@@ -32,22 +32,32 @@ namespace Aws
             std::promise<EventStreamRpcStatus> onFlushPromise;
         };
 
-        MessageAmendment::MessageAmendment(const Crt::ByteBuf &payload) noexcept : m_headers(), m_payload(payload) {}
-
-        MessageAmendment::MessageAmendment(const Crt::List<EventStreamHeader> &headers) noexcept
-            : m_headers(headers), m_payload()
+        MessageAmendment::MessageAmendment(Crt::Allocator *allocator) : m_headers(), m_payload(), m_allocator(allocator)
         {
         }
 
-        MessageAmendment::MessageAmendment(Crt::List<EventStreamHeader> &&headers) noexcept
-            : m_headers(headers), m_payload()
+        MessageAmendment::MessageAmendment(const Crt::ByteBuf &payload, Crt::Allocator *allocator) noexcept
+            : m_headers(), m_payload(payload), m_allocator(allocator)
         {
         }
 
         MessageAmendment::MessageAmendment(
             const Crt::List<EventStreamHeader> &headers,
-            Crt::Optional<Crt::ByteBuf> &payload) noexcept
-            : m_headers(headers), m_payload(payload)
+            Crt::Allocator *allocator) noexcept
+            : m_headers(headers), m_payload(), m_allocator(allocator)
+        {
+        }
+
+        MessageAmendment::MessageAmendment(Crt::List<EventStreamHeader> &&headers, Crt::Allocator *allocator) noexcept
+            : m_headers(headers), m_payload(), m_allocator(allocator)
+        {
+        }
+
+        MessageAmendment::MessageAmendment(
+            const Crt::List<EventStreamHeader> &headers,
+            Crt::Optional<Crt::ByteBuf> &payload,
+            Crt::Allocator *allocator) noexcept
+            : m_headers(headers), m_payload(payload), m_allocator(allocator)
         {
         }
 
@@ -55,7 +65,21 @@ namespace Aws
 
         const Crt::Optional<Crt::ByteBuf> &MessageAmendment::GetPayload() const noexcept { return m_payload; }
 
-        void MessageAmendment::SetPayload(const Crt::Optional<Crt::ByteBuf> &payload) noexcept { m_payload = payload; }
+        void MessageAmendment::SetPayload(const Crt::Optional<Crt::ByteBuf> &payload) noexcept
+        {
+            if (payload.has_value())
+            {
+                m_payload = Crt::ByteBufNewCopy(m_allocator, payload.value().buffer, payload.value().len);
+            }
+        }
+
+        MessageAmendment::~MessageAmendment() noexcept
+        {
+            if (m_payload.has_value())
+            {
+                Crt::ByteBufDelete(m_payload.value());
+            }
+        }
 
         UnixSocketResolver::UnixSocketResolver(
             Crt::Io::EventLoopGroup &elGroup,
@@ -75,7 +99,9 @@ namespace Aws
             }
         }
 
-        bool UnixSocketResolver::ResolveHost(const Crt::String &host, const Crt::Io::OnHostResolved &onResolved) noexcept
+        bool UnixSocketResolver::ResolveHost(
+            const Crt::String &host,
+            const Crt::Io::OnHostResolved &onResolved) noexcept
         {
             // Nothing to resolve
             return true;
@@ -185,11 +211,6 @@ namespace Aws
                 return errorCode;
             }
         };
-
-        ClientConnection::ClientConnection(ClientConnection &&rhs) noexcept : m_lifecycleHandler(rhs.m_lifecycleHandler)
-        {
-            *this = std::move(rhs);
-        }
 
         ClientConnection &ClientConnection::operator=(ClientConnection &&rhs) noexcept
         {
@@ -509,7 +530,8 @@ namespace Aws
                         Crt::String(EVENTSTREAM_VERSION_STRING),
                         thisConnection->m_allocator));
                     /* Note that we are prepending headers from the user-provided amender. */
-                    if(amenderHeaderList.size() > 0) {
+                    if (amenderHeaderList.size() > 0)
+                    {
                         messageAmendmentHeaders.splice(messageAmendmentHeaders.end(), amenderHeaderList);
                     }
                     messageAmendment.SetPayload(connectAmendment.GetPayload());
@@ -538,7 +560,7 @@ namespace Aws
             thisConnection->m_stateMutex.unlock();
 
             /* No connection to close here, so no need to check return value. */
-            (void) thisConnection->m_lifecycleHandler.OnErrorCallback(errorCode);
+            (void)thisConnection->m_lifecycleHandler.OnErrorCallback(errorCode);
         }
 
         void MessageAmendment::AddHeader(EventStreamHeader &&header) noexcept { m_headers.push_back(header); }
