@@ -495,8 +495,8 @@ namespace Aws
             {
                 return false;
             }
-            Crt::StringView viewFromHere = Crt::ByteCursorToStringView(Crt::ByteCursorFromByteBuf(m_valueByteBuf));
-            value = {viewFromHere.begin(), viewFromHere.end()};
+            Crt::ByteCursor cursor = Crt::ByteCursorFromByteBuf(m_valueByteBuf);
+            value = Crt::String(reinterpret_cast<char *>(cursor.ptr), cursor.len);
 
             return true;
         }
@@ -559,7 +559,7 @@ namespace Aws
             thisConnection->m_clientState = DISCONNECTED;
             thisConnection->m_stateMutex.unlock();
 
-            /* No connection to close here, so no need to check return value. */
+            /* No connection to close on error, so no need to check return value of the callback. */
             (void)thisConnection->m_lifecycleHandler.OnErrorCallback(errorCode);
         }
 
