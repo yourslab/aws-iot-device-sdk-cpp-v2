@@ -142,7 +142,7 @@ namespace Aws
         template <typename T> void ProtectedPromise<T>::Reset() noexcept
         {
             m_mutex.lock();
-            m_promise = std::promise<T>();
+            m_promise = {};
             m_fulfilled = false;
             m_mutex.unlock();
         }
@@ -269,7 +269,7 @@ namespace Aws
             ConnectMessageAmender connectMessageAmender) noexcept
         {
             m_connectAckedPromise.Reset();
-            m_closedPromise = std::promise<EventStreamRpcStatus>();
+            m_closedPromise = {};
             m_lifecycleHandler = connectionLifecycleHandler;
 
             struct aws_event_stream_rpc_client_connection_options connOptions;
@@ -554,6 +554,7 @@ namespace Aws
 
                 /* Release if we're unable to allocate the connection's containing object. */
                 aws_event_stream_rpc_client_connection_release(connection);
+                thisConnection->m_underlyingConnection = nullptr;
                 errorCode = aws_last_error();
             }
 
@@ -1201,7 +1202,7 @@ namespace Aws
             /* Promises must be reset in case the client would like to send a subsequent request with the same
              * `ClientOperation`. */
             m_initialResponsePromise.Reset();
-            m_closedPromise = std::promise<void>();
+            m_closedPromise = {};
 
             Crt::List<EventStreamHeader> headers;
             headers.emplace_back(EventStreamHeader(
