@@ -329,8 +329,6 @@ namespace Aws
                 Crt::Allocator *allocator) noexcept
                 : m_connection(lifecycleHandler, allocator), m_clientBootstrap(clientBootstrap), m_allocator(allocator)
             {
-                aws_event_stream_library_init(m_allocator);
-
                 m_greengrassModelRetriever.m_ModelNameToSoleResponseMap[Crt::String("aws.greengrass#PublishToTopic")] =
                     PublishToTopicResponse::s_loadFromPayload;
                 m_greengrassModelRetriever
@@ -347,6 +345,7 @@ namespace Aws
                 const Crt::Optional<Crt::String> &authToken) noexcept
             {
                 std::promise<EventStreamRpcStatus> initializationPromise;
+                EventStreamRpcError baseError = EVENT_STREAM_RPC_SUCCESS;
 
                 Crt::String finalIpcSocket;
                 if (ipcSocket.has_value())
@@ -355,7 +354,15 @@ namespace Aws
                 }
                 else
                 {
-                    finalIpcSocket = Crt::String(std::getenv("AWS_GG_NUCLEUS_DOMAIN_SOCKET_FILEPATH_FOR_COMPONENT"));
+                    const char *ipcSocketCStr = std::getenv("AWS_GG_NUCLEUS_DOMAIN_SOCKET_FILEPATH_FOR_COMPONENT");
+                    if (ipcSocketCStr == nullptr)
+                    {
+                        baseError = EVENT_STREAM_RPC_NULL_PARAMETER;
+                    }
+                    else
+                    {
+                        finalIpcSocket = Crt::String(ipcSocketCStr);
+                    }
                 }
 
                 Crt::String finalAuthToken;
@@ -365,7 +372,21 @@ namespace Aws
                 }
                 else
                 {
-                    finalAuthToken = Crt::String(std::getenv("SVCUID"));
+                    const char *authTokenCStr = std::getenv("SVCUID");
+                    if (authTokenCStr == nullptr)
+                    {
+                        baseError = EVENT_STREAM_RPC_NULL_PARAMETER;
+                    }
+                    else
+                    {
+                        finalAuthToken = Crt::String(authTokenCStr);
+                    }
+                }
+
+                if (baseError)
+                {
+                    initializationPromise.set_value({baseError, 0});
+                    return initializationPromise.get_future();
                 }
 
                 /* Encode authToken as JSON. */
@@ -396,11 +417,7 @@ namespace Aws
 
             void GreengrassIpcClient::Close() noexcept { m_connection.Close(); }
 
-            GreengrassIpcClient::~GreengrassIpcClient() noexcept
-            {
-                Close();
-                aws_event_stream_library_clean_up();
-            }
+            GreengrassIpcClient::~GreengrassIpcClient() noexcept { Close(); }
 
             ExpectedResponseFactory GreengrassModelRetriever::GetLoneResponseFromModelName(
                 const Crt::String &modelName) const noexcept

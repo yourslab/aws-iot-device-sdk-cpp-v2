@@ -228,6 +228,11 @@ namespace Aws
             return *this;
         }
 
+        ClientConnection::ClientConnection(ClientConnection &&rhs) noexcept : m_lifecycleHandler(rhs.m_lifecycleHandler)
+        {
+            *this = std::move(rhs);
+        }
+
         ClientConnection::ClientConnection(
             ConnectionLifecycleHandler &connectionLifecycleHandler,
             Crt::Allocator *allocator) noexcept
@@ -237,10 +242,9 @@ namespace Aws
 
         ClientConnection::~ClientConnection() noexcept
         {
-            Close();
             if (m_underlyingConnection)
             {
-                aws_event_stream_rpc_client_connection_release(m_underlyingConnection);
+                Close();
                 m_underlyingConnection = nullptr;
             }
         }
@@ -435,8 +439,10 @@ namespace Aws
             aws_event_stream_rpc_client_connection_close(this->m_underlyingConnection, AWS_OP_SUCCESS);
         }
 
-        EventStreamHeader::EventStreamHeader(const struct aws_event_stream_header_value_pair &header)
-            : m_allocator(nullptr), m_underlyingHandle(header)
+        EventStreamHeader::EventStreamHeader(
+            const struct aws_event_stream_header_value_pair &header,
+            Crt::Allocator *allocator)
+            : m_allocator(allocator), m_valueByteBuf({}), m_underlyingHandle(header)
         {
         }
 
@@ -444,23 +450,17 @@ namespace Aws
             const Crt::String &name,
             const Crt::String &value,
             Crt::Allocator *allocator) noexcept
-            : m_allocator(allocator)
+            : m_allocator(allocator),
+              m_valueByteBuf(Crt::ByteBufNewCopy(allocator, (uint8_t *)value.c_str(), value.length()))
         {
             m_underlyingHandle.header_name_len = (uint8_t)name.length();
             (void)strncpy(m_underlyingHandle.header_name, name.c_str(), std::min((int)name.length(), INT8_MAX));
             m_underlyingHandle.header_value_type = AWS_EVENT_STREAM_HEADER_STRING;
-            m_valueByteBuf = Crt::ByteBufNewCopy(allocator, (uint8_t *)value.c_str(), value.length());
             m_underlyingHandle.header_value.variable_len_val = m_valueByteBuf.buffer;
             m_underlyingHandle.header_value_len = (uint16_t)m_valueByteBuf.len;
         }
 
-        EventStreamHeader::~EventStreamHeader()
-        {
-            if (m_allocator)
-            {
-                Crt::ByteBufDelete(m_valueByteBuf);
-            }
-        }
+        EventStreamHeader::~EventStreamHeader() noexcept { Crt::ByteBufDelete(m_valueByteBuf); }
 
         EventStreamHeader::EventStreamHeader(const EventStreamHeader &lhs) noexcept
             : m_allocator(lhs.m_allocator),
@@ -475,8 +475,8 @@ namespace Aws
             : m_allocator(rhs.m_allocator), m_valueByteBuf(rhs.m_valueByteBuf),
               m_underlyingHandle(rhs.m_underlyingHandle)
         {
-            rhs.m_valueByteBuf.allocator = NULL;
-            rhs.m_valueByteBuf.buffer = NULL;
+            rhs.m_valueByteBuf.allocator = nullptr;
+            rhs.m_valueByteBuf.buffer = nullptr;
         }
 
         const struct aws_event_stream_header_value_pair *EventStreamHeader::GetUnderlyingHandle() const
@@ -486,7 +486,7 @@ namespace Aws
 
         Crt::String EventStreamHeader::GetHeaderName() const noexcept
         {
-            return Crt::String(m_underlyingHandle.header_name, m_underlyingHandle.header_name_len);
+            return Crt::String(m_underlyingHandle.header_name, m_underlyingHandle.header_name_len, m_allocator);
         }
 
         bool EventStreamHeader::GetValueAsString(Crt::String &value) const noexcept
@@ -495,8 +495,10 @@ namespace Aws
             {
                 return false;
             }
-            Crt::ByteCursor cursor = Crt::ByteCursorFromByteBuf(m_valueByteBuf);
-            value = Crt::String(reinterpret_cast<char *>(cursor.ptr), cursor.len);
+            value = Crt::String(
+                reinterpret_cast<char *>(m_underlyingHandle.header_value.variable_len_val),
+                m_underlyingHandle.header_value_len,
+                m_allocator);
 
             return true;
         }
@@ -563,7 +565,7 @@ namespace Aws
             (void)thisConnection->m_lifecycleHandler.OnErrorCallback(errorCode);
         }
 
-        void MessageAmendment::AddHeader(EventStreamHeader &&header) noexcept { m_headers.push_back(header); }
+        void MessageAmendment::AddHeader(EventStreamHeader &&header) noexcept { m_headers.emplace_back(header); }
 
         void ClientConnection::s_onConnectionShutdown(
             struct aws_event_stream_rpc_client_connection *connection,
@@ -630,7 +632,8 @@ namespace Aws
 
                     for (size_t i = 0; i < messageArgs->headers_count; ++i)
                     {
-                        pingHeaders.push_back(EventStreamHeader(messageArgs->headers[i]));
+                        pingHeaders.emplace_back(
+                            EventStreamHeader(messageArgs->headers[i], thisConnection->m_allocator));
                     }
 
                     if (messageArgs->payload)
@@ -690,6 +693,11 @@ namespace Aws
                 aws_event_stream_rpc_client_connection_new_stream(connection->m_underlyingConnection, &options);
         }
 
+        ClientContinuation::~ClientContinuation() noexcept
+        {
+            aws_event_stream_rpc_client_continuation_release(m_continuationToken);
+        }
+
         void ClientContinuation::s_onContinuationMessage(
             struct aws_event_stream_rpc_client_continuation_token *continuationToken,
             const struct aws_event_stream_rpc_message_args *messageArgs,
@@ -697,12 +705,13 @@ namespace Aws
         {
             (void)continuationToken;
             /* The `userData` pointer is used to pass `this` of a `ClientContinuation` object. */
-            auto *thisContinuationToken = static_cast<ClientContinuation *>(userData);
+            auto *thisContinuation = static_cast<ClientContinuation *>(userData);
 
             Crt::List<EventStreamHeader> continuationMessageHeaders;
             for (size_t i = 0; i < messageArgs->headers_count; ++i)
             {
-                continuationMessageHeaders.push_back(EventStreamHeader(messageArgs->headers[i]));
+                continuationMessageHeaders.emplace_back(
+                    EventStreamHeader(messageArgs->headers[i], thisContinuation->m_allocator));
             }
 
             Crt::Optional<Crt::ByteBuf> payload;
@@ -716,7 +725,7 @@ namespace Aws
                 payload = Crt::Optional<Crt::ByteBuf>();
             }
 
-            thisContinuationToken->m_continuationHandler.OnContinuationMessage(
+            thisContinuation->m_continuationHandler.OnContinuationMessage(
                 continuationMessageHeaders, payload, messageArgs->message_type, messageArgs->message_flags);
         }
 
@@ -726,9 +735,9 @@ namespace Aws
         {
             (void)continuationToken;
             /* The `userData` pointer is used to pass `this` of a `ClientContinuation` object. */
-            auto *thisContinuationToken = static_cast<ClientContinuation *>(userData);
+            auto *thisContinuation = static_cast<ClientContinuation *>(userData);
 
-            thisContinuationToken->m_continuationHandler.OnContinuationClosed();
+            thisContinuation->m_continuationHandler.OnContinuationClosed();
         }
 
         std::future<EventStreamRpcStatus> ClientContinuation::Activate(
@@ -878,6 +887,8 @@ namespace Aws
 
         AbstractShapeBase::AbstractShapeBase(Crt::Allocator *allocator) noexcept : m_allocator(allocator) {}
 
+        AbstractShapeBase::~AbstractShapeBase() noexcept {}
+
         OperationResponse::OperationResponse(Crt::Allocator *allocator) noexcept : AbstractShapeBase(allocator) {}
 
         OperationRequest::OperationRequest(Crt::Allocator *allocator) noexcept : AbstractShapeBase(allocator) {}
@@ -898,34 +909,47 @@ namespace Aws
               m_streamHandler(rhs.m_streamHandler), m_responseRetriever(rhs.m_responseRetriever),
               m_clientContinuation(std::move(rhs.m_clientContinuation)),
               m_initialResponsePromise(std::move(rhs.m_initialResponsePromise)),
-              m_closedPromise(std::move(m_closedPromise))
+              m_closedPromise(std::move(rhs.m_closedPromise))
         {
             m_isClosed.store(rhs.m_isClosed.load());
         }
 
         ClientOperation::~ClientOperation() noexcept { Close().wait(); }
 
-        TaggedResponse::TaggedResponse(Crt::ScopedResource<OperationResponse> response) noexcept
+        TaggedResponse::TaggedResponse(Crt::ScopedResource<OperationResponse> &&response) noexcept
             : m_responseType(EXPECTED_RESPONSE)
         {
             m_responseResult.m_response = std::move(response);
         }
 
-        TaggedResponse::TaggedResponse(Crt::ScopedResource<OperationError> error) noexcept
+        TaggedResponse::~TaggedResponse() noexcept
+        {
+            if (m_responseType == EXPECTED_RESPONSE)
+            {
+                m_responseResult.m_response.~unique_ptr();
+            }
+            else if (m_responseType == ERROR_RESPONSE)
+            {
+                m_responseResult.m_error.~unique_ptr();
+            }
+        }
+
+        TaggedResponse::TaggedResponse(Crt::ScopedResource<OperationError> &&error) noexcept
             : m_responseType(ERROR_RESPONSE)
         {
             m_responseResult.m_error = std::move(error);
         }
 
-        TaggedResponse::TaggedResponse(TaggedResponse &&taggedResponse) noexcept
+        TaggedResponse::TaggedResponse(TaggedResponse &&rhs) noexcept
         {
+            m_responseType = rhs.m_responseType;
             if (m_responseType == EXPECTED_RESPONSE)
             {
-                m_responseResult.m_response = std::move(taggedResponse.m_responseResult.m_response);
+                m_responseResult.m_response = std::move(rhs.m_responseResult.m_response);
             }
             else if (m_responseType == ERROR_RESPONSE)
             {
-                m_responseResult.m_error = std::move(taggedResponse.m_responseResult.m_error);
+                m_responseResult.m_error = std::move(rhs.m_responseResult.m_error);
             }
         }
 
@@ -1180,12 +1204,10 @@ namespace Aws
             m_closedPromise = std::promise<void>();
 
             Crt::List<EventStreamHeader> headers;
-            auto contentTypeHeader = EventStreamHeader(
-                Crt::String(CONTENT_TYPE_HEADER), Crt::String(CONTENT_TYPE_APPLICATION_JSON), m_allocator);
-            auto serviceModelTypeHeader =
-                EventStreamHeader(Crt::String(SERVICE_MODEL_TYPE_HEADER), GetModelName(), m_allocator);
-            headers.push_back(contentTypeHeader);
-            headers.push_back(serviceModelTypeHeader);
+            headers.emplace_back(EventStreamHeader(
+                Crt::String(CONTENT_TYPE_HEADER), Crt::String(CONTENT_TYPE_APPLICATION_JSON), m_allocator));
+            headers.emplace_back(
+                EventStreamHeader(Crt::String(SERVICE_MODEL_TYPE_HEADER), GetModelName(), m_allocator));
             Crt::JsonObject payloadObject;
             shape->SerializeToJsonObject(payloadObject);
             Crt::String payloadString = payloadObject.View().WriteCompact();

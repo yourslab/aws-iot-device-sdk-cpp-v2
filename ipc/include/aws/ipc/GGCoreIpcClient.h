@@ -264,12 +264,13 @@ namespace Aws
                     const Crt::Optional<Crt::String> &authToken = Crt::Optional<Crt::String>()) noexcept;
                 void Close() noexcept;
                 PublishToTopicOperation NewPublishToTopic() noexcept;
-                SubscribeToTopicOperation NewSubscribeToTopic(SubscribeToTopicStreamHandler& streamHandler) noexcept;
+                SubscribeToTopicOperation NewSubscribeToTopic(SubscribeToTopicStreamHandler &streamHandler) noexcept;
                 ~GreengrassIpcClient() noexcept;
+
               private:
                 GreengrassModelRetriever m_greengrassModelRetriever;
                 ClientConnection m_connection;
-                Crt::Io::ClientBootstrap& m_clientBootstrap;
+                Crt::Io::ClientBootstrap &m_clientBootstrap;
                 Crt::Allocator *m_allocator;
                 MessageAmendment m_connectAmendment;
             };

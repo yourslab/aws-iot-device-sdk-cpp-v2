@@ -60,7 +60,9 @@ namespace Aws
             EventStreamHeader(const EventStreamHeader &lhs) noexcept;
             EventStreamHeader(EventStreamHeader &&rhs) noexcept;
             ~EventStreamHeader() noexcept;
-            EventStreamHeader(const struct aws_event_stream_header_value_pair &header);
+            EventStreamHeader(
+                const struct aws_event_stream_header_value_pair &header,
+                Crt::Allocator *allocator = Crt::g_allocator);
             EventStreamHeader(const Crt::String &name, bool value);
             EventStreamHeader(const Crt::String &name, int8_t value);
             EventStreamHeader(const Crt::String &name, int16_t value);
@@ -297,7 +299,7 @@ namespace Aws
             ~ClientConnection() noexcept;
             ClientConnection(const ClientConnection &) noexcept = delete;
             ClientConnection &operator=(const ClientConnection &) noexcept = delete;
-            ClientConnection(ClientConnection &&) noexcept = default;
+            ClientConnection(ClientConnection &&) noexcept;
             ClientConnection &operator=(ClientConnection &&) noexcept;
 
             std::future<EventStreamRpcStatus> Connect(
@@ -397,6 +399,7 @@ namespace Aws
                 ClientConnection *connection,
                 ClientContinuationHandler &continuationHandler,
                 Crt::Allocator *allocator) noexcept;
+            ~ClientContinuation() noexcept;
             std::future<EventStreamRpcStatus> Activate(
                 const Crt::String &operation,
                 const Crt::List<EventStreamHeader> &headers,
@@ -429,6 +432,7 @@ namespace Aws
         {
           public:
             AbstractShapeBase(Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+            virtual ~AbstractShapeBase() noexcept;
             static void s_customDeleter(AbstractShapeBase *shape) noexcept;
             virtual void SerializeToJsonObject(Crt::JsonObject &payloadObject) const = 0;
 
@@ -515,10 +519,10 @@ namespace Aws
         class AWS_EVENTSTREAMRPC_API TaggedResponse
         {
           public:
-            TaggedResponse(Crt::ScopedResource<OperationResponse> response) noexcept;
-            TaggedResponse(Crt::ScopedResource<OperationError> error) noexcept;
+            TaggedResponse(Crt::ScopedResource<OperationResponse> &&response) noexcept;
+            TaggedResponse(Crt::ScopedResource<OperationError> &&error) noexcept;
             TaggedResponse(TaggedResponse &&taggedResponse) noexcept;
-            ~TaggedResponse() noexcept = default;
+            ~TaggedResponse() noexcept;
             /**
              * @return true if the response is associated with an expected response;
              * false if the response is associated with an error.
@@ -562,7 +566,7 @@ namespace Aws
                 const ResponseRetriever &responseRetriever,
                 Crt::Allocator *allocator) noexcept;
             ~ClientOperation() noexcept;
-            ClientOperation(const ClientOperation &clientOperation) noexcept = default;
+            ClientOperation(const ClientOperation &clientOperation) noexcept = delete;
             ClientOperation(ClientOperation &&clientOperation) noexcept;
             std::future<EventStreamRpcStatus> Close(OnMessageFlushCallback onMessageFlushCallback = nullptr) noexcept;
             std::future<TaggedResponse> GetResponse() noexcept;
