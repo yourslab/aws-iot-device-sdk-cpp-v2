@@ -205,7 +205,7 @@ namespace Aws
                 Crt::ScopedResource<PublishToTopicResponse> derivedResponse(
                     Crt::New<PublishToTopicResponse>(allocator), PublishToTopicResponse::s_customDeleter);
                 auto operationResponse = static_cast<OperationResponse *>(derivedResponse.release());
-                return Crt::ScopedResource<OperationResponse>(operationResponse);
+                return Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
             }
 
             void PublishToTopicResponse::s_customDeleter(PublishToTopicResponse *response) noexcept
@@ -282,7 +282,7 @@ namespace Aws
                 }
 
                 auto operationResponse = static_cast<OperationResponse *>(derivedResponse.release());
-                return Crt::ScopedResource<OperationResponse>(operationResponse);
+                return Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
             }
 
             SubscriptionResponseMessage::SubscriptionResponseMessage(Crt::Allocator *allocator) noexcept
@@ -519,7 +519,7 @@ namespace Aws
                 }
 
                 auto operationResponse = static_cast<OperationResponse *>(derivedResponse.release());
-                return Crt::ScopedResource<OperationResponse>(operationResponse);
+                return Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
             }
         } // namespace Ipc
     }     // namespace Eventstreamrpc

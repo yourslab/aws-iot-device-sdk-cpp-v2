@@ -460,7 +460,11 @@ namespace Aws
             m_underlyingHandle.header_value_len = (uint16_t)m_valueByteBuf.len;
         }
 
-        EventStreamHeader::~EventStreamHeader() noexcept { Crt::ByteBufDelete(m_valueByteBuf); }
+        EventStreamHeader::~EventStreamHeader() noexcept
+        {
+            if (aws_byte_buf_is_valid(&m_valueByteBuf))
+                Crt::ByteBufDelete(m_valueByteBuf);
+        }
 
         EventStreamHeader::EventStreamHeader(const EventStreamHeader &lhs) noexcept
             : m_allocator(lhs.m_allocator),
@@ -884,6 +888,8 @@ namespace Aws
 
         void OperationError::SerializeToJsonObject(Crt::JsonObject &payloadObject) const { (void)payloadObject; }
 
+        const Crt::Optional<int> &OperationError::GetErrorCode() const noexcept { return m_errorCode; }
+
         Crt::String AbstractShapeBase::GetModelName() const noexcept { return Crt::String(""); }
 
         AbstractShapeBase::AbstractShapeBase(Crt::Allocator *allocator) noexcept : m_allocator(allocator) {}
@@ -1071,6 +1077,15 @@ namespace Aws
             {
                 m_isClosed.store(true);
             }
+
+            std::cout << "So we actually get an error" << std::endl;
+            if (payload.has_value())
+                std::cout << "Curious what it says:"
+                          << Crt::String(
+                                 reinterpret_cast<char *>(payload.value().buffer),
+                                 (uint16_t)payload.value().len,
+                                 m_allocator)
+                          << std::endl;
 
             ErrorResponseFactory errorFactory = m_responseRetriever.GetErrorResponseFromModelName(modelName);
             if (errorFactory == nullptr)
