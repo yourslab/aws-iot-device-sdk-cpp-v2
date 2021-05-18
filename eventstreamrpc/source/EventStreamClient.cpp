@@ -1047,7 +1047,7 @@ namespace Aws
                 /* The value of this hashmap contains the function that allocates the response object from the
                  * payload. */
                 Crt::ScopedResource<OperationResponse> response = responseFactory(payloadStringView, m_allocator);
-                if (modelName != response->GetModelName())
+                if (response.get() == nullptr || modelName != response->GetModelName())
                 {
                     /* TODO: Log an error */
                     return EVENT_STREAM_RPC_UNMAPPED_DATA;
@@ -1077,15 +1077,6 @@ namespace Aws
             {
                 m_isClosed.store(true);
             }
-
-            std::cout << "So we actually get an error" << std::endl;
-            if (payload.has_value())
-                std::cout << "Curious what it says:"
-                          << Crt::String(
-                                 reinterpret_cast<char *>(payload.value().buffer),
-                                 (uint16_t)payload.value().len,
-                                 m_allocator)
-                          << std::endl;
 
             ErrorResponseFactory errorFactory = m_responseRetriever.GetErrorResponseFromModelName(modelName);
             if (errorFactory == nullptr)

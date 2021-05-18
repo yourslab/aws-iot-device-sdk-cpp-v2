@@ -329,13 +329,13 @@ namespace Aws
                 Crt::Allocator *allocator) noexcept
                 : m_connection(lifecycleHandler, allocator), m_clientBootstrap(clientBootstrap), m_allocator(allocator)
             {
-                m_greengrassModelRetriever.m_ModelNameToSoleResponseMap[Crt::String("aws.greengrass#PublishToTopic")] =
+                m_greengrassModelRetriever.m_ModelNameToSoleResponseMap[Crt::String("aws.greengrass#PublishToTopicResponse")] =
                     PublishToTopicResponse::s_loadFromPayload;
                 m_greengrassModelRetriever
-                    .m_ModelNameToSoleResponseMap[Crt::String("aws.greengrass#SubscribeToTopic")] =
+                    .m_ModelNameToSoleResponseMap[Crt::String("aws.greengrass#SubscribeToTopicResponse")] =
                     SubscribeToTopicResponse::s_loadFromPayload;
                 m_greengrassModelRetriever
-                    .m_ModelNameToStreamingResponseMap[Crt::String("aws.greengrass#SubscribeToTopic")] =
+                    .m_ModelNameToStreamingResponseMap[Crt::String("aws.greengrass#SubscriptionResponseMessage")] =
                     SubscriptionResponseMessage::s_loadFromPayload;
             }
 
