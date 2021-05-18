@@ -146,6 +146,8 @@ namespace Aws
                 SubscriptionResponseMessage(
                     Crt::Optional<BinaryMessage> &&binaryMessage,
                     Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+                Crt::Optional<JsonMessage> GetJsonMessage() noexcept { return m_jsonMessage; }
+                Crt::Optional<BinaryMessage> GetBinaryMessage() noexcept { return m_binaryMessage; };
                 static Crt::ScopedResource<OperationResponse> s_loadFromPayload(
                     Crt::StringView stringView,
                     Crt::Allocator *allocator) noexcept;
@@ -200,6 +202,7 @@ namespace Aws
             class SubscribeToTopicResponse : public OperationResponse
             {
               public:
+                SubscribeToTopicResponse(Crt::Allocator *allocator = Crt::g_allocator) noexcept;
                 SubscribeToTopicResponse(
                     const Crt::Optional<Crt::String> &topic,
                     Crt::Allocator *allocator = Crt::g_allocator) noexcept;
@@ -237,7 +240,7 @@ namespace Aws
             class GreengrassModelRetriever : public ResponseRetriever
             {
               public:
-                ExpectedResponseFactory GetLoneResponseFromModelName(
+                ExpectedResponseFactory GetInitialResponseFromModelName(
                     const Crt::String &modelName) const noexcept override;
                 ExpectedResponseFactory GetStreamingResponseFromModelName(
                     const Crt::String &modelName) const noexcept override;
@@ -246,7 +249,7 @@ namespace Aws
 
               private:
                 friend class GreengrassIpcClient;
-                Crt::Map<Crt::String, ExpectedResponseFactory> m_ModelNameToSoleResponseMap;
+                Crt::Map<Crt::String, ExpectedResponseFactory> m_ModelNameToInitialResponseMap;
                 Crt::Map<Crt::String, ExpectedResponseFactory> m_ModelNameToStreamingResponseMap;
                 Crt::Map<Crt::String, ErrorResponseFactory> m_ModelNameToErrorResponse;
             };

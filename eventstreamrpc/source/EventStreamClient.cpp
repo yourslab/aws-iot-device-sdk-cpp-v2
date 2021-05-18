@@ -1026,7 +1026,7 @@ namespace Aws
             /* Responses after the first message don't necessarily have the same shape as the first. */
             if (m_messageCount == 1)
             {
-                responseFactory = m_responseRetriever.GetLoneResponseFromModelName(GetModelName());
+                responseFactory = m_responseRetriever.GetInitialResponseFromModelName(GetModelName());
             }
             else
             {
@@ -1044,6 +1044,7 @@ namespace Aws
                 {
                     payloadStringView = Crt::ByteCursorToStringView(Crt::ByteCursorFromByteBuf(payload.value()));
                 }
+
                 /* The value of this hashmap contains the function that allocates the response object from the
                  * payload. */
                 Crt::ScopedResource<OperationResponse> response = responseFactory(payloadStringView, m_allocator);

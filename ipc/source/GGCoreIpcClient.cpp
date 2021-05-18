@@ -250,6 +250,11 @@ namespace Aws
             }
 
             SubscribeToTopicResponse::SubscribeToTopicResponse(
+                Crt::Allocator *allocator
+            ) noexcept
+            {
+            }
+            SubscribeToTopicResponse::SubscribeToTopicResponse(
                 const Crt::Optional<Crt::String> &topic,
                 Crt::Allocator *allocator) noexcept
                 : OperationResponse(allocator), m_topic(topic)
@@ -269,9 +274,9 @@ namespace Aws
                 Crt::String payload = {stringView.begin(), stringView.end()};
                 Crt::JsonObject jsonObject(payload);
                 Crt::JsonView jsonView(jsonObject);
-                JsonMessage jsonMessage(allocator);
 
-                Crt::ScopedResource<SubscribeToTopicResponse> derivedResponse(nullptr);
+                Crt::ScopedResource<SubscribeToTopicResponse> derivedResponse(Crt::New<SubscribeToTopicResponse>(allocator),
+                        SubscribeToTopicResponse::s_customDeleter);
 
                 if (jsonView.ValueExists("topic"))
                 {
@@ -329,13 +334,13 @@ namespace Aws
                 Crt::Allocator *allocator) noexcept
                 : m_connection(lifecycleHandler, allocator), m_clientBootstrap(clientBootstrap), m_allocator(allocator)
             {
-                m_greengrassModelRetriever.m_ModelNameToSoleResponseMap[Crt::String("aws.greengrass#PublishToTopicResponse")] =
+                m_greengrassModelRetriever.m_ModelNameToInitialResponseMap[Crt::String("aws.greengrass#PublishToTopic")] =
                     PublishToTopicResponse::s_loadFromPayload;
                 m_greengrassModelRetriever
-                    .m_ModelNameToSoleResponseMap[Crt::String("aws.greengrass#SubscribeToTopicResponse")] =
+                    .m_ModelNameToInitialResponseMap[Crt::String("aws.greengrass#SubscribeToTopic")] =
                     SubscribeToTopicResponse::s_loadFromPayload;
                 m_greengrassModelRetriever
-                    .m_ModelNameToStreamingResponseMap[Crt::String("aws.greengrass#SubscriptionResponseMessage")] =
+                    .m_ModelNameToStreamingResponseMap[Crt::String("aws.greengrass#SubscribeToTopic")] =
                     SubscriptionResponseMessage::s_loadFromPayload;
             }
 
@@ -419,11 +424,11 @@ namespace Aws
 
             GreengrassIpcClient::~GreengrassIpcClient() noexcept { Close(); }
 
-            ExpectedResponseFactory GreengrassModelRetriever::GetLoneResponseFromModelName(
+            ExpectedResponseFactory GreengrassModelRetriever::GetInitialResponseFromModelName(
                 const Crt::String &modelName) const noexcept
             {
-                auto it = m_ModelNameToSoleResponseMap.find(modelName);
-                if (it == m_ModelNameToSoleResponseMap.end())
+                auto it = m_ModelNameToInitialResponseMap.find(modelName);
+                if (it == m_ModelNameToInitialResponseMap.end())
                 {
                     return nullptr;
                 }
@@ -499,7 +504,8 @@ namespace Aws
                 Crt::JsonView jsonView(jsonObject);
                 JsonMessage jsonMessage(allocator);
 
-                Crt::ScopedResource<SubscriptionResponseMessage> derivedResponse;
+                Crt::ScopedResource<SubscriptionResponseMessage> derivedResponse(
+                    Crt::New<SubscriptionResponseMessage>(allocator), SubscriptionResponseMessage::s_customDeleter);;
 
                 if (jsonView.ValueExists("jsonMessage"))
                 {

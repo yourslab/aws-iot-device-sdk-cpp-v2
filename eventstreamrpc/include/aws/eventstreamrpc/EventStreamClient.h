@@ -251,7 +251,6 @@ namespace Aws
 
         enum EventStreamRpcError
         {
-            /* If error messages are added to `aws_event_stream_errors`, this will need to be updated. */
             EVENT_STREAM_RPC_SUCCESS = 0,
             EVENT_STREAM_RPC_NULL_PARAMETER,
             EVENT_STREAM_RPC_INITIALIZATION_ERROR,
@@ -550,7 +549,7 @@ namespace Aws
         {
             /* An interface shared by all operations for retrieving the response object given the model name. */
           public:
-            virtual ExpectedResponseFactory GetLoneResponseFromModelName(
+            virtual ExpectedResponseFactory GetInitialResponseFromModelName(
                 const Crt::String &modelName) const noexcept = 0;
             virtual ExpectedResponseFactory GetStreamingResponseFromModelName(
                 const Crt::String &modelName) const noexcept = 0;
