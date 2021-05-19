@@ -20,9 +20,7 @@ namespace Aws
             class BinaryMessage : public AbstractShapeBase
             {
               public:
-                BinaryMessage(
-                  Crt::Allocator *allocator = Crt::g_allocator
-                ) noexcept;
+                BinaryMessage(Crt::Allocator *allocator = Crt::g_allocator) noexcept;
                 BinaryMessage(
                     const Crt::Optional<Crt::Vector<uint8_t>> &message,
                     Crt::Allocator *allocator = Crt::g_allocator) noexcept;
@@ -124,7 +122,7 @@ namespace Aws
                     ClientConnection &connection,
                     const GreengrassModelRetriever &greengrassModelRetriever,
                     Crt::Allocator *allocator) noexcept;
-                std::future<EventStreamRpcStatus> Activate(
+                std::future<RpcStatusResult> Activate(
                     const PublishToTopicRequest &request,
                     OnMessageFlushCallback onMessageFlushCallback) noexcept;
 
@@ -233,7 +231,7 @@ namespace Aws
                     SubscribeToTopicStreamHandler *m_streamHandler,
                     const GreengrassModelRetriever &greengrassModelRetriever,
                     Crt::Allocator *allocator) noexcept;
-                std::future<EventStreamRpcStatus> Activate(
+                std::future<RpcStatusResult> Activate(
                     const SubscribeToTopicRequest &request,
                     OnMessageFlushCallback onMessageFlushCallback) noexcept;
 
@@ -262,10 +260,9 @@ namespace Aws
             {
               public:
                 GreengrassIpcClient(
-                    ConnectionLifecycleHandler &lifecycleHandler,
                     Crt::Io::ClientBootstrap &clientBootstrap,
                     Crt::Allocator *allocator = Crt::g_allocator) noexcept;
-                std::future<EventStreamRpcStatus> Connect(
+                std::future<RpcStatusResult> Connect(
                     ConnectionLifecycleHandler &lifecycleHandler,
                     const Crt::Optional<Crt::String> &ipcSocket = Crt::Optional<Crt::String>(),
                     const Crt::Optional<Crt::String> &authToken = Crt::Optional<Crt::String>()) noexcept;

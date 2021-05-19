@@ -28,7 +28,8 @@ namespace Aws
             {
                 if (m_message.has_value())
                 {
-                    if(m_message.value().size() > 0) payloadObject.WithString("message", Crt::Base64Encode(m_message.value()));
+                    if (m_message.value().size() > 0)
+                        payloadObject.WithString("message", Crt::Base64Encode(m_message.value()));
                 }
             }
 
@@ -106,7 +107,7 @@ namespace Aws
             {
             }
 
-            std::future<EventStreamRpcStatus> PublishToTopicOperation::Activate(
+            std::future<RpcStatusResult> PublishToTopicOperation::Activate(
                 const PublishToTopicRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
@@ -122,7 +123,7 @@ namespace Aws
             {
             }
 
-            std::future<EventStreamRpcStatus> SubscribeToTopicOperation::Activate(
+            std::future<RpcStatusResult> SubscribeToTopicOperation::Activate(
                 const SubscribeToTopicRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
@@ -251,11 +252,7 @@ namespace Aws
                 return Crt::String("aws.greengrass#SubscribeToTopicResponse");
             }
 
-            SubscribeToTopicResponse::SubscribeToTopicResponse(
-                Crt::Allocator *allocator
-            ) noexcept
-            {
-            }
+            SubscribeToTopicResponse::SubscribeToTopicResponse(Crt::Allocator *allocator) noexcept {}
             SubscribeToTopicResponse::SubscribeToTopicResponse(
                 const Crt::Optional<Crt::String> &topic,
                 Crt::Allocator *allocator) noexcept
@@ -277,8 +274,8 @@ namespace Aws
                 Crt::JsonObject jsonObject(payload);
                 Crt::JsonView jsonView(jsonObject);
 
-                Crt::ScopedResource<SubscribeToTopicResponse> derivedResponse(Crt::New<SubscribeToTopicResponse>(allocator),
-                        SubscribeToTopicResponse::s_customDeleter);
+                Crt::ScopedResource<SubscribeToTopicResponse> derivedResponse(
+                    Crt::New<SubscribeToTopicResponse>(allocator), SubscribeToTopicResponse::s_customDeleter);
 
                 if (jsonView.ValueExists("topic"))
                 {
@@ -331,12 +328,12 @@ namespace Aws
             }
 
             GreengrassIpcClient::GreengrassIpcClient(
-                ConnectionLifecycleHandler &lifecycleHandler,
                 Crt::Io::ClientBootstrap &clientBootstrap,
                 Crt::Allocator *allocator) noexcept
-                : m_connection(lifecycleHandler, allocator), m_clientBootstrap(clientBootstrap), m_allocator(allocator)
+                : m_connection(allocator), m_clientBootstrap(clientBootstrap), m_allocator(allocator)
             {
-                m_greengrassModelRetriever.m_ModelNameToInitialResponseMap[Crt::String("aws.greengrass#PublishToTopic")] =
+                m_greengrassModelRetriever
+                    .m_ModelNameToInitialResponseMap[Crt::String("aws.greengrass#PublishToTopic")] =
                     PublishToTopicResponse::s_loadFromPayload;
                 m_greengrassModelRetriever
                     .m_ModelNameToInitialResponseMap[Crt::String("aws.greengrass#SubscribeToTopic")] =
@@ -346,12 +343,12 @@ namespace Aws
                     SubscriptionResponseMessage::s_loadFromPayload;
             }
 
-            std::future<EventStreamRpcStatus> GreengrassIpcClient::Connect(
+            std::future<RpcStatusResult> GreengrassIpcClient::Connect(
                 ConnectionLifecycleHandler &lifecycleHandler,
                 const Crt::Optional<Crt::String> &ipcSocket,
                 const Crt::Optional<Crt::String> &authToken) noexcept
             {
-                std::promise<EventStreamRpcStatus> initializationPromise;
+                std::promise<RpcStatusResult> initializationPromise;
                 EventStreamRpcError baseError = EVENT_STREAM_RPC_SUCCESS;
 
                 Crt::String finalIpcSocket;
@@ -419,7 +416,7 @@ namespace Aws
                 m_connectAmendment.SetPayload(Crt::ByteBufFromCString(authTokenPayloadSS.str().c_str()));
                 auto messageAmender = [&](void) -> MessageAmendment & { return m_connectAmendment; };
 
-                return m_connection.Connect(connectionOptions, lifecycleHandler, messageAmender);
+                return m_connection.Connect(connectionOptions, &lifecycleHandler, messageAmender);
             }
 
             void GreengrassIpcClient::Close() noexcept { m_connection.Close(); }
@@ -506,7 +503,8 @@ namespace Aws
                 Crt::JsonView jsonView(jsonObject);
 
                 Crt::ScopedResource<SubscriptionResponseMessage> derivedResponse(
-                    Crt::New<SubscriptionResponseMessage>(allocator), SubscriptionResponseMessage::s_customDeleter);;
+                    Crt::New<SubscriptionResponseMessage>(allocator), SubscriptionResponseMessage::s_customDeleter);
+                ;
 
                 if (jsonView.ValueExists("jsonMessage"))
                 {
