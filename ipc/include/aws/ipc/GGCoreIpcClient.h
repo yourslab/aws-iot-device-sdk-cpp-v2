@@ -21,6 +21,9 @@ namespace Aws
             {
               public:
                 BinaryMessage(
+                  Crt::Allocator *allocator = Crt::g_allocator
+                ) noexcept;
+                BinaryMessage(
                     const Crt::Optional<Crt::Vector<uint8_t>> &message,
                     Crt::Allocator *allocator = Crt::g_allocator) noexcept;
                 BinaryMessage(
@@ -30,6 +33,7 @@ namespace Aws
                 BinaryMessage(BinaryMessage &&binaryMessage) = default;
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const override;
                 static void LoadFromJsonView(BinaryMessage &message, const Crt::JsonView &payloadView) noexcept;
+                Crt::Optional<Crt::Vector<uint8_t>> GetMessage() noexcept { return m_message; }
 
               protected:
                 Crt::String GetModelName() const noexcept override;

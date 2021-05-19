@@ -28,7 +28,7 @@ namespace Aws
             {
                 if (m_message.has_value())
                 {
-                    payloadObject.WithString("message", Crt::Base64Encode(m_message.value()));
+                    if(m_message.value().size() > 0) payloadObject.WithString("message", Crt::Base64Encode(m_message.value()));
                 }
             }
 
@@ -45,6 +45,8 @@ namespace Aws
             {
                 return Crt::String("aws.greengrass#BinaryMessage");
             }
+
+            BinaryMessage::BinaryMessage(Crt::Allocator *allocator) noexcept : AbstractShapeBase(allocator) {}
 
             JsonMessage::JsonMessage(Crt::Allocator *allocator) noexcept : AbstractShapeBase(allocator) {}
 
@@ -502,14 +504,14 @@ namespace Aws
                 Crt::String payload = {stringView.begin(), stringView.end()};
                 Crt::JsonObject jsonObject(payload);
                 Crt::JsonView jsonView(jsonObject);
-                JsonMessage jsonMessage(allocator);
 
                 Crt::ScopedResource<SubscriptionResponseMessage> derivedResponse(
                     Crt::New<SubscriptionResponseMessage>(allocator), SubscriptionResponseMessage::s_customDeleter);;
 
                 if (jsonView.ValueExists("jsonMessage"))
                 {
-                    JsonMessage jsonMessage(jsonView.GetJsonObject("jsonMessage").Materialize(), allocator);
+                    JsonMessage jsonMessage;
+                    JsonMessage::LoadFromJsonView(jsonMessage, jsonView.GetJsonObject("jsonMessage"));
                     Crt::ScopedResource<SubscriptionResponseMessage> unionResponse(
                         Crt::New<SubscriptionResponseMessage>(allocator, std::move(jsonMessage), allocator),
                         SubscriptionResponseMessage::s_customDeleter);
@@ -517,7 +519,8 @@ namespace Aws
                 }
                 else if (jsonView.ValueExists("binaryMessage"))
                 {
-                    BinaryMessage binaryMessage(Crt::Base64Decode(jsonView.GetString("binaryMessage")), allocator);
+                    BinaryMessage binaryMessage;
+                    BinaryMessage::LoadFromJsonView(binaryMessage, jsonView.GetJsonObject("binaryMessage"));
                     Crt::ScopedResource<SubscriptionResponseMessage> unionResponse(
                         Crt::New<SubscriptionResponseMessage>(allocator, binaryMessage, allocator),
                         SubscriptionResponseMessage::s_customDeleter);
