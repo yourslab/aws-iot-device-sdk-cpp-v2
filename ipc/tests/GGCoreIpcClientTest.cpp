@@ -50,7 +50,7 @@ static int s_PublishToIoTCore(struct aws_allocator *allocator, void *ctx)
             Ipc::SubscribeToTopicRequest request(Aws::Crt::String("topic"), allocator);
             auto activate = operation.Activate(request, nullptr);
             activate.wait();
-            auto response = operation.GetExpectedResponse();
+            auto response = operation.GetOperationResult();
             response.wait();
         }
 
@@ -62,7 +62,7 @@ static int s_PublishToIoTCore(struct aws_allocator *allocator, void *ctx)
                 Aws::Crt::String("example"), Ipc::PublishMessage(publishMessage), allocator);
             auto activate = operation.Activate(request, nullptr);
             activate.wait();
-            auto response = operation.GetExpectedResponse();
+            auto response = operation.GetOperationResult();
             response.get();
         }
 

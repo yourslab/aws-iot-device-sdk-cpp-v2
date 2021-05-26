@@ -83,6 +83,27 @@ namespace Aws
                 }
             }
 
+            GreengrassServiceModel::GreengrassServiceModel() noexcept
+                : m_subscribeToTopicOperationContext(*this), m_publishToTopicOperationContext(*this)
+            {
+            }
+
+            Crt::ScopedResource<OperationError> GreengrassServiceModel::AllocateOperationErrorFromPayload(
+                const Crt::String &errorModelName,
+                Crt::StringView stringView,
+                Crt::Allocator *allocator) const noexcept
+            {
+                auto it = m_modelNameToErrorResponse.find(errorModelName);
+                if (it == m_modelNameToErrorResponse.end())
+                {
+                    return nullptr;
+                }
+                else
+                {
+                    return it->second(stringView, allocator);
+                }
+            }
+
             PublishMessage::PublishMessage(Crt::Allocator *allocator) noexcept : AbstractShapeBase(allocator) {}
 
             PublishMessage::PublishMessage(
@@ -99,31 +120,106 @@ namespace Aws
             {
             }
 
-            PublishToTopicOperation::PublishToTopicOperation(
-                ClientConnection &connection,
-                const GreengrassModelRetriever &greengrassModelRetriever,
-                Crt::Allocator *allocator) noexcept
-                : ClientOperation(connection, nullptr, greengrassModelRetriever, allocator)
+            Crt::String PublishMessage::GetModelName() const noexcept
+            {
+                return Crt::String("aws.greengrass#PublishMessage");
+            }
+
+            PublishToTopicOperationContext::PublishToTopicOperationContext(
+                const GreengrassServiceModel &serviceModel) noexcept
+                : OperationModelContext(serviceModel)
             {
             }
 
-            std::future<RpcStatusResult> PublishToTopicOperation::Activate(
+            Crt::ScopedResource<OperationResponse> PublishToTopicOperationContext::AllocateInitialResponseFromPayload(
+                Crt::StringView stringView,
+                Crt::Allocator *allocator) const noexcept
+            {
+                return PublishToTopicResponse::s_loadFromPayload(stringView, allocator);
+            }
+
+            Crt::ScopedResource<OperationResponse> PublishToTopicOperationContext::AllocateStreamingResponseFromPayload(
+                Crt::StringView stringView,
+                Crt::Allocator *allocator) const noexcept
+            {
+                return nullptr;
+            }
+
+            Crt::String PublishToTopicOperationContext::GetInitialResponseModelName() const noexcept
+            {
+                return Crt::String("aws.greengrass#PublishToTopicResponse");
+            }
+
+            Crt::String PublishToTopicOperationContext::GetOperationName() const noexcept
+            {
+                return Crt::String("aws.greengrass#PublishToTopic");
+            }
+
+            Crt::Optional<Crt::String> PublishToTopicOperationContext::GetStreamingResponseModelName() const noexcept
+            {
+                return Crt::Optional<Crt::String>();
+            }
+
+            PublishToTopicOperation::PublishToTopicOperation(
+                ClientConnection &connection,
+                const PublishToTopicOperationContext &operationContext,
+                Crt::Allocator *allocator) noexcept
+                : ClientOperation(connection, nullptr, operationContext, allocator)
+            {
+            }
+
+            std::future<RpcError> PublishToTopicOperation::Activate(
                 const PublishToTopicRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
                 return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
             }
 
-            SubscribeToTopicOperation::SubscribeToTopicOperation(
-                ClientConnection &connection,
-                SubscribeToTopicStreamHandler *streamHandler,
-                const GreengrassModelRetriever &greengrassModelRetriever,
-                Crt::Allocator *allocator) noexcept
-                : ClientOperation(connection, streamHandler, greengrassModelRetriever, allocator)
+            SubscribeToTopicOperationContext::SubscribeToTopicOperationContext(
+                const GreengrassServiceModel &serviceModel) noexcept
+                : OperationModelContext(serviceModel)
             {
             }
 
-            std::future<RpcStatusResult> SubscribeToTopicOperation::Activate(
+            Crt::ScopedResource<OperationResponse> SubscribeToTopicOperationContext::AllocateInitialResponseFromPayload(
+                Crt::StringView stringView,
+                Crt::Allocator *allocator) const noexcept
+            {
+                return SubscribeToTopicResponse::s_loadFromPayload(stringView, allocator);
+            }
+
+            Crt::ScopedResource<OperationResponse> SubscribeToTopicOperationContext::
+                AllocateStreamingResponseFromPayload(Crt::StringView stringView, Crt::Allocator *allocator)
+                    const noexcept
+            {
+                return SubscriptionResponseMessage::s_loadFromPayload(stringView, allocator);
+            }
+
+            Crt::String SubscribeToTopicOperationContext::GetInitialResponseModelName() const noexcept
+            {
+                return Crt::String("aws.greengrass#SubscribeToTopicResponse");
+            }
+
+            Crt::Optional<Crt::String> SubscribeToTopicOperationContext::GetStreamingResponseModelName() const noexcept
+            {
+                return Crt::String("aws.greengrass#SubscriptionResponseMessage");
+            }
+
+            Crt::String SubscribeToTopicOperationContext::GetOperationName() const noexcept
+            {
+                return Crt::String("aws.greengrass#SubscribeToTopic");
+            }
+
+            SubscribeToTopicOperation::SubscribeToTopicOperation(
+                ClientConnection &connection,
+                SubscribeToTopicStreamHandler *streamHandler,
+                const SubscribeToTopicOperationContext &operationContext,
+                Crt::Allocator *allocator) noexcept
+                : ClientOperation(connection, streamHandler, operationContext, allocator)
+            {
+            }
+
+            std::future<RpcError> SubscribeToTopicOperation::Activate(
                 const SubscribeToTopicRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
@@ -332,23 +428,16 @@ namespace Aws
                 Crt::Allocator *allocator) noexcept
                 : m_connection(allocator), m_clientBootstrap(clientBootstrap), m_allocator(allocator)
             {
-                m_greengrassModelRetriever
-                    .m_ModelNameToInitialResponseMap[Crt::String("aws.greengrass#PublishToTopic")] =
-                    PublishToTopicResponse::s_loadFromPayload;
-                m_greengrassModelRetriever
-                    .m_ModelNameToInitialResponseMap[Crt::String("aws.greengrass#SubscribeToTopic")] =
-                    SubscribeToTopicResponse::s_loadFromPayload;
-                m_greengrassModelRetriever
-                    .m_ModelNameToStreamingResponseMap[Crt::String("aws.greengrass#SubscribeToTopic")] =
-                    SubscriptionResponseMessage::s_loadFromPayload;
+                m_greengrassServiceModel.m_modelNameToErrorResponse[Crt::String("aws.greengrass#PublishToTopic")] =
+                    nullptr;
             }
 
-            std::future<RpcStatusResult> GreengrassIpcClient::Connect(
+            std::future<RpcError> GreengrassIpcClient::Connect(
                 ConnectionLifecycleHandler &lifecycleHandler,
                 const Crt::Optional<Crt::String> &ipcSocket,
                 const Crt::Optional<Crt::String> &authToken) noexcept
             {
-                std::promise<RpcStatusResult> initializationPromise;
+                std::promise<RpcError> initializationPromise;
                 EventStreamRpcError baseError = EVENT_STREAM_RPC_SUCCESS;
 
                 Crt::String finalIpcSocket;
@@ -423,57 +512,20 @@ namespace Aws
 
             GreengrassIpcClient::~GreengrassIpcClient() noexcept { Close(); }
 
-            ExpectedResponseFactory GreengrassModelRetriever::GetInitialResponseFromModelName(
-                const Crt::String &modelName) const noexcept
-            {
-                auto it = m_ModelNameToInitialResponseMap.find(modelName);
-                if (it == m_ModelNameToInitialResponseMap.end())
-                {
-                    return nullptr;
-                }
-                else
-                {
-                    return it->second;
-                }
-            }
-
-            ExpectedResponseFactory GreengrassModelRetriever::GetStreamingResponseFromModelName(
-                const Crt::String &modelName) const noexcept
-            {
-                auto it = m_ModelNameToStreamingResponseMap.find(modelName);
-                if (it == m_ModelNameToStreamingResponseMap.end())
-                {
-                    return nullptr;
-                }
-                else
-                {
-                    return it->second;
-                }
-            }
-
-            ErrorResponseFactory GreengrassModelRetriever::GetErrorResponseFromModelName(
-                const Crt::String &modelName) const noexcept
-            {
-                auto it = m_ModelNameToErrorResponse.find(modelName);
-                if (it == m_ModelNameToErrorResponse.end())
-                {
-                    return nullptr;
-                }
-                else
-                {
-                    return it->second;
-                }
-            }
-
             PublishToTopicOperation GreengrassIpcClient::NewPublishToTopic() noexcept
             {
-                return PublishToTopicOperation(m_connection, m_greengrassModelRetriever, m_allocator);
+                return PublishToTopicOperation(
+                    m_connection, m_greengrassServiceModel.m_publishToTopicOperationContext, m_allocator);
             }
 
             SubscribeToTopicOperation GreengrassIpcClient::NewSubscribeToTopic(
                 SubscribeToTopicStreamHandler &streamHandler) noexcept
             {
-                return SubscribeToTopicOperation(m_connection, &streamHandler, m_greengrassModelRetriever, m_allocator);
+                return SubscribeToTopicOperation(
+                    m_connection,
+                    &streamHandler,
+                    m_greengrassServiceModel.m_subscribeToTopicOperationContext,
+                    m_allocator);
             }
 
             void SubscribeToTopicStreamHandler::OnStreamEvent(Crt::ScopedResource<OperationResponse> response)
@@ -483,7 +535,9 @@ namespace Aws
 
             void SubscribeToTopicStreamHandler::OnStreamEvent(SubscriptionResponseMessage *response) {}
 
-            bool SubscribeToTopicStreamHandler::OnStreamError(Crt::ScopedResource<OperationError> response)
+            bool SubscribeToTopicStreamHandler::OnStreamError(
+                Crt::ScopedResource<OperationError> response,
+                RpcError error)
             {
                 // TODO: return OnStreamError(static_cast<SubscriptionResponseError *> response.get());
                 return true;

@@ -16,7 +16,7 @@ namespace Aws
     {
         namespace Ipc
         {
-            class GreengrassModelRetriever;
+            class GreengrassServiceModel;
             class BinaryMessage : public AbstractShapeBase
             {
               public:
@@ -74,7 +74,7 @@ namespace Aws
                     const Crt::Optional<JsonMessage> &jsonMessage,
                     Crt::Allocator *allocator = Crt::g_allocator) noexcept;
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const override;
-
+                Crt::String GetModelName() const noexcept override;
               private:
                 Crt::Optional<JsonMessage> m_jsonMessage;
                 Crt::Optional<BinaryMessage> m_binaryMessage;
@@ -109,10 +109,23 @@ namespace Aws
                 static Crt::ScopedResource<OperationResponse> s_loadFromPayload(
                     Crt::StringView stringView,
                     Crt::Allocator *allocator) noexcept;
-                static void s_customDeleter(PublishToTopicResponse *response) noexcept;
-
-              private:
                 Crt::String GetModelName() const noexcept override;
+                static void s_customDeleter(PublishToTopicResponse *response) noexcept;
+            };
+
+            class PublishToTopicOperationContext : public OperationModelContext
+            {
+              public:
+                PublishToTopicOperationContext(const GreengrassServiceModel &serviceModel) noexcept;
+                Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
+                    Crt::StringView stringView,
+                    Crt::Allocator *allocator) const noexcept override;
+                Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
+                    Crt::StringView stringView,
+                    Crt::Allocator *allocator) const noexcept override;
+                Crt::String GetInitialResponseModelName() const noexcept override;
+                Crt::Optional<Crt::String> GetStreamingResponseModelName() const noexcept override;
+                Crt::String GetOperationName() const noexcept override;
             };
 
             class PublishToTopicOperation : public ClientOperation
@@ -120,9 +133,9 @@ namespace Aws
               public:
                 PublishToTopicOperation(
                     ClientConnection &connection,
-                    const GreengrassModelRetriever &greengrassModelRetriever,
+                    const PublishToTopicOperationContext &context,
                     Crt::Allocator *allocator) noexcept;
-                std::future<RpcStatusResult> Activate(
+                std::future<RpcError> Activate(
                     const PublishToTopicRequest &request,
                     OnMessageFlushCallback onMessageFlushCallback) noexcept;
 
@@ -178,7 +191,7 @@ namespace Aws
                  *
                  * This callback can return true so that the stream is closed afterwards.
                  */
-                bool OnStreamError(Crt::ScopedResource<OperationError> error) override;
+                bool OnStreamError(Crt::ScopedResource<OperationError> error, RpcError rpcError) override;
             };
 
             class SubscribeToTopicRequest : public OperationRequest
@@ -211,16 +224,29 @@ namespace Aws
                 SubscribeToTopicResponse(
                     Crt::Optional<Crt::String> &&topic,
                     Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+                Crt::String GetModelName() const noexcept override;
                 static Crt::ScopedResource<OperationResponse> s_loadFromPayload(
                     Crt::StringView stringView,
                     Crt::Allocator *allocator) noexcept;
                 static void s_customDeleter(SubscribeToTopicResponse *response) noexcept;
 
-              protected:
-                Crt::String GetModelName() const noexcept override;
-
               private:
                 Crt::Optional<Crt::String> m_topic;
+            };
+
+            class SubscribeToTopicOperationContext : public OperationModelContext
+            {
+              public:
+                SubscribeToTopicOperationContext(const GreengrassServiceModel &serviceModel) noexcept;
+                Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
+                    Crt::StringView stringView,
+                    Crt::Allocator *allocator) const noexcept override;
+                Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
+                    Crt::StringView stringView,
+                    Crt::Allocator *allocator) const noexcept override;
+                Crt::String GetInitialResponseModelName() const noexcept override;
+                Crt::Optional<Crt::String> GetStreamingResponseModelName() const noexcept override;
+                Crt::String GetOperationName() const noexcept override;
             };
 
             class SubscribeToTopicOperation : public ClientOperation
@@ -229,9 +255,9 @@ namespace Aws
                 SubscribeToTopicOperation(
                     ClientConnection &connection,
                     SubscribeToTopicStreamHandler *m_streamHandler,
-                    const GreengrassModelRetriever &greengrassModelRetriever,
+                    const SubscribeToTopicOperationContext &greengrassModelRetriever,
                     Crt::Allocator *allocator) noexcept;
-                std::future<RpcStatusResult> Activate(
+                std::future<RpcError> Activate(
                     const SubscribeToTopicRequest &request,
                     OnMessageFlushCallback onMessageFlushCallback) noexcept;
 
@@ -239,21 +265,20 @@ namespace Aws
                 Crt::String GetModelName() const noexcept override;
             };
 
-            class GreengrassModelRetriever : public ResponseRetriever
+            class GreengrassServiceModel : public ServiceModel
             {
               public:
-                ExpectedResponseFactory GetInitialResponseFromModelName(
-                    const Crt::String &modelName) const noexcept override;
-                ExpectedResponseFactory GetStreamingResponseFromModelName(
-                    const Crt::String &modelName) const noexcept override;
-                ErrorResponseFactory GetErrorResponseFromModelName(
-                    const Crt::String &modelName) const noexcept override;
+                GreengrassServiceModel() noexcept;
+                Crt::ScopedResource<OperationError> AllocateOperationErrorFromPayload(
+                    const Crt::String &errorModelName,
+                    Crt::StringView stringView,
+                    Crt::Allocator *allocator) const noexcept override;
 
               private:
                 friend class GreengrassIpcClient;
-                Crt::Map<Crt::String, ExpectedResponseFactory> m_ModelNameToInitialResponseMap;
-                Crt::Map<Crt::String, ExpectedResponseFactory> m_ModelNameToStreamingResponseMap;
-                Crt::Map<Crt::String, ErrorResponseFactory> m_ModelNameToErrorResponse;
+                SubscribeToTopicOperationContext m_subscribeToTopicOperationContext;
+                PublishToTopicOperationContext m_publishToTopicOperationContext;
+                Crt::Map<Crt::String, ErrorResponseFactory> m_modelNameToErrorResponse;
             };
 
             class GreengrassIpcClient
@@ -262,7 +287,7 @@ namespace Aws
                 GreengrassIpcClient(
                     Crt::Io::ClientBootstrap &clientBootstrap,
                     Crt::Allocator *allocator = Crt::g_allocator) noexcept;
-                std::future<RpcStatusResult> Connect(
+                std::future<RpcError> Connect(
                     ConnectionLifecycleHandler &lifecycleHandler,
                     const Crt::Optional<Crt::String> &ipcSocket = Crt::Optional<Crt::String>(),
                     const Crt::Optional<Crt::String> &authToken = Crt::Optional<Crt::String>()) noexcept;
@@ -272,7 +297,7 @@ namespace Aws
                 ~GreengrassIpcClient() noexcept;
 
               private:
-                GreengrassModelRetriever m_greengrassModelRetriever;
+                GreengrassServiceModel m_greengrassServiceModel;
                 ClientConnection m_connection;
                 Crt::Io::ClientBootstrap &m_clientBootstrap;
                 Crt::Allocator *m_allocator;

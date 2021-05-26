@@ -29,7 +29,7 @@ namespace Aws
             explicit OnMessageFlushCallbackContainer(Crt::Allocator *allocator) : allocator(allocator) {}
             Crt::Allocator *allocator;
             OnMessageFlushCallback onMessageFlushCallback;
-            std::promise<RpcStatusResult> onFlushPromise;
+            std::promise<RpcError> onFlushPromise;
         };
 
         MessageAmendment::MessageAmendment(Crt::Allocator *allocator) : m_headers(), m_payload(), m_allocator(allocator)
@@ -261,7 +261,7 @@ namespace Aws
 
         void ConnectionLifecycleHandler::OnDisconnectCallback(int errorCode) { (void)errorCode; }
 
-        std::future<RpcStatusResult> ClientConnection::Connect(
+        std::future<RpcError> ClientConnection::Connect(
             const ClientConnectionOptions &connectionOptions,
             ConnectionLifecycleHandler *connectionLifecycleHandler,
             ConnectMessageAmender connectMessageAmender) noexcept
@@ -300,7 +300,7 @@ namespace Aws
             return m_connectAckedPromise.GetFuture();
         }
 
-        std::future<RpcStatusResult> ClientConnection::SendPing(
+        std::future<RpcError> ClientConnection::SendPing(
             const Crt::List<EventStreamHeader> &headers,
             const Crt::Optional<Crt::ByteBuf> &payload,
             OnMessageFlushCallback onMessageFlushCallback) noexcept
@@ -308,7 +308,7 @@ namespace Aws
             return s_sendPing(this, headers, payload, onMessageFlushCallback);
         }
 
-        std::future<RpcStatusResult> ClientConnection::SendPingResponse(
+        std::future<RpcError> ClientConnection::SendPingResponse(
             const Crt::List<EventStreamHeader> &headers,
             const Crt::Optional<Crt::ByteBuf> &payload,
             OnMessageFlushCallback onMessageFlushCallback) noexcept
@@ -316,7 +316,7 @@ namespace Aws
             return s_sendPingResponse(this, headers, payload, onMessageFlushCallback);
         }
 
-        std::future<RpcStatusResult> ClientConnection::s_sendPing(
+        std::future<RpcError> ClientConnection::s_sendPing(
             ClientConnection *connection,
             const Crt::List<EventStreamHeader> &headers,
             const Crt::Optional<Crt::ByteBuf> &payload,
@@ -326,7 +326,7 @@ namespace Aws
                 connection, headers, payload, AWS_EVENT_STREAM_RPC_MESSAGE_TYPE_PING, 0, onMessageFlushCallback);
         }
 
-        std::future<RpcStatusResult> ClientConnection::s_sendPingResponse(
+        std::future<RpcError> ClientConnection::s_sendPingResponse(
             ClientConnection *connection,
             const Crt::List<EventStreamHeader> &headers,
             const Crt::Optional<Crt::ByteBuf> &payload,
@@ -341,7 +341,7 @@ namespace Aws
                 onMessageFlushCallback);
         }
 
-        std::future<RpcStatusResult> ClientConnection::SendProtocolMessage(
+        std::future<RpcError> ClientConnection::SendProtocolMessage(
             const Crt::List<EventStreamHeader> &headers,
             const Crt::Optional<Crt::ByteBuf> &payload,
             MessageType messageType,
@@ -373,7 +373,7 @@ namespace Aws
             Crt::Delete(callbackData, callbackData->allocator);
         }
 
-        std::future<RpcStatusResult> ClientConnection::s_sendProtocolMessage(
+        std::future<RpcError> ClientConnection::s_sendProtocolMessage(
             ClientConnection *connection,
             const Crt::List<EventStreamHeader> &headers,
             const Crt::Optional<Crt::ByteBuf> &payload,
@@ -381,7 +381,7 @@ namespace Aws
             uint32_t messageFlags,
             OnMessageFlushCallback onMessageFlushCallback) noexcept
         {
-            std::promise<RpcStatusResult> onFlushPromise;
+            std::promise<RpcError> onFlushPromise;
             OnMessageFlushCallbackContainer *callbackContainer = nullptr;
             struct aws_array_list headersArray;
 
@@ -742,7 +742,7 @@ namespace Aws
             thisContinuation->m_continuationHandler.OnContinuationClosed();
         }
 
-        std::future<RpcStatusResult> ClientContinuation::Activate(
+        std::future<RpcError> ClientContinuation::Activate(
             const Crt::String &operationName,
             const Crt::List<EventStreamHeader> &headers,
             const Crt::Optional<Crt::ByteBuf> &payload,
@@ -752,7 +752,7 @@ namespace Aws
         {
             struct aws_array_list headersArray;
             OnMessageFlushCallbackContainer *callbackContainer = nullptr;
-            std::promise<RpcStatusResult> onFlushPromise;
+            std::promise<RpcError> onFlushPromise;
 
             if (m_continuationToken == nullptr)
             {
@@ -806,7 +806,7 @@ namespace Aws
             return onFlushPromise.get_future();
         }
 
-        std::future<RpcStatusResult> ClientContinuation::SendMessage(
+        std::future<RpcError> ClientContinuation::SendMessage(
             const Crt::List<EventStreamHeader> &headers,
             const Crt::Optional<Crt::ByteBuf> &payload,
             MessageType messageType,
@@ -815,7 +815,7 @@ namespace Aws
         {
             struct aws_array_list headersArray;
             OnMessageFlushCallbackContainer *callbackContainer = nullptr;
-            std::promise<RpcStatusResult> onFlushPromise;
+            std::promise<RpcError> onFlushPromise;
 
             if (m_continuationToken == nullptr)
             {
@@ -873,15 +873,14 @@ namespace Aws
             return aws_event_stream_rpc_client_continuation_is_closed(m_continuationToken);
         }
 
-        OperationError::OperationError(Crt::Allocator *allocator) noexcept : AbstractShapeBase(allocator) {}
-
-        OperationError::OperationError(int errorCode, Crt::Allocator *allocator) noexcept : AbstractShapeBase(allocator)
+        OperationModelContext::OperationModelContext(const ServiceModel &serviceModel) noexcept
+            : m_serviceModel(serviceModel)
         {
         }
 
-        void OperationError::SerializeToJsonObject(Crt::JsonObject &payloadObject) const { (void)payloadObject; }
+        OperationError::OperationError(Crt::Allocator *allocator) noexcept : AbstractShapeBase(allocator) {}
 
-        Crt::String AbstractShapeBase::GetModelName() const noexcept { return Crt::String(""); }
+        void OperationError::SerializeToJsonObject(Crt::JsonObject &payloadObject) const { (void)payloadObject; }
 
         AbstractShapeBase::AbstractShapeBase(Crt::Allocator *allocator) noexcept : m_allocator(allocator) {}
 
@@ -894,17 +893,17 @@ namespace Aws
         ClientOperation::ClientOperation(
             ClientConnection &connection,
             StreamResponseHandler *streamHandler,
-            const ResponseRetriever &responseRetriever,
+            const OperationModelContext &operationModelContext,
             Crt::Allocator *allocator) noexcept
             : m_messageCount(0), m_allocator(allocator), m_streamHandler(streamHandler),
-              m_responseRetriever(responseRetriever), m_clientContinuation(connection.NewStream(*this)),
+              m_operationModelContext(operationModelContext), m_clientContinuation(connection.NewStream(*this)),
               m_isClosed(false)
         {
         }
 
         ClientOperation::ClientOperation(ClientOperation &&rhs) noexcept
             : m_messageCount(std::move(rhs.m_messageCount)), m_allocator(std::move(rhs.m_allocator)),
-              m_streamHandler(rhs.m_streamHandler), m_responseRetriever(rhs.m_responseRetriever),
+              m_streamHandler(rhs.m_streamHandler), m_operationModelContext(rhs.m_operationModelContext),
               m_clientContinuation(std::move(rhs.m_clientContinuation)),
               m_initialResponsePromise(std::move(rhs.m_initialResponsePromise)),
               m_closedPromise(std::move(rhs.m_closedPromise))
@@ -914,66 +913,70 @@ namespace Aws
 
         ClientOperation::~ClientOperation() noexcept { Close().wait(); }
 
-        TaggedResponse::TaggedResponse(Crt::ScopedResource<OperationResponse> &&response) noexcept
-            : m_responseType(EXPECTED_RESPONSE)
+        TaggedResult::TaggedResult(Crt::ScopedResource<OperationResponse> operationResponse) noexcept
+            : m_responseType(APPLICATION_RESPONSE)
         {
-            m_responseResult.m_response = std::move(response);
+            m_operationResult.m_response = std::move(operationResponse);
         }
 
-        TaggedResponse::TaggedResponse() noexcept : m_responseType(NO_RESPONSE_PAYLOAD), m_responseResult() {}
-
-        TaggedResponse::~TaggedResponse() noexcept
+        TaggedResult::~TaggedResult() noexcept
         {
-            if (m_responseType == EXPECTED_RESPONSE)
+            if (m_responseType == APPLICATION_RESPONSE)
             {
-                m_responseResult.m_response.~unique_ptr();
+                m_operationResult.m_response.~unique_ptr();
             }
-            else if (m_responseType == ERROR_RESPONSE)
+            else if (m_responseType == APPLICATION_ERROR)
             {
-                m_responseResult.m_error.~unique_ptr();
+                m_operationResult.m_error.~unique_ptr();
             }
         }
 
-        TaggedResponse::TaggedResponse(Crt::ScopedResource<OperationError> &&error) noexcept
-            : m_responseType(ERROR_RESPONSE)
+        TaggedResult::TaggedResult(Crt::ScopedResource<OperationError> operationError) noexcept
+            : m_responseType(APPLICATION_ERROR)
         {
-            m_responseResult.m_error = std::move(error);
+            m_operationResult.m_error = std::move(operationError);
         }
 
-        TaggedResponse::TaggedResponse(TaggedResponse &&rhs) noexcept
+        TaggedResult::TaggedResult(RpcError rpcError) noexcept
+        : m_responseType(RPC_ERROR), m_operationResult(), m_rpcError(rpcError)
+        {
+        }
+
+        TaggedResult::TaggedResult() noexcept
+        : m_responseType(RPC_ERROR), m_operationResult(), m_rpcError({EVENT_STREAM_RPC_INITIALIZATION_ERROR, 0})
+        {
+        }
+
+        TaggedResult::TaggedResult(TaggedResult &&rhs) noexcept
         {
             m_responseType = rhs.m_responseType;
-            if (m_responseType == EXPECTED_RESPONSE)
+            if (m_responseType == APPLICATION_RESPONSE)
             {
-                m_responseResult.m_response = std::move(rhs.m_responseResult.m_response);
+                m_operationResult.m_response = std::move(rhs.m_operationResult.m_response);
             }
-            else if (m_responseType == ERROR_RESPONSE)
+            else if (m_responseType == APPLICATION_ERROR)
             {
-                m_responseResult.m_error = std::move(rhs.m_responseResult.m_error);
+                m_operationResult.m_error = std::move(rhs.m_operationResult.m_error);
             }
         }
 
-        TaggedResponse::operator bool() const noexcept
+        TaggedResult::operator bool() const noexcept
         {
-            if (m_responseType == EXPECTED_RESPONSE)
+            if (m_responseType == APPLICATION_RESPONSE)
             {
                 return true;
             }
-            else if (m_responseType == ERROR_RESPONSE)
-            {
-                return false;
-            }
             else
             {
                 return false;
             }
         }
 
-        OperationResponse *TaggedResponse::GetExpectedResponse()
+        OperationResponse *TaggedResult::GetOperationResult() const noexcept
         {
-            if (m_responseType == EXPECTED_RESPONSE)
+            if (m_responseType == APPLICATION_RESPONSE)
             {
-                return m_responseResult.m_response.get();
+                return m_operationResult.m_response.get();
             }
             else
             {
@@ -981,11 +984,11 @@ namespace Aws
             }
         }
 
-        OperationError *TaggedResponse::GetErrorResponse()
+        OperationError *TaggedResult::GetOperationError() const noexcept
         {
-            if (m_responseType == ERROR_RESPONSE)
+            if (m_responseType == APPLICATION_ERROR)
             {
-                return m_responseResult.m_error.get();
+                return m_operationResult.m_error.get();
             }
             else
             {
@@ -993,7 +996,20 @@ namespace Aws
             }
         }
 
-        std::future<RpcResponseResult> ClientOperation::GetExpectedResponse() noexcept
+        RpcError TaggedResult::GetRpcError() const noexcept
+        {
+            if (m_responseType == RPC_ERROR)
+            {
+                return m_rpcError;
+            }
+            else
+            {
+                /* Assume success since an application response or error was received. */
+                return {EVENT_STREAM_RPC_SUCCESS, 0};
+            }
+        }
+
+        std::future<TaggedResult> ClientOperation::GetOperationResult() noexcept
         {
             return m_initialResponsePromise.GetFuture();
         }
@@ -1012,55 +1028,48 @@ namespace Aws
             return nullptr;
         }
 
-        int ClientOperation::HandleData(const Crt::String &modelName, const Crt::Optional<Crt::ByteBuf> &payload)
+        EventStreamRpcError ClientOperation::HandleData(
+            const Crt::String &modelName,
+            const Crt::Optional<Crt::ByteBuf> &payload)
         {
-            ExpectedResponseFactory responseFactory = nullptr;
+            Crt::StringView payloadStringView;
+            if (payload.has_value())
+            {
+                payloadStringView = Crt::ByteCursorToStringView(Crt::ByteCursorFromByteBuf(payload.value()));
+            }
 
+            /* The value of this hashmap contains the function that allocates the response object from the
+             * payload. */
             /* Responses after the first message don't necessarily have the same shape as the first. */
+            Crt::ScopedResource<OperationResponse> response;
             if (m_messageCount == 1)
             {
-                responseFactory = m_responseRetriever.GetInitialResponseFromModelName(GetModelName());
+                response = m_operationModelContext.AllocateInitialResponseFromPayload(payloadStringView, m_allocator);
             }
             else
             {
-                responseFactory = m_responseRetriever.GetStreamingResponseFromModelName(GetModelName());
+                response = m_operationModelContext.AllocateStreamingResponseFromPayload(payloadStringView, m_allocator);
             }
 
-            if (responseFactory == nullptr)
+            if (response.get() == nullptr || modelName != response->GetModelName())
             {
+                /* TODO: Log an error */
                 return EVENT_STREAM_RPC_UNMAPPED_DATA;
             }
+            if (m_messageCount == 1)
+            {
+                m_initialResponsePromise.SetValue(TaggedResult(std::move(response)));
+            }
             else
             {
-                Crt::StringView payloadStringView;
-                if (payload.has_value())
-                {
-                    payloadStringView = Crt::ByteCursorToStringView(Crt::ByteCursorFromByteBuf(payload.value()));
-                }
-
-                /* The value of this hashmap contains the function that allocates the response object from the
-                 * payload. */
-                Crt::ScopedResource<OperationResponse> response = responseFactory(payloadStringView, m_allocator);
-                if (response.get() == nullptr || modelName != response->GetModelName())
-                {
-                    /* TODO: Log an error */
-                    return EVENT_STREAM_RPC_UNMAPPED_DATA;
-                }
-                if (m_messageCount == 1)
-                {
-                    TaggedResponse taggedResponse(std::move(response));
-                    m_initialResponsePromise.SetValue(std::move(taggedResponse));
-                }
-                else
-                {
-                    if (m_streamHandler)
-                        m_streamHandler->OnStreamEvent(std::move(response));
-                }
+                if (m_streamHandler)
+                    m_streamHandler->OnStreamEvent(std::move(response));
             }
+
             return EVENT_STREAM_RPC_SUCCESS;
         }
 
-        int ClientOperation::HandleError(
+        EventStreamRpcError ClientOperation::HandleError(
             const Crt::String &modelName,
             const Crt::Optional<Crt::ByteBuf> &payload,
             uint16_t messageFlags)
@@ -1072,48 +1081,47 @@ namespace Aws
                 m_isClosed.store(true);
             }
 
-            ErrorResponseFactory errorFactory = m_responseRetriever.GetErrorResponseFromModelName(modelName);
-            if (errorFactory == nullptr)
+            Crt::StringView payloadStringView;
+            if (payload.has_value())
             {
+                payloadStringView = Crt::ByteCursorToStringView(Crt::ByteCursorFromByteBuf(payload.value()));
+            }
+
+            /* The value of this hashmap contains the function that allocates the error from the
+             * payload. */
+            Crt::ScopedResource<OperationError> error =
+                m_operationModelContext.AllocateOperationErrorFromPayload(modelName, payloadStringView, m_allocator);
+            if (error.get() == nullptr)
                 return EVENT_STREAM_RPC_UNMAPPED_DATA;
+            TaggedResult taggedResult(std::move(error));
+            if (m_messageCount == 1)
+            {
+                m_initialResponsePromise.SetValue(std::move(taggedResult));
+                /* Close the stream unless the server already closed it for us. This condition is checked
+                 * so that TERMINATE_STREAM messages aren't resent by the client. */
+                if (!streamAlreadyTerminated && !m_isClosed.exchange(true))
+                {
+                    Close().wait();
+                }
             }
             else
             {
-                Crt::StringView payloadStringView;
-                if (payload.has_value())
+                bool shouldCloseNow = true;
+                if (m_streamHandler)
+                    shouldCloseNow = m_streamHandler->OnStreamError(std::move(error), {EVENT_STREAM_RPC_SUCCESS, 0});
+                if (!streamAlreadyTerminated && shouldCloseNow && !m_isClosed.exchange(true))
                 {
-                    payloadStringView = Crt::ByteCursorToStringView(Crt::ByteCursorFromByteBuf(payload.value()));
-                }
-
-                /* The value of this hashmap contains the function that allocates the error from the
-                 * payload. */
-                Crt::ScopedResource<OperationError> error = errorFactory(payloadStringView, m_allocator);
-                TaggedResponse taggedResponse(std::move(error));
-                if (m_messageCount == 1)
-                {
-                    m_initialResponsePromise.SetValue(std::move(taggedResponse));
-                    /* Close the stream unless the server already closed it for us. This condition is checked
-                     * so that TERMINATE_STREAM messages aren't resent by the client. */
-                    if (!streamAlreadyTerminated && !m_isClosed.exchange(true))
-                    {
-                        Close().wait();
-                    }
-                }
-                else
-                {
-                    bool shouldCloseNow = true;
-                    if (m_streamHandler)
-                        shouldCloseNow = m_streamHandler->OnStreamError(std::move(error));
-                    if (!streamAlreadyTerminated && shouldCloseNow && !m_isClosed.exchange(true))
-                    {
-                        Close().wait();
-                    }
+                    Close().wait();
                 }
             }
+
             return EVENT_STREAM_RPC_SUCCESS;
         }
 
-        bool StreamResponseHandler::OnStreamError(Crt::ScopedResource<OperationError> response) { return true; }
+        bool StreamResponseHandler::OnStreamError(Crt::ScopedResource<OperationError> operationError, RpcError rpcError)
+        {
+            return true;
+        }
 
         void StreamResponseHandler::OnStreamEvent(Crt::ScopedResource<OperationResponse> response) {}
 
@@ -1125,7 +1133,7 @@ namespace Aws
             MessageType messageType,
             uint32_t messageFlags)
         {
-            int errorCode = AWS_OP_SUCCESS;
+            EventStreamRpcError errorCode = EVENT_STREAM_RPC_SUCCESS;
             const EventStreamHeader *modelHeader = nullptr;
             const EventStreamHeader *contentHeader = nullptr;
 
@@ -1169,24 +1177,22 @@ namespace Aws
 
             if (messageFlags & AWS_EVENT_STREAM_RPC_MESSAGE_FLAG_TERMINATE_STREAM)
             {
-                /* The server would like to terminate the stream. */
-                errorCode = EVENT_STREAM_RPC_STREAM_CLOSED_ERROR;
+                /* The server would like to terminate the stream even though no data was received. */
+                errorCode = EVENT_STREAM_RPC_STREAM_CLOSED_PREMATURELY;
             }
 
             if (errorCode)
             {
-                /* Generate an error code here. */
-                Crt::ScopedResource<OperationError> operationError(
-                    Crt::New<OperationError>(m_allocator, errorCode, m_allocator), OperationError::s_customDeleter);
                 if (m_messageCount == 1)
                 {
-                    m_initialResponsePromise.SetValue(RpcStatusResult({(EventStreamRpcError)errorCode, 0}));
+                    RpcError promiseValue = {(EventStreamRpcError)errorCode, 0};
+                    m_initialResponsePromise.SetValue(TaggedResult(promiseValue));
                 }
                 else
                 {
                     bool shouldClose = true;
                     if (m_streamHandler)
-                        shouldClose = m_streamHandler->OnStreamError(std::move(operationError));
+                        shouldClose = m_streamHandler->OnStreamError(nullptr, {errorCode, 0});
                     if (!m_isClosed.load() && shouldClose)
                     {
                         Close().wait();
@@ -1195,7 +1201,7 @@ namespace Aws
             }
         }
 
-        std::future<RpcStatusResult> ClientOperation::Activate(
+        std::future<RpcError> ClientOperation::Activate(
             const OperationRequest *shape,
             OnMessageFlushCallback onMessageFlushCallback) noexcept
         {
@@ -1224,10 +1230,9 @@ namespace Aws
 
         void ClientOperation::OnContinuationClosed()
         {
-            RpcResponseResult rpcResponseResult({EVENT_STREAM_RPC_STREAM_CLOSED_ERROR, 0});
             /* Because m_initialResponsePromise is a ProtectedPromise, setting its value when it's already
              * potentially set by `OnContinuationMessage` will just do nothing. */
-            m_initialResponsePromise.SetValue(std::move(rpcResponseResult));
+            m_initialResponsePromise.SetValue(TaggedResult({EVENT_STREAM_RPC_STREAM_CLOSED_PREMATURELY, 0}));
 
             m_closedPromise.set_value();
 
@@ -1237,12 +1242,12 @@ namespace Aws
             }
         }
 
-        std::future<RpcStatusResult> ClientOperation::Close(OnMessageFlushCallback onMessageFlushCallback) noexcept
+        std::future<RpcError> ClientOperation::Close(OnMessageFlushCallback onMessageFlushCallback) noexcept
         {
             if (m_isClosed.load())
             {
-                std::promise<RpcStatusResult> alreadyClosedPromise;
-                alreadyClosedPromise.set_value({EVENT_STREAM_RPC_STREAM_CLOSED_ERROR, 0});
+                std::promise<RpcError> alreadyClosedPromise;
+                alreadyClosedPromise.set_value({EVENT_STREAM_RPC_STREAM_CLOSED_PREMATURELY, 0});
                 return alreadyClosedPromise.get_future();
             }
             else
