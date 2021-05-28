@@ -25,11 +25,11 @@ namespace Aws
             {
                 if (jsonView.ValueExists("memory"))
                 {
-                    linuxSystemResourceLimits.m_memory.value() = jsonView.GetInteger("memory");
+                    linuxSystemResourceLimits.m_memory = Crt::Optional<int>(jsonView.GetInteger("memory"));
                 }
                 if (jsonView.ValueExists("cpu"))
                 {
-                    linuxSystemResourceLimits.m_cpu.value() = jsonView.GetDouble("cpu");
+                    linuxSystemResourceLimits.m_cpu = Crt::Optional<double>(jsonView.GetDouble("cpu"));
                 }
             }
 
@@ -73,6 +73,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("linuxSystemResourceLimits"))
                 {
+                    systemResourceLimits.m_linuxSystemResourceLimits = LinuxSystemResourceLimits();
                     LinuxSystemResourceLimits::s_loadFromJsonView(
                         systemResourceLimits.m_linuxSystemResourceLimits.value(),
                         jsonView.GetJsonObject("linuxSystemResourceLimits"));
@@ -121,10 +122,11 @@ namespace Aws
             {
                 if (jsonView.ValueExists("posixUser"))
                 {
-                    runWithInfo.m_posixUser.value() = jsonView.GetString("posixUser");
+                    runWithInfo.m_posixUser = Crt::Optional<Crt::String>(jsonView.GetString("posixUser"));
                 }
                 if (jsonView.ValueExists("systemResourceLimits"))
                 {
+                    runWithInfo.m_systemResourceLimits = SystemResourceLimits();
                     SystemResourceLimits::s_loadFromJsonView(
                         runWithInfo.m_systemResourceLimits.value(), jsonView.GetJsonObject("systemResourceLimits"));
                 }
@@ -165,7 +167,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("deploymentId"))
                 {
-                    postComponentUpdateEvent.m_deploymentId.value() = jsonView.GetString("deploymentId");
+                    postComponentUpdateEvent.m_deploymentId =
+                        Crt::Optional<Crt::String>(jsonView.GetString("deploymentId"));
                 }
             }
 
@@ -211,11 +214,13 @@ namespace Aws
             {
                 if (jsonView.ValueExists("deploymentId"))
                 {
-                    preComponentUpdateEvent.m_deploymentId.value() = jsonView.GetString("deploymentId");
+                    preComponentUpdateEvent.m_deploymentId =
+                        Crt::Optional<Crt::String>(jsonView.GetString("deploymentId"));
                 }
                 if (jsonView.ValueExists("isGgcRestarting"))
                 {
-                    preComponentUpdateEvent.m_isGgcRestarting.value() = jsonView.GetBool("isGgcRestarting");
+                    preComponentUpdateEvent.m_isGgcRestarting =
+                        Crt::Optional<bool>(jsonView.GetBool("isGgcRestarting"));
                 }
             }
 
@@ -260,7 +265,8 @@ namespace Aws
                 {
                     if (jsonView.GetString("message").size() > 0)
                     {
-                        binaryMessage.m_message.value() = Crt::Base64Decode(jsonView.GetString("message"));
+                        binaryMessage.m_message =
+                            Crt::Optional<Crt::Vector<uint8_t>>(Crt::Base64Decode(jsonView.GetString("message")));
                     }
                 }
             }
@@ -301,7 +307,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("message"))
                 {
-                    jsonMessage.m_message.value() = jsonView.GetJsonObject("message").Materialize();
+                    jsonMessage.m_message =
+                        Crt::Optional<Crt::JsonObject>(jsonView.GetJsonObject("message").Materialize());
                 }
             }
 
@@ -344,12 +351,13 @@ namespace Aws
             {
                 if (jsonView.ValueExists("configuration"))
                 {
-                    validateConfigurationUpdateEvent.m_configuration.value() =
-                        jsonView.GetJsonObject("configuration").Materialize();
+                    validateConfigurationUpdateEvent.m_configuration =
+                        Crt::Optional<Crt::JsonObject>(jsonView.GetJsonObject("configuration").Materialize());
                 }
                 if (jsonView.ValueExists("deploymentId"))
                 {
-                    validateConfigurationUpdateEvent.m_deploymentId.value() = jsonView.GetString("deploymentId");
+                    validateConfigurationUpdateEvent.m_deploymentId =
+                        Crt::Optional<Crt::String>(jsonView.GetString("deploymentId"));
                 }
             }
 
@@ -405,15 +413,16 @@ namespace Aws
             {
                 if (jsonView.ValueExists("componentName"))
                 {
-                    configurationUpdateEvent.m_componentName.value() = jsonView.GetString("componentName");
+                    configurationUpdateEvent.m_componentName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("componentName"));
                 }
                 if (jsonView.ValueExists("keyPath"))
                 {
                     for (const Crt::JsonView &keyPathJsonView : jsonView.GetArray("keyPath"))
                     {
-                        Crt::String keyPathItem;
-                        keyPathItem = keyPathJsonView.AsString();
-                        configurationUpdateEvent.m_keyPath.value().push_back(keyPathItem);
+                        Crt::Optional<Crt::String> keyPathItem;
+                        keyPathItem = Crt::Optional<Crt::String>(keyPathJsonView.AsString());
+                        configurationUpdateEvent.m_keyPath.value().push_back(keyPathItem.value());
                     }
                 }
             }
@@ -461,13 +470,14 @@ namespace Aws
             {
                 if (jsonView.ValueExists("topicName"))
                 {
-                    mQTTMessage.m_topicName.value() = jsonView.GetString("topicName");
+                    mQTTMessage.m_topicName = Crt::Optional<Crt::String>(jsonView.GetString("topicName"));
                 }
                 if (jsonView.ValueExists("payload"))
                 {
                     if (jsonView.GetString("payload").size() > 0)
                     {
-                        mQTTMessage.m_payload.value() = Crt::Base64Decode(jsonView.GetString("payload"));
+                        mQTTMessage.m_payload =
+                            Crt::Optional<Crt::Vector<uint8_t>>(Crt::Base64Decode(jsonView.GetString("payload")));
                     }
                 }
             }
@@ -515,11 +525,13 @@ namespace Aws
             {
                 if (jsonView.ValueExists("preUpdateEvent"))
                 {
+                    componentUpdatePolicyEvents.m_preUpdateEvent = PreComponentUpdateEvent();
                     PreComponentUpdateEvent::s_loadFromJsonView(
                         componentUpdatePolicyEvents.m_preUpdateEvent.value(), jsonView.GetJsonObject("preUpdateEvent"));
                 }
                 if (jsonView.ValueExists("postUpdateEvent"))
                 {
+                    componentUpdatePolicyEvents.m_postUpdateEvent = PostComponentUpdateEvent();
                     PostComponentUpdateEvent::s_loadFromJsonView(
                         componentUpdatePolicyEvents.m_postUpdateEvent.value(),
                         jsonView.GetJsonObject("postUpdateEvent"));
@@ -569,13 +581,14 @@ namespace Aws
             {
                 if (jsonView.ValueExists("secretString"))
                 {
-                    secretValue.m_secretString.value() = jsonView.GetString("secretString");
+                    secretValue.m_secretString = Crt::Optional<Crt::String>(jsonView.GetString("secretString"));
                 }
                 if (jsonView.ValueExists("secretBinary"))
                 {
                     if (jsonView.GetString("secretBinary").size() > 0)
                     {
-                        secretValue.m_secretBinary.value() = Crt::Base64Decode(jsonView.GetString("secretBinary"));
+                        secretValue.m_secretBinary =
+                            Crt::Optional<Crt::Vector<uint8_t>>(Crt::Base64Decode(jsonView.GetString("secretBinary")));
                     }
                 }
             }
@@ -619,11 +632,11 @@ namespace Aws
             {
                 if (jsonView.ValueExists("deploymentId"))
                 {
-                    localDeployment.m_deploymentId.value() = jsonView.GetString("deploymentId");
+                    localDeployment.m_deploymentId = Crt::Optional<Crt::String>(jsonView.GetString("deploymentId"));
                 }
                 if (jsonView.ValueExists("status"))
                 {
-                    localDeployment.m_status.value() = jsonView.GetString("status");
+                    localDeployment.m_status = Crt::Optional<Crt::String>(jsonView.GetString("status"));
                 }
             }
 
@@ -673,15 +686,16 @@ namespace Aws
             {
                 if (jsonView.ValueExists("status"))
                 {
-                    configurationValidityReport.m_status.value() = jsonView.GetString("status");
+                    configurationValidityReport.m_status = Crt::Optional<Crt::String>(jsonView.GetString("status"));
                 }
                 if (jsonView.ValueExists("deploymentId"))
                 {
-                    configurationValidityReport.m_deploymentId.value() = jsonView.GetString("deploymentId");
+                    configurationValidityReport.m_deploymentId =
+                        Crt::Optional<Crt::String>(jsonView.GetString("deploymentId"));
                 }
                 if (jsonView.ValueExists("message"))
                 {
-                    configurationValidityReport.m_message.value() = jsonView.GetString("message");
+                    configurationValidityReport.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
             }
 
@@ -731,11 +745,13 @@ namespace Aws
             {
                 if (jsonView.ValueExists("jsonMessage"))
                 {
+                    publishMessage.m_jsonMessage = JsonMessage();
                     JsonMessage::s_loadFromJsonView(
                         publishMessage.m_jsonMessage.value(), jsonView.GetJsonObject("jsonMessage"));
                 }
                 if (jsonView.ValueExists("binaryMessage"))
                 {
+                    publishMessage.m_binaryMessage = BinaryMessage();
                     BinaryMessage::s_loadFromJsonView(
                         publishMessage.m_binaryMessage.value(), jsonView.GetJsonObject("binaryMessage"));
                 }
@@ -791,19 +807,20 @@ namespace Aws
             {
                 if (jsonView.ValueExists("componentName"))
                 {
-                    componentDetails.m_componentName.value() = jsonView.GetString("componentName");
+                    componentDetails.m_componentName = Crt::Optional<Crt::String>(jsonView.GetString("componentName"));
                 }
                 if (jsonView.ValueExists("version"))
                 {
-                    componentDetails.m_version.value() = jsonView.GetString("version");
+                    componentDetails.m_version = Crt::Optional<Crt::String>(jsonView.GetString("version"));
                 }
                 if (jsonView.ValueExists("state"))
                 {
-                    componentDetails.m_state.value() = jsonView.GetString("state");
+                    componentDetails.m_state = Crt::Optional<Crt::String>(jsonView.GetString("state"));
                 }
                 if (jsonView.ValueExists("configuration"))
                 {
-                    componentDetails.m_configuration.value() = jsonView.GetJsonObject("configuration").Materialize();
+                    componentDetails.m_configuration =
+                        Crt::Optional<Crt::JsonObject>(jsonView.GetJsonObject("configuration").Materialize());
                 }
             }
 
@@ -853,11 +870,13 @@ namespace Aws
             {
                 if (jsonView.ValueExists("jsonMessage"))
                 {
+                    subscriptionResponseMessage.m_jsonMessage = JsonMessage();
                     JsonMessage::s_loadFromJsonView(
                         subscriptionResponseMessage.m_jsonMessage.value(), jsonView.GetJsonObject("jsonMessage"));
                 }
                 if (jsonView.ValueExists("binaryMessage"))
                 {
+                    subscriptionResponseMessage.m_binaryMessage = BinaryMessage();
                     BinaryMessage::s_loadFromJsonView(
                         subscriptionResponseMessage.m_binaryMessage.value(), jsonView.GetJsonObject("binaryMessage"));
                 }
@@ -905,6 +924,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("validateConfigurationUpdateEvent"))
                 {
+                    validateConfigurationUpdateEvents.m_validateConfigurationUpdateEvent =
+                        ValidateConfigurationUpdateEvent();
                     ValidateConfigurationUpdateEvent::s_loadFromJsonView(
                         validateConfigurationUpdateEvents.m_validateConfigurationUpdateEvent.value(),
                         jsonView.GetJsonObject("validateConfigurationUpdateEvent"));
@@ -952,6 +973,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("configurationUpdateEvent"))
                 {
+                    configurationUpdateEvents.m_configurationUpdateEvent = ConfigurationUpdateEvent();
                     ConfigurationUpdateEvent::s_loadFromJsonView(
                         configurationUpdateEvents.m_configurationUpdateEvent.value(),
                         jsonView.GetJsonObject("configurationUpdateEvent"));
@@ -998,6 +1020,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("message"))
                 {
+                    ioTCoreMessage.m_message = MQTTMessage();
                     MQTTMessage::s_loadFromJsonView(
                         ioTCoreMessage.m_message.value(), jsonView.GetJsonObject("message"));
                 }
@@ -1042,7 +1065,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("message"))
                 {
-                    invalidArtifactsDirectoryPathError.m_message.value() = jsonView.GetString("message");
+                    invalidArtifactsDirectoryPathError.m_message =
+                        Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
             }
 
@@ -1085,7 +1109,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("message"))
                 {
-                    invalidRecipeDirectoryPathError.m_message.value() = jsonView.GetString("message");
+                    invalidRecipeDirectoryPathError.m_message =
+                        Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
             }
 
@@ -1128,7 +1153,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("deploymentId"))
                 {
-                    createLocalDeploymentResponse.m_deploymentId.value() = jsonView.GetString("deploymentId");
+                    createLocalDeploymentResponse.m_deploymentId =
+                        Crt::Optional<Crt::String>(jsonView.GetString("deploymentId"));
                 }
             }
 
@@ -1227,26 +1253,29 @@ namespace Aws
             {
                 if (jsonView.ValueExists("groupName"))
                 {
-                    createLocalDeploymentRequest.m_groupName.value() = jsonView.GetString("groupName");
+                    createLocalDeploymentRequest.m_groupName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("groupName"));
                 }
                 if (jsonView.ValueExists("rootComponentVersionsToAdd"))
                 {
                     for (const auto &componentToVersionMapPair :
                          jsonView.GetJsonObject("rootComponentVersionsToAdd").GetAllObjects())
                     {
-                        Crt::String componentToVersionMapValue;
-                        componentToVersionMapValue = componentToVersionMapPair.second.AsString();
+                        Crt::Optional<Crt::String> componentToVersionMapValue;
+                        componentToVersionMapValue =
+                            Crt::Optional<Crt::String>(componentToVersionMapPair.second.AsString());
                         createLocalDeploymentRequest.m_rootComponentVersionsToAdd
-                            .value()[componentToVersionMapPair.first] = componentToVersionMapValue;
+                            .value()[componentToVersionMapPair.first] = componentToVersionMapValue.value();
                     }
                 }
                 if (jsonView.ValueExists("rootComponentsToRemove"))
                 {
                     for (const Crt::JsonView &componentListJsonView : jsonView.GetArray("rootComponentsToRemove"))
                     {
-                        Crt::String componentListItem;
-                        componentListItem = componentListJsonView.AsString();
-                        createLocalDeploymentRequest.m_rootComponentsToRemove.value().push_back(componentListItem);
+                        Crt::Optional<Crt::String> componentListItem;
+                        componentListItem = Crt::Optional<Crt::String>(componentListJsonView.AsString());
+                        createLocalDeploymentRequest.m_rootComponentsToRemove.value().push_back(
+                            componentListItem.value());
                     }
                 }
                 if (jsonView.ValueExists("componentToConfiguration"))
@@ -1254,10 +1283,11 @@ namespace Aws
                     for (const auto &componentToConfigurationPair :
                          jsonView.GetJsonObject("componentToConfiguration").GetAllObjects())
                     {
-                        Crt::JsonObject componentToConfigurationValue;
-                        componentToConfigurationValue = componentToConfigurationPair.second.AsObject().Materialize();
+                        Crt::Optional<Crt::JsonObject> componentToConfigurationValue;
+                        componentToConfigurationValue = Crt::Optional<Crt::JsonObject>(
+                            componentToConfigurationPair.second.AsObject().Materialize());
                         createLocalDeploymentRequest.m_componentToConfiguration
-                            .value()[componentToConfigurationPair.first] = componentToConfigurationValue;
+                            .value()[componentToConfigurationPair.first] = componentToConfigurationValue.value();
                     }
                 }
                 if (jsonView.ValueExists("componentToRunWithInfo"))
@@ -1265,21 +1295,23 @@ namespace Aws
                     for (const auto &componentToRunWithInfoPair :
                          jsonView.GetJsonObject("componentToRunWithInfo").GetAllObjects())
                     {
-                        RunWithInfo componentToRunWithInfoValue;
-                        RunWithInfo::s_loadFromJsonView(componentToRunWithInfoValue, componentToRunWithInfoPair.second);
+                        Crt::Optional<RunWithInfo> componentToRunWithInfoValue;
+                        componentToRunWithInfoValue = RunWithInfo();
+                        RunWithInfo::s_loadFromJsonView(
+                            componentToRunWithInfoValue.value(), componentToRunWithInfoPair.second);
                         createLocalDeploymentRequest.m_componentToRunWithInfo
-                            .value()[componentToRunWithInfoPair.first] = componentToRunWithInfoValue;
+                            .value()[componentToRunWithInfoPair.first] = componentToRunWithInfoValue.value();
                     }
                 }
                 if (jsonView.ValueExists("recipeDirectoryPath"))
                 {
-                    createLocalDeploymentRequest.m_recipeDirectoryPath.value() =
-                        jsonView.GetString("recipeDirectoryPath");
+                    createLocalDeploymentRequest.m_recipeDirectoryPath =
+                        Crt::Optional<Crt::String>(jsonView.GetString("recipeDirectoryPath"));
                 }
                 if (jsonView.ValueExists("artifactsDirectoryPath"))
                 {
-                    createLocalDeploymentRequest.m_artifactsDirectoryPath.value() =
-                        jsonView.GetString("artifactsDirectoryPath");
+                    createLocalDeploymentRequest.m_artifactsDirectoryPath =
+                        Crt::Optional<Crt::String>(jsonView.GetString("artifactsDirectoryPath"));
                 }
             }
 
@@ -1358,7 +1390,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("componentName"))
                 {
-                    pauseComponentRequest.m_componentName.value() = jsonView.GetString("componentName");
+                    pauseComponentRequest.m_componentName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("componentName"));
                 }
             }
 
@@ -1404,11 +1437,11 @@ namespace Aws
             {
                 if (jsonView.ValueExists("stopStatus"))
                 {
-                    stopComponentResponse.m_stopStatus.value() = jsonView.GetString("stopStatus");
+                    stopComponentResponse.m_stopStatus = Crt::Optional<Crt::String>(jsonView.GetString("stopStatus"));
                 }
                 if (jsonView.ValueExists("message"))
                 {
-                    stopComponentResponse.m_message.value() = jsonView.GetString("message");
+                    stopComponentResponse.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
             }
 
@@ -1450,7 +1483,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("componentName"))
                 {
-                    stopComponentRequest.m_componentName.value() = jsonView.GetString("componentName");
+                    stopComponentRequest.m_componentName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("componentName"));
                 }
             }
 
@@ -1503,9 +1537,12 @@ namespace Aws
                 {
                     for (const Crt::JsonView &listOfLocalDeploymentsJsonView : jsonView.GetArray("localDeployments"))
                     {
-                        LocalDeployment listOfLocalDeploymentsItem;
-                        LocalDeployment::s_loadFromJsonView(listOfLocalDeploymentsItem, listOfLocalDeploymentsJsonView);
-                        listLocalDeploymentsResponse.m_localDeployments.value().push_back(listOfLocalDeploymentsItem);
+                        Crt::Optional<LocalDeployment> listOfLocalDeploymentsItem;
+                        listOfLocalDeploymentsItem = LocalDeployment();
+                        LocalDeployment::s_loadFromJsonView(
+                            listOfLocalDeploymentsItem.value(), listOfLocalDeploymentsJsonView);
+                        listLocalDeploymentsResponse.m_localDeployments.value().push_back(
+                            listOfLocalDeploymentsItem.value());
                     }
                 }
             }
@@ -1683,19 +1720,20 @@ namespace Aws
                 {
                     for (const Crt::JsonView &namedShadowListJsonView : jsonView.GetArray("results"))
                     {
-                        Crt::String namedShadowListItem;
-                        namedShadowListItem = namedShadowListJsonView.AsString();
-                        listNamedShadowsForThingResponse.m_results.value().push_back(namedShadowListItem);
+                        Crt::Optional<Crt::String> namedShadowListItem;
+                        namedShadowListItem = Crt::Optional<Crt::String>(namedShadowListJsonView.AsString());
+                        listNamedShadowsForThingResponse.m_results.value().push_back(namedShadowListItem.value());
                     }
                 }
                 if (jsonView.ValueExists("timestamp"))
                 {
-                    listNamedShadowsForThingResponse.m_timestamp.value() =
-                        Crt::DateTime(jsonView.GetDouble("timestamp"));
+                    listNamedShadowsForThingResponse.m_timestamp =
+                        Crt::Optional<Crt::DateTime>(Crt::DateTime(jsonView.GetDouble("timestamp")));
                 }
                 if (jsonView.ValueExists("nextToken"))
                 {
-                    listNamedShadowsForThingResponse.m_nextToken.value() = jsonView.GetString("nextToken");
+                    listNamedShadowsForThingResponse.m_nextToken =
+                        Crt::Optional<Crt::String>(jsonView.GetString("nextToken"));
                 }
             }
 
@@ -1746,15 +1784,17 @@ namespace Aws
             {
                 if (jsonView.ValueExists("thingName"))
                 {
-                    listNamedShadowsForThingRequest.m_thingName.value() = jsonView.GetString("thingName");
+                    listNamedShadowsForThingRequest.m_thingName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("thingName"));
                 }
                 if (jsonView.ValueExists("nextToken"))
                 {
-                    listNamedShadowsForThingRequest.m_nextToken.value() = jsonView.GetString("nextToken");
+                    listNamedShadowsForThingRequest.m_nextToken =
+                        Crt::Optional<Crt::String>(jsonView.GetString("nextToken"));
                 }
                 if (jsonView.ValueExists("pageSize"))
                 {
-                    listNamedShadowsForThingRequest.m_pageSize.value() = jsonView.GetInteger("pageSize");
+                    listNamedShadowsForThingRequest.m_pageSize = Crt::Optional<int>(jsonView.GetInteger("pageSize"));
                 }
             }
 
@@ -1834,7 +1874,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("state"))
                 {
-                    updateStateRequest.m_state.value() = jsonView.GetString("state");
+                    updateStateRequest.m_state = Crt::Optional<Crt::String>(jsonView.GetString("state"));
                 }
             }
 
@@ -1899,23 +1939,24 @@ namespace Aws
             {
                 if (jsonView.ValueExists("secretId"))
                 {
-                    getSecretValueResponse.m_secretId.value() = jsonView.GetString("secretId");
+                    getSecretValueResponse.m_secretId = Crt::Optional<Crt::String>(jsonView.GetString("secretId"));
                 }
                 if (jsonView.ValueExists("versionId"))
                 {
-                    getSecretValueResponse.m_versionId.value() = jsonView.GetString("versionId");
+                    getSecretValueResponse.m_versionId = Crt::Optional<Crt::String>(jsonView.GetString("versionId"));
                 }
                 if (jsonView.ValueExists("versionStage"))
                 {
                     for (const Crt::JsonView &secretVersionListJsonView : jsonView.GetArray("versionStage"))
                     {
-                        Crt::String secretVersionListItem;
-                        secretVersionListItem = secretVersionListJsonView.AsString();
-                        getSecretValueResponse.m_versionStage.value().push_back(secretVersionListItem);
+                        Crt::Optional<Crt::String> secretVersionListItem;
+                        secretVersionListItem = Crt::Optional<Crt::String>(secretVersionListJsonView.AsString());
+                        getSecretValueResponse.m_versionStage.value().push_back(secretVersionListItem.value());
                     }
                 }
                 if (jsonView.ValueExists("secretValue"))
                 {
+                    getSecretValueResponse.m_secretValue = SecretValue();
                     SecretValue::s_loadFromJsonView(
                         getSecretValueResponse.m_secretValue.value(), jsonView.GetJsonObject("secretValue"));
                 }
@@ -1967,15 +2008,16 @@ namespace Aws
             {
                 if (jsonView.ValueExists("secretId"))
                 {
-                    getSecretValueRequest.m_secretId.value() = jsonView.GetString("secretId");
+                    getSecretValueRequest.m_secretId = Crt::Optional<Crt::String>(jsonView.GetString("secretId"));
                 }
                 if (jsonView.ValueExists("versionId"))
                 {
-                    getSecretValueRequest.m_versionId.value() = jsonView.GetString("versionId");
+                    getSecretValueRequest.m_versionId = Crt::Optional<Crt::String>(jsonView.GetString("versionId"));
                 }
                 if (jsonView.ValueExists("versionStage"))
                 {
-                    getSecretValueRequest.m_versionStage.value() = jsonView.GetString("versionStage");
+                    getSecretValueRequest.m_versionStage =
+                        Crt::Optional<Crt::String>(jsonView.GetString("versionStage"));
                 }
             }
 
@@ -2019,6 +2061,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("deployment"))
                 {
+                    getLocalDeploymentStatusResponse.m_deployment = LocalDeployment();
                     LocalDeployment::s_loadFromJsonView(
                         getLocalDeploymentStatusResponse.m_deployment.value(), jsonView.GetJsonObject("deployment"));
                 }
@@ -2063,7 +2106,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("deploymentId"))
                 {
-                    getLocalDeploymentStatusRequest.m_deploymentId.value() = jsonView.GetString("deploymentId");
+                    getLocalDeploymentStatusRequest.m_deploymentId =
+                        Crt::Optional<Crt::String>(jsonView.GetString("deploymentId"));
                 }
             }
 
@@ -2106,7 +2150,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("message"))
                 {
-                    componentNotFoundError.m_message.value() = jsonView.GetString("message");
+                    componentNotFoundError.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
             }
 
@@ -2152,11 +2196,12 @@ namespace Aws
             {
                 if (jsonView.ValueExists("restartStatus"))
                 {
-                    restartComponentResponse.m_restartStatus.value() = jsonView.GetString("restartStatus");
+                    restartComponentResponse.m_restartStatus =
+                        Crt::Optional<Crt::String>(jsonView.GetString("restartStatus"));
                 }
                 if (jsonView.ValueExists("message"))
                 {
-                    restartComponentResponse.m_message.value() = jsonView.GetString("message");
+                    restartComponentResponse.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
             }
 
@@ -2198,7 +2243,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("componentName"))
                 {
-                    restartComponentRequest.m_componentName.value() = jsonView.GetString("componentName");
+                    restartComponentRequest.m_componentName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("componentName"));
                 }
             }
 
@@ -2240,7 +2286,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("message"))
                 {
-                    invalidTokenError.m_message.value() = jsonView.GetString("message");
+                    invalidTokenError.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
             }
 
@@ -2283,7 +2329,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("isValid"))
                 {
-                    validateAuthorizationTokenResponse.m_isValid.value() = jsonView.GetBool("isValid");
+                    validateAuthorizationTokenResponse.m_isValid = Crt::Optional<bool>(jsonView.GetBool("isValid"));
                 }
             }
 
@@ -2326,7 +2372,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("token"))
                 {
-                    validateAuthorizationTokenRequest.m_token.value() = jsonView.GetString("token");
+                    validateAuthorizationTokenRequest.m_token = Crt::Optional<Crt::String>(jsonView.GetString("token"));
                 }
             }
 
@@ -2369,7 +2415,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("message"))
                 {
-                    failedUpdateConditionCheckError.m_message.value() = jsonView.GetString("message");
+                    failedUpdateConditionCheckError.m_message =
+                        Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
             }
 
@@ -2468,19 +2515,20 @@ namespace Aws
                 {
                     for (const Crt::JsonView &keyPathJsonView : jsonView.GetArray("keyPath"))
                     {
-                        Crt::String keyPathItem;
-                        keyPathItem = keyPathJsonView.AsString();
-                        updateConfigurationRequest.m_keyPath.value().push_back(keyPathItem);
+                        Crt::Optional<Crt::String> keyPathItem;
+                        keyPathItem = Crt::Optional<Crt::String>(keyPathJsonView.AsString());
+                        updateConfigurationRequest.m_keyPath.value().push_back(keyPathItem.value());
                     }
                 }
                 if (jsonView.ValueExists("timestamp"))
                 {
-                    updateConfigurationRequest.m_timestamp.value() = Crt::DateTime(jsonView.GetDouble("timestamp"));
+                    updateConfigurationRequest.m_timestamp =
+                        Crt::Optional<Crt::DateTime>(Crt::DateTime(jsonView.GetDouble("timestamp")));
                 }
                 if (jsonView.ValueExists("valueToMerge"))
                 {
-                    updateConfigurationRequest.m_valueToMerge.value() =
-                        jsonView.GetJsonObject("valueToMerge").Materialize();
+                    updateConfigurationRequest.m_valueToMerge =
+                        Crt::Optional<Crt::JsonObject>(jsonView.GetJsonObject("valueToMerge").Materialize());
                 }
             }
 
@@ -2520,7 +2568,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("message"))
                 {
-                    conflictError.m_message.value() = jsonView.GetString("message");
+                    conflictError.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
             }
 
@@ -2567,7 +2615,8 @@ namespace Aws
                 {
                     if (jsonView.GetString("payload").size() > 0)
                     {
-                        updateThingShadowResponse.m_payload.value() = Crt::Base64Decode(jsonView.GetString("payload"));
+                        updateThingShadowResponse.m_payload =
+                            Crt::Optional<Crt::Vector<uint8_t>>(Crt::Base64Decode(jsonView.GetString("payload")));
                     }
                 }
             }
@@ -2621,17 +2670,19 @@ namespace Aws
             {
                 if (jsonView.ValueExists("thingName"))
                 {
-                    updateThingShadowRequest.m_thingName.value() = jsonView.GetString("thingName");
+                    updateThingShadowRequest.m_thingName = Crt::Optional<Crt::String>(jsonView.GetString("thingName"));
                 }
                 if (jsonView.ValueExists("shadowName"))
                 {
-                    updateThingShadowRequest.m_shadowName.value() = jsonView.GetString("shadowName");
+                    updateThingShadowRequest.m_shadowName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("shadowName"));
                 }
                 if (jsonView.ValueExists("payload"))
                 {
                     if (jsonView.GetString("payload").size() > 0)
                     {
-                        updateThingShadowRequest.m_payload.value() = Crt::Base64Decode(jsonView.GetString("payload"));
+                        updateThingShadowRequest.m_payload =
+                            Crt::Optional<Crt::Vector<uint8_t>>(Crt::Base64Decode(jsonView.GetString("payload")));
                     }
                 }
             }
@@ -2718,6 +2769,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("configurationValidityReport"))
                 {
+                    sendConfigurationValidityReportRequest.m_configurationValidityReport =
+                        ConfigurationValidityReport();
                     ConfigurationValidityReport::s_loadFromJsonView(
                         sendConfigurationValidityReportRequest.m_configurationValidityReport.value(),
                         jsonView.GetJsonObject("configurationValidityReport"));
@@ -2769,7 +2822,8 @@ namespace Aws
                 {
                     if (jsonView.GetString("payload").size() > 0)
                     {
-                        getThingShadowResponse.m_payload.value() = Crt::Base64Decode(jsonView.GetString("payload"));
+                        getThingShadowResponse.m_payload =
+                            Crt::Optional<Crt::Vector<uint8_t>>(Crt::Base64Decode(jsonView.GetString("payload")));
                     }
                 }
             }
@@ -2816,11 +2870,11 @@ namespace Aws
             {
                 if (jsonView.ValueExists("thingName"))
                 {
-                    getThingShadowRequest.m_thingName.value() = jsonView.GetString("thingName");
+                    getThingShadowRequest.m_thingName = Crt::Optional<Crt::String>(jsonView.GetString("thingName"));
                 }
                 if (jsonView.ValueExists("shadowName"))
                 {
-                    getThingShadowRequest.m_shadowName.value() = jsonView.GetString("shadowName");
+                    getThingShadowRequest.m_shadowName = Crt::Optional<Crt::String>(jsonView.GetString("shadowName"));
                 }
             }
 
@@ -2879,26 +2933,26 @@ namespace Aws
             {
                 if (jsonView.ValueExists("password"))
                 {
-                    createDebugPasswordResponse.m_password.value() = jsonView.GetString("password");
+                    createDebugPasswordResponse.m_password = Crt::Optional<Crt::String>(jsonView.GetString("password"));
                 }
                 if (jsonView.ValueExists("username"))
                 {
-                    createDebugPasswordResponse.m_username.value() = jsonView.GetString("username");
+                    createDebugPasswordResponse.m_username = Crt::Optional<Crt::String>(jsonView.GetString("username"));
                 }
                 if (jsonView.ValueExists("passwordExpiration"))
                 {
-                    createDebugPasswordResponse.m_passwordExpiration.value() =
-                        Crt::DateTime(jsonView.GetDouble("passwordExpiration"));
+                    createDebugPasswordResponse.m_passwordExpiration =
+                        Crt::Optional<Crt::DateTime>(Crt::DateTime(jsonView.GetDouble("passwordExpiration")));
                 }
                 if (jsonView.ValueExists("certificateSHA256Hash"))
                 {
-                    createDebugPasswordResponse.m_certificateSHA256Hash.value() =
-                        jsonView.GetString("certificateSHA256Hash");
+                    createDebugPasswordResponse.m_certificateSHA256Hash =
+                        Crt::Optional<Crt::String>(jsonView.GetString("certificateSHA256Hash"));
                 }
                 if (jsonView.ValueExists("certificateSHA1Hash"))
                 {
-                    createDebugPasswordResponse.m_certificateSHA1Hash.value() =
-                        jsonView.GetString("certificateSHA1Hash");
+                    createDebugPasswordResponse.m_certificateSHA1Hash =
+                        Crt::Optional<Crt::String>(jsonView.GetString("certificateSHA1Hash"));
                 }
             }
 
@@ -2988,9 +3042,10 @@ namespace Aws
                 {
                     for (const Crt::JsonView &listOfComponentsJsonView : jsonView.GetArray("components"))
                     {
-                        ComponentDetails listOfComponentsItem;
-                        ComponentDetails::s_loadFromJsonView(listOfComponentsItem, listOfComponentsJsonView);
-                        listComponentsResponse.m_components.value().push_back(listOfComponentsItem);
+                        Crt::Optional<ComponentDetails> listOfComponentsItem;
+                        listOfComponentsItem = ComponentDetails();
+                        ComponentDetails::s_loadFromJsonView(listOfComponentsItem.value(), listOfComponentsJsonView);
+                        listComponentsResponse.m_components.value().push_back(listOfComponentsItem.value());
                     }
                 }
             }
@@ -3113,10 +3168,11 @@ namespace Aws
             {
                 if (jsonView.ValueExists("topic"))
                 {
-                    publishToTopicRequest.m_topic.value() = jsonView.GetString("topic");
+                    publishToTopicRequest.m_topic = Crt::Optional<Crt::String>(jsonView.GetString("topic"));
                 }
                 if (jsonView.ValueExists("publishMessage"))
                 {
+                    publishToTopicRequest.m_publishMessage = PublishMessage();
                     PublishMessage::s_loadFromJsonView(
                         publishToTopicRequest.m_publishMessage.value(), jsonView.GetJsonObject("publishMessage"));
                 }
@@ -3162,6 +3218,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("componentDetails"))
                 {
+                    getComponentDetailsResponse.m_componentDetails = ComponentDetails();
                     ComponentDetails::s_loadFromJsonView(
                         getComponentDetailsResponse.m_componentDetails.value(),
                         jsonView.GetJsonObject("componentDetails"));
@@ -3206,7 +3263,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("componentName"))
                 {
-                    getComponentDetailsRequest.m_componentName.value() = jsonView.GetString("componentName");
+                    getComponentDetailsRequest.m_componentName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("componentName"));
                 }
             }
 
@@ -3248,7 +3306,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("topicName"))
                 {
-                    subscribeToTopicResponse.m_topicName.value() = jsonView.GetString("topicName");
+                    subscribeToTopicResponse.m_topicName = Crt::Optional<Crt::String>(jsonView.GetString("topicName"));
                 }
             }
 
@@ -3290,7 +3348,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("topic"))
                 {
-                    subscribeToTopicRequest.m_topic.value() = jsonView.GetString("topic");
+                    subscribeToTopicRequest.m_topic = Crt::Optional<Crt::String>(jsonView.GetString("topic"));
                 }
             }
 
@@ -3336,11 +3394,13 @@ namespace Aws
             {
                 if (jsonView.ValueExists("componentName"))
                 {
-                    getConfigurationResponse.m_componentName.value() = jsonView.GetString("componentName");
+                    getConfigurationResponse.m_componentName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("componentName"));
                 }
                 if (jsonView.ValueExists("value"))
                 {
-                    getConfigurationResponse.m_value.value() = jsonView.GetJsonObject("value").Materialize();
+                    getConfigurationResponse.m_value =
+                        Crt::Optional<Crt::JsonObject>(jsonView.GetJsonObject("value").Materialize());
                 }
             }
 
@@ -3395,15 +3455,16 @@ namespace Aws
             {
                 if (jsonView.ValueExists("componentName"))
                 {
-                    getConfigurationRequest.m_componentName.value() = jsonView.GetString("componentName");
+                    getConfigurationRequest.m_componentName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("componentName"));
                 }
                 if (jsonView.ValueExists("keyPath"))
                 {
                     for (const Crt::JsonView &keyPathJsonView : jsonView.GetArray("keyPath"))
                     {
-                        Crt::String keyPathItem;
-                        keyPathItem = keyPathJsonView.AsString();
-                        getConfigurationRequest.m_keyPath.value().push_back(keyPathItem);
+                        Crt::Optional<Crt::String> keyPathItem;
+                        keyPathItem = Crt::Optional<Crt::String>(keyPathJsonView.AsString());
+                        getConfigurationRequest.m_keyPath.value().push_back(keyPathItem.value());
                     }
                 }
             }
@@ -3570,15 +3631,17 @@ namespace Aws
             {
                 if (jsonView.ValueExists("deploymentId"))
                 {
-                    deferComponentUpdateRequest.m_deploymentId.value() = jsonView.GetString("deploymentId");
+                    deferComponentUpdateRequest.m_deploymentId =
+                        Crt::Optional<Crt::String>(jsonView.GetString("deploymentId"));
                 }
                 if (jsonView.ValueExists("message"))
                 {
-                    deferComponentUpdateRequest.m_message.value() = jsonView.GetString("message");
+                    deferComponentUpdateRequest.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
                 if (jsonView.ValueExists("recheckAfterMs"))
                 {
-                    deferComponentUpdateRequest.m_recheckAfterMs.value() = jsonView.GetInteger("recheckAfterMs");
+                    deferComponentUpdateRequest.m_recheckAfterMs =
+                        Crt::Optional<int>(jsonView.GetInteger("recheckAfterMs"));
                 }
             }
 
@@ -3620,7 +3683,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("message"))
                 {
-                    invalidArgumentsError.m_message.value() = jsonView.GetString("message");
+                    invalidArgumentsError.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
             }
 
@@ -3667,7 +3730,8 @@ namespace Aws
                 {
                     if (jsonView.GetString("payload").size() > 0)
                     {
-                        deleteThingShadowResponse.m_payload.value() = Crt::Base64Decode(jsonView.GetString("payload"));
+                        deleteThingShadowResponse.m_payload =
+                            Crt::Optional<Crt::Vector<uint8_t>>(Crt::Base64Decode(jsonView.GetString("payload")));
                     }
                 }
             }
@@ -3714,11 +3778,12 @@ namespace Aws
             {
                 if (jsonView.ValueExists("thingName"))
                 {
-                    deleteThingShadowRequest.m_thingName.value() = jsonView.GetString("thingName");
+                    deleteThingShadowRequest.m_thingName = Crt::Optional<Crt::String>(jsonView.GetString("thingName"));
                 }
                 if (jsonView.ValueExists("shadowName"))
                 {
-                    deleteThingShadowRequest.m_shadowName.value() = jsonView.GetString("shadowName");
+                    deleteThingShadowRequest.m_shadowName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("shadowName"));
                 }
             }
 
@@ -3814,15 +3879,16 @@ namespace Aws
             {
                 if (jsonView.ValueExists("componentName"))
                 {
-                    subscribeToConfigurationUpdateRequest.m_componentName.value() = jsonView.GetString("componentName");
+                    subscribeToConfigurationUpdateRequest.m_componentName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("componentName"));
                 }
                 if (jsonView.ValueExists("keyPath"))
                 {
                     for (const Crt::JsonView &keyPathJsonView : jsonView.GetArray("keyPath"))
                     {
-                        Crt::String keyPathItem;
-                        keyPathItem = keyPathJsonView.AsString();
-                        subscribeToConfigurationUpdateRequest.m_keyPath.value().push_back(keyPathItem);
+                        Crt::Optional<Crt::String> keyPathItem;
+                        keyPathItem = Crt::Optional<Crt::String>(keyPathJsonView.AsString());
+                        subscribeToConfigurationUpdateRequest.m_keyPath.value().push_back(keyPathItem.value());
                     }
                 }
             }
@@ -3915,17 +3981,18 @@ namespace Aws
             {
                 if (jsonView.ValueExists("topicName"))
                 {
-                    publishToIoTCoreRequest.m_topicName.value() = jsonView.GetString("topicName");
+                    publishToIoTCoreRequest.m_topicName = Crt::Optional<Crt::String>(jsonView.GetString("topicName"));
                 }
                 if (jsonView.ValueExists("qos"))
                 {
-                    publishToIoTCoreRequest.m_qos.value() = jsonView.GetString("qos");
+                    publishToIoTCoreRequest.m_qos = Crt::Optional<Crt::String>(jsonView.GetString("qos"));
                 }
                 if (jsonView.ValueExists("payload"))
                 {
                     if (jsonView.GetString("payload").size() > 0)
                     {
-                        publishToIoTCoreRequest.m_payload.value() = Crt::Base64Decode(jsonView.GetString("payload"));
+                        publishToIoTCoreRequest.m_payload =
+                            Crt::Optional<Crt::Vector<uint8_t>>(Crt::Base64Decode(jsonView.GetString("payload")));
                     }
                 }
             }
@@ -3976,15 +4043,17 @@ namespace Aws
             {
                 if (jsonView.ValueExists("message"))
                 {
-                    resourceNotFoundError.m_message.value() = jsonView.GetString("message");
+                    resourceNotFoundError.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
                 if (jsonView.ValueExists("resourceType"))
                 {
-                    resourceNotFoundError.m_resourceType.value() = jsonView.GetString("resourceType");
+                    resourceNotFoundError.m_resourceType =
+                        Crt::Optional<Crt::String>(jsonView.GetString("resourceType"));
                 }
                 if (jsonView.ValueExists("resourceName"))
                 {
-                    resourceNotFoundError.m_resourceName.value() = jsonView.GetString("resourceName");
+                    resourceNotFoundError.m_resourceName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("resourceName"));
                 }
             }
 
@@ -4063,7 +4132,8 @@ namespace Aws
             {
                 if (jsonView.ValueExists("componentName"))
                 {
-                    resumeComponentRequest.m_componentName.value() = jsonView.GetString("componentName");
+                    resumeComponentRequest.m_componentName =
+                        Crt::Optional<Crt::String>(jsonView.GetString("componentName"));
                 }
             }
 
@@ -4105,7 +4175,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("message"))
                 {
-                    unauthorizedError.m_message.value() = jsonView.GetString("message");
+                    unauthorizedError.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
             }
 
@@ -4145,7 +4215,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("message"))
                 {
-                    serviceError.m_message.value() = jsonView.GetString("message");
+                    serviceError.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
             }
 
@@ -4228,11 +4298,11 @@ namespace Aws
             {
                 if (jsonView.ValueExists("topicName"))
                 {
-                    subscribeToIoTCoreRequest.m_topicName.value() = jsonView.GetString("topicName");
+                    subscribeToIoTCoreRequest.m_topicName = Crt::Optional<Crt::String>(jsonView.GetString("topicName"));
                 }
                 if (jsonView.ValueExists("qos"))
                 {
-                    subscribeToIoTCoreRequest.m_qos.value() = jsonView.GetString("qos");
+                    subscribeToIoTCoreRequest.m_qos = Crt::Optional<Crt::String>(jsonView.GetString("qos"));
                 }
             }
 
