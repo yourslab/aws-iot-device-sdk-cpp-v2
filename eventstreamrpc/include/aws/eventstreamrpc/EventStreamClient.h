@@ -510,7 +510,7 @@ namespace Aws
              */
             operator bool() const noexcept;
 
-            OperationResponse *GetOperationResult() const noexcept;
+            OperationResponse *GetOperationResponse() const noexcept;
             OperationError *GetOperationError() const noexcept;
             RpcError GetRpcError() const noexcept;
             ResultType GetResultType() const noexcept { return m_responseType; }
@@ -574,6 +574,7 @@ namespace Aws
                 Crt::StringView stringView,
                 Crt::Allocator *allocator) const noexcept = 0;
             virtual Crt::String GetInitialResponseModelName() const noexcept = 0;
+            virtual Crt::String GetRequestModelName() const noexcept = 0;
             virtual Crt::Optional<Crt::String> GetStreamingResponseModelName() const noexcept = 0;
             virtual Crt::String GetOperationName() const noexcept = 0;
             Crt::ScopedResource<OperationError> AllocateOperationErrorFromPayload(
@@ -611,6 +612,7 @@ namespace Aws
                 OperationRequest *shape,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept;
             virtual Crt::String GetModelName() const noexcept = 0;
+            const OperationModelContext &m_operationModelContext;
 
           private:
             EventStreamRpcError HandleData(const Crt::String &modelName, const Crt::Optional<Crt::ByteBuf> &payload);
@@ -641,7 +643,6 @@ namespace Aws
             uint32_t m_messageCount;
             Crt::Allocator *m_allocator;
             StreamResponseHandler *m_streamHandler;
-            const OperationModelContext &m_operationModelContext;
             ClientContinuation m_clientContinuation;
             ProtectedPromise<TaggedResult> m_initialResponsePromise;
             /* ProtectedPromise not necessary because it's only ever being set by one thread. */
