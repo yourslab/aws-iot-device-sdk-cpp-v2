@@ -459,6 +459,7 @@ namespace Aws
             explicit OperationError(Crt::Allocator *allocator = Crt::g_allocator) noexcept;
             static void s_customDeleter(OperationError *shape) noexcept;
             virtual void SerializeToJsonObject(Crt::JsonObject &payloadObject) const override;
+            virtual Crt::Optional<Crt::String> GetMessage() noexcept = 0;
         };
 
         /**

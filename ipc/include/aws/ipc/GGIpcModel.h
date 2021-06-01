@@ -887,7 +887,7 @@ namespace Aws
                 }
                 InvalidArtifactsDirectoryPathError(const InvalidArtifactsDirectoryPathError &) = default;
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
+                Crt::Optional<Crt::String> GetMessage() noexcept override { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(InvalidArtifactsDirectoryPathError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -915,7 +915,7 @@ namespace Aws
                 }
                 InvalidRecipeDirectoryPathError(const InvalidRecipeDirectoryPathError &) = default;
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
+                Crt::Optional<Crt::String> GetMessage() noexcept override { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(InvalidRecipeDirectoryPathError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -1530,7 +1530,7 @@ namespace Aws
                 }
                 ComponentNotFoundError(const ComponentNotFoundError &) = default;
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
+                Crt::Optional<Crt::String> GetMessage() noexcept override { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ComponentNotFoundError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -1617,7 +1617,7 @@ namespace Aws
                 }
                 InvalidTokenError(const InvalidTokenError &) = default;
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
+                Crt::Optional<Crt::String> GetMessage() noexcept override { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(InvalidTokenError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -1699,7 +1699,7 @@ namespace Aws
                 }
                 FailedUpdateConditionCheckError(const FailedUpdateConditionCheckError &) = default;
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
+                Crt::Optional<Crt::String> GetMessage() noexcept override { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(FailedUpdateConditionCheckError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -1788,7 +1788,7 @@ namespace Aws
                 }
                 ConflictError(const ConflictError &) = default;
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
+                Crt::Optional<Crt::String> GetMessage() noexcept override { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ConflictError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -2483,7 +2483,7 @@ namespace Aws
                 }
                 InvalidArgumentsError(const InvalidArgumentsError &) = default;
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
+                Crt::Optional<Crt::String> GetMessage() noexcept override { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(InvalidArgumentsError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -2688,7 +2688,7 @@ namespace Aws
                 }
                 ResourceNotFoundError(const ResourceNotFoundError &) = default;
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
+                Crt::Optional<Crt::String> GetMessage() noexcept override { return m_message; }
                 void SetResourceType(const Crt::Optional<Crt::String> &resourceType) noexcept
                 {
                     m_resourceType = resourceType;
@@ -2781,7 +2781,7 @@ namespace Aws
                 }
                 UnauthorizedError(const UnauthorizedError &) = default;
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
+                Crt::Optional<Crt::String> GetMessage() noexcept override { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(UnauthorizedError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -2805,7 +2805,7 @@ namespace Aws
                 explicit ServiceError(Crt::Allocator *allocator = Crt::g_allocator) noexcept : m_allocator(allocator) {}
                 ServiceError(const ServiceError &) = default;
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
+                Crt::Optional<Crt::String> GetMessage() noexcept override { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ServiceError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
