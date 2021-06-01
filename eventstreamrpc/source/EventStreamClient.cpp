@@ -914,25 +914,25 @@ namespace Aws
         ClientOperation::~ClientOperation() noexcept { Close().wait(); }
 
         TaggedResult::TaggedResult(Crt::ScopedResource<OperationResponse> operationResponse) noexcept
-            : m_responseType(APPLICATION_RESPONSE)
+            : m_responseType(OPERATION_RESPONSE)
         {
             m_operationResult.m_response = std::move(operationResponse);
         }
 
         TaggedResult::~TaggedResult() noexcept
         {
-            if (m_responseType == APPLICATION_RESPONSE)
+            if (m_responseType == OPERATION_RESPONSE)
             {
                 m_operationResult.m_response.~unique_ptr();
             }
-            else if (m_responseType == APPLICATION_ERROR)
+            else if (m_responseType == OPERATION_ERROR)
             {
                 m_operationResult.m_error.~unique_ptr();
             }
         }
 
         TaggedResult::TaggedResult(Crt::ScopedResource<OperationError> operationError) noexcept
-            : m_responseType(APPLICATION_ERROR)
+            : m_responseType(OPERATION_ERROR)
         {
             m_operationResult.m_error = std::move(operationError);
         }
@@ -950,11 +950,11 @@ namespace Aws
         TaggedResult::TaggedResult(TaggedResult &&rhs) noexcept
         {
             m_responseType = rhs.m_responseType;
-            if (m_responseType == APPLICATION_RESPONSE)
+            if (m_responseType == OPERATION_RESPONSE)
             {
                 m_operationResult.m_response = std::move(rhs.m_operationResult.m_response);
             }
-            else if (m_responseType == APPLICATION_ERROR)
+            else if (m_responseType == OPERATION_ERROR)
             {
                 m_operationResult.m_error = std::move(rhs.m_operationResult.m_error);
             }
@@ -962,7 +962,7 @@ namespace Aws
 
         TaggedResult::operator bool() const noexcept
         {
-            if (m_responseType == APPLICATION_RESPONSE)
+            if (m_responseType == OPERATION_RESPONSE)
             {
                 return true;
             }
@@ -974,7 +974,7 @@ namespace Aws
 
         OperationResponse *TaggedResult::GetOperationResponse() const noexcept
         {
-            if (m_responseType == APPLICATION_RESPONSE)
+            if (m_responseType == OPERATION_RESPONSE)
             {
                 return m_operationResult.m_response.get();
             }
@@ -986,7 +986,7 @@ namespace Aws
 
         OperationError *TaggedResult::GetOperationError() const noexcept
         {
-            if (m_responseType == APPLICATION_ERROR)
+            if (m_responseType == OPERATION_ERROR)
             {
                 return m_operationResult.m_error.get();
             }

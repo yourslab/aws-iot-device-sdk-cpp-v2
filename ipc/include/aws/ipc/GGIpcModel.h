@@ -26,13 +26,10 @@ namespace Aws
                 {
                 }
                 LinuxSystemResourceLimits(const LinuxSystemResourceLimits &) = default;
-
                 void SetMemory(const Crt::Optional<int> &memory) noexcept { m_memory = memory; }
-                const Crt::Optional<int> &GetMemory() noexcept { return m_memory; }
-
+                Crt::Optional<int> GetMemory() noexcept { return m_memory; }
                 void SetCpu(const Crt::Optional<double> &cpu) noexcept { m_cpu = cpu; }
-                const Crt::Optional<double> &GetCpu() noexcept { return m_cpu; }
-
+                Crt::Optional<double> GetCpu() noexcept { return m_cpu; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(LinuxSystemResourceLimits &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -59,17 +56,15 @@ namespace Aws
                 {
                 }
                 SystemResourceLimits(const SystemResourceLimits &) = default;
-
                 void SetLinuxSystemResourceLimits(
                     const Crt::Optional<LinuxSystemResourceLimits> &linuxSystemResourceLimits) noexcept
                 {
                     m_linuxSystemResourceLimits = linuxSystemResourceLimits;
                 }
-                const Crt::Optional<LinuxSystemResourceLimits> &GetLinuxSystemResourceLimits() noexcept
+                Crt::Optional<LinuxSystemResourceLimits> GetLinuxSystemResourceLimits() noexcept
                 {
                     return m_linuxSystemResourceLimits;
                 }
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(SystemResourceLimits &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -92,19 +87,16 @@ namespace Aws
               public:
                 explicit RunWithInfo(Crt::Allocator *allocator = Crt::g_allocator) noexcept : m_allocator(allocator) {}
                 RunWithInfo(const RunWithInfo &) = default;
-
                 void SetPosixUser(const Crt::Optional<Crt::String> &posixUser) noexcept { m_posixUser = posixUser; }
-                const Crt::Optional<Crt::String> &GetPosixUser() noexcept { return m_posixUser; }
-
+                Crt::Optional<Crt::String> GetPosixUser() noexcept { return m_posixUser; }
                 void SetSystemResourceLimits(const Crt::Optional<SystemResourceLimits> &systemResourceLimits) noexcept
                 {
                     m_systemResourceLimits = systemResourceLimits;
                 }
-                const Crt::Optional<SystemResourceLimits> &GetSystemResourceLimits() noexcept
+                Crt::Optional<SystemResourceLimits> GetSystemResourceLimits() noexcept
                 {
                     return m_systemResourceLimits;
                 }
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(RunWithInfo &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -131,13 +123,11 @@ namespace Aws
                 {
                 }
                 PostComponentUpdateEvent(const PostComponentUpdateEvent &) = default;
-
                 void SetDeploymentId(const Crt::Optional<Crt::String> &deploymentId) noexcept
                 {
                     m_deploymentId = deploymentId;
                 }
-                const Crt::Optional<Crt::String> &GetDeploymentId() noexcept { return m_deploymentId; }
-
+                Crt::Optional<Crt::String> GetDeploymentId() noexcept { return m_deploymentId; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(PostComponentUpdateEvent &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -163,19 +153,16 @@ namespace Aws
                 {
                 }
                 PreComponentUpdateEvent(const PreComponentUpdateEvent &) = default;
-
                 void SetDeploymentId(const Crt::Optional<Crt::String> &deploymentId) noexcept
                 {
                     m_deploymentId = deploymentId;
                 }
-                const Crt::Optional<Crt::String> &GetDeploymentId() noexcept { return m_deploymentId; }
-
+                Crt::Optional<Crt::String> GetDeploymentId() noexcept { return m_deploymentId; }
                 void SetIsGgcRestarting(const Crt::Optional<bool> &isGgcRestarting) noexcept
                 {
                     m_isGgcRestarting = isGgcRestarting;
                 }
-                const Crt::Optional<bool> &GetIsGgcRestarting() noexcept { return m_isGgcRestarting; }
-
+                Crt::Optional<bool> GetIsGgcRestarting() noexcept { return m_isGgcRestarting; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(PreComponentUpdateEvent &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -227,10 +214,8 @@ namespace Aws
                 {
                 }
                 BinaryMessage(const BinaryMessage &) = default;
-
                 void SetMessage(const Crt::Optional<Crt::Vector<uint8_t>> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::Vector<uint8_t>> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::Vector<uint8_t>> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(BinaryMessage &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -253,10 +238,8 @@ namespace Aws
               public:
                 explicit JsonMessage(Crt::Allocator *allocator = Crt::g_allocator) noexcept : m_allocator(allocator) {}
                 JsonMessage(const JsonMessage &) = default;
-
                 void SetMessage(const Crt::Optional<Crt::JsonObject> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::JsonObject> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::JsonObject> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(JsonMessage &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -282,19 +265,16 @@ namespace Aws
                 {
                 }
                 ValidateConfigurationUpdateEvent(const ValidateConfigurationUpdateEvent &) = default;
-
                 void SetConfiguration(const Crt::Optional<Crt::JsonObject> &configuration) noexcept
                 {
                     m_configuration = configuration;
                 }
-                const Crt::Optional<Crt::JsonObject> &GetConfiguration() noexcept { return m_configuration; }
-
+                Crt::Optional<Crt::JsonObject> GetConfiguration() noexcept { return m_configuration; }
                 void SetDeploymentId(const Crt::Optional<Crt::String> &deploymentId) noexcept
                 {
                     m_deploymentId = deploymentId;
                 }
-                const Crt::Optional<Crt::String> &GetDeploymentId() noexcept { return m_deploymentId; }
-
+                Crt::Optional<Crt::String> GetDeploymentId() noexcept { return m_deploymentId; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ValidateConfigurationUpdateEvent &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -321,19 +301,16 @@ namespace Aws
                 {
                 }
                 ConfigurationUpdateEvent(const ConfigurationUpdateEvent &) = default;
-
                 void SetComponentName(const Crt::Optional<Crt::String> &componentName) noexcept
                 {
                     m_componentName = componentName;
                 }
-                const Crt::Optional<Crt::String> &GetComponentName() noexcept { return m_componentName; }
-
+                Crt::Optional<Crt::String> GetComponentName() noexcept { return m_componentName; }
                 void SetKeyPath(const Crt::Optional<Crt::Vector<Crt::String>> &keyPath) noexcept
                 {
                     m_keyPath = keyPath;
                 }
-                const Crt::Optional<Crt::Vector<Crt::String>> &GetKeyPath() noexcept { return m_keyPath; }
-
+                Crt::Optional<Crt::Vector<Crt::String>> GetKeyPath() noexcept { return m_keyPath; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ConfigurationUpdateEvent &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -357,13 +334,10 @@ namespace Aws
               public:
                 explicit MQTTMessage(Crt::Allocator *allocator = Crt::g_allocator) noexcept : m_allocator(allocator) {}
                 MQTTMessage(const MQTTMessage &) = default;
-
                 void SetTopicName(const Crt::Optional<Crt::String> &topicName) noexcept { m_topicName = topicName; }
-                const Crt::Optional<Crt::String> &GetTopicName() noexcept { return m_topicName; }
-
+                Crt::Optional<Crt::String> GetTopicName() noexcept { return m_topicName; }
                 void SetPayload(const Crt::Optional<Crt::Vector<uint8_t>> &payload) noexcept { m_payload = payload; }
-                const Crt::Optional<Crt::Vector<uint8_t>> &GetPayload() noexcept { return m_payload; }
-
+                Crt::Optional<Crt::Vector<uint8_t>> GetPayload() noexcept { return m_payload; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(MQTTMessage &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -389,23 +363,40 @@ namespace Aws
                     : m_allocator(allocator)
                 {
                 }
-                ComponentUpdatePolicyEvents(const ComponentUpdatePolicyEvents &) = default;
-
+                ComponentUpdatePolicyEvents &operator=(const ComponentUpdatePolicyEvents &) noexcept;
+                ComponentUpdatePolicyEvents(const ComponentUpdatePolicyEvents &objectToCopy) { *this = objectToCopy; }
                 void SetPreUpdateEvent(const Crt::Optional<PreComponentUpdateEvent> &preUpdateEvent) noexcept
                 {
                     m_preUpdateEvent = preUpdateEvent;
+                    m_chosenMember = TAG_PRE_UPDATE_EVENT;
                 }
-                const Crt::Optional<PreComponentUpdateEvent> &GetPreUpdateEvent() noexcept { return m_preUpdateEvent; }
-
+                Crt::Optional<PreComponentUpdateEvent> GetPreUpdateEvent() noexcept
+                {
+                    if (m_chosenMember == TAG_PRE_UPDATE_EVENT)
+                    {
+                        return m_preUpdateEvent;
+                    }
+                    else
+                    {
+                        return Crt::Optional<PreComponentUpdateEvent>();
+                    }
+                }
                 void SetPostUpdateEvent(const Crt::Optional<PostComponentUpdateEvent> &postUpdateEvent) noexcept
                 {
                     m_postUpdateEvent = postUpdateEvent;
+                    m_chosenMember = TAG_POST_UPDATE_EVENT;
                 }
-                const Crt::Optional<PostComponentUpdateEvent> &GetPostUpdateEvent() noexcept
+                Crt::Optional<PostComponentUpdateEvent> GetPostUpdateEvent() noexcept
                 {
-                    return m_postUpdateEvent;
+                    if (m_chosenMember == TAG_POST_UPDATE_EVENT)
+                    {
+                        return m_postUpdateEvent;
+                    }
+                    else
+                    {
+                        return Crt::Optional<PostComponentUpdateEvent>();
+                    }
                 }
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ComponentUpdatePolicyEvents &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -420,6 +411,11 @@ namespace Aws
 
               private:
                 Crt::Allocator *m_allocator;
+                enum ChosenMember
+                {
+                    TAG_PRE_UPDATE_EVENT,
+                    TAG_POST_UPDATE_EVENT
+                } m_chosenMember;
                 Crt::Optional<PreComponentUpdateEvent> m_preUpdateEvent;
                 Crt::Optional<PostComponentUpdateEvent> m_postUpdateEvent;
             };
@@ -434,20 +430,40 @@ namespace Aws
             {
               public:
                 explicit SecretValue(Crt::Allocator *allocator = Crt::g_allocator) noexcept : m_allocator(allocator) {}
-                SecretValue(const SecretValue &) = default;
-
+                SecretValue &operator=(const SecretValue &) noexcept;
+                SecretValue(const SecretValue &objectToCopy) { *this = objectToCopy; }
                 void SetSecretString(const Crt::Optional<Crt::String> &secretString) noexcept
                 {
                     m_secretString = secretString;
+                    m_chosenMember = TAG_SECRET_STRING;
                 }
-                const Crt::Optional<Crt::String> &GetSecretString() noexcept { return m_secretString; }
-
+                Crt::Optional<Crt::String> GetSecretString() noexcept
+                {
+                    if (m_chosenMember == TAG_SECRET_STRING)
+                    {
+                        return m_secretString;
+                    }
+                    else
+                    {
+                        return Crt::Optional<Crt::String>();
+                    }
+                }
                 void SetSecretBinary(const Crt::Optional<Crt::Vector<uint8_t>> &secretBinary) noexcept
                 {
                     m_secretBinary = secretBinary;
+                    m_chosenMember = TAG_SECRET_BINARY;
                 }
-                const Crt::Optional<Crt::Vector<uint8_t>> &GetSecretBinary() noexcept { return m_secretBinary; }
-
+                Crt::Optional<Crt::Vector<uint8_t>> GetSecretBinary() noexcept
+                {
+                    if (m_chosenMember == TAG_SECRET_BINARY)
+                    {
+                        return m_secretBinary;
+                    }
+                    else
+                    {
+                        return Crt::Optional<Crt::Vector<uint8_t>>();
+                    }
+                }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(SecretValue &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -462,6 +478,11 @@ namespace Aws
 
               private:
                 Crt::Allocator *m_allocator;
+                enum ChosenMember
+                {
+                    TAG_SECRET_STRING,
+                    TAG_SECRET_BINARY
+                } m_chosenMember;
                 Crt::Optional<Crt::String> m_secretString;
                 Crt::Optional<Crt::Vector<uint8_t>> m_secretBinary;
             };
@@ -473,16 +494,13 @@ namespace Aws
                 {
                 }
                 LocalDeployment(const LocalDeployment &) = default;
-
                 void SetDeploymentId(const Crt::Optional<Crt::String> &deploymentId) noexcept
                 {
                     m_deploymentId = deploymentId;
                 }
-                const Crt::Optional<Crt::String> &GetDeploymentId() noexcept { return m_deploymentId; }
-
-                void SetStatus(const Crt::Optional<Crt::String> &status) noexcept { m_status = status; }
-                const Crt::Optional<Crt::String> &GetStatus() noexcept { return m_status; }
-
+                Crt::Optional<Crt::String> GetDeploymentId() noexcept { return m_deploymentId; }
+                void SetStatus(Crt::Optional<DeploymentStatus> status) noexcept;
+                Crt::Optional<DeploymentStatus> GetStatus() noexcept;
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(LocalDeployment &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -515,19 +533,15 @@ namespace Aws
                 {
                 }
                 ConfigurationValidityReport(const ConfigurationValidityReport &) = default;
-
-                void SetStatus(const Crt::Optional<Crt::String> &status) noexcept { m_status = status; }
-                const Crt::Optional<Crt::String> &GetStatus() noexcept { return m_status; }
-
+                void SetStatus(Crt::Optional<ConfigurationValidityStatus> status) noexcept;
+                Crt::Optional<ConfigurationValidityStatus> GetStatus() noexcept;
                 void SetDeploymentId(const Crt::Optional<Crt::String> &deploymentId) noexcept
                 {
                     m_deploymentId = deploymentId;
                 }
-                const Crt::Optional<Crt::String> &GetDeploymentId() noexcept { return m_deploymentId; }
-
+                Crt::Optional<Crt::String> GetDeploymentId() noexcept { return m_deploymentId; }
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ConfigurationValidityReport &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -553,20 +567,40 @@ namespace Aws
                 explicit PublishMessage(Crt::Allocator *allocator = Crt::g_allocator) noexcept : m_allocator(allocator)
                 {
                 }
-                PublishMessage(const PublishMessage &) = default;
-
+                PublishMessage &operator=(const PublishMessage &) noexcept;
+                PublishMessage(const PublishMessage &objectToCopy) { *this = objectToCopy; }
                 void SetJsonMessage(const Crt::Optional<JsonMessage> &jsonMessage) noexcept
                 {
                     m_jsonMessage = jsonMessage;
+                    m_chosenMember = TAG_JSON_MESSAGE;
                 }
-                const Crt::Optional<JsonMessage> &GetJsonMessage() noexcept { return m_jsonMessage; }
-
+                Crt::Optional<JsonMessage> GetJsonMessage() noexcept
+                {
+                    if (m_chosenMember == TAG_JSON_MESSAGE)
+                    {
+                        return m_jsonMessage;
+                    }
+                    else
+                    {
+                        return Crt::Optional<JsonMessage>();
+                    }
+                }
                 void SetBinaryMessage(const Crt::Optional<BinaryMessage> &binaryMessage) noexcept
                 {
                     m_binaryMessage = binaryMessage;
+                    m_chosenMember = TAG_BINARY_MESSAGE;
                 }
-                const Crt::Optional<BinaryMessage> &GetBinaryMessage() noexcept { return m_binaryMessage; }
-
+                Crt::Optional<BinaryMessage> GetBinaryMessage() noexcept
+                {
+                    if (m_chosenMember == TAG_BINARY_MESSAGE)
+                    {
+                        return m_binaryMessage;
+                    }
+                    else
+                    {
+                        return Crt::Optional<BinaryMessage>();
+                    }
+                }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(PublishMessage &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -581,6 +615,11 @@ namespace Aws
 
               private:
                 Crt::Allocator *m_allocator;
+                enum ChosenMember
+                {
+                    TAG_JSON_MESSAGE,
+                    TAG_BINARY_MESSAGE
+                } m_chosenMember;
                 Crt::Optional<JsonMessage> m_jsonMessage;
                 Crt::Optional<BinaryMessage> m_binaryMessage;
             };
@@ -593,25 +632,20 @@ namespace Aws
                 {
                 }
                 ComponentDetails(const ComponentDetails &) = default;
-
                 void SetComponentName(const Crt::Optional<Crt::String> &componentName) noexcept
                 {
                     m_componentName = componentName;
                 }
-                const Crt::Optional<Crt::String> &GetComponentName() noexcept { return m_componentName; }
-
+                Crt::Optional<Crt::String> GetComponentName() noexcept { return m_componentName; }
                 void SetVersion(const Crt::Optional<Crt::String> &version) noexcept { m_version = version; }
-                const Crt::Optional<Crt::String> &GetVersion() noexcept { return m_version; }
-
-                void SetState(const Crt::Optional<Crt::String> &state) noexcept { m_state = state; }
-                const Crt::Optional<Crt::String> &GetState() noexcept { return m_state; }
-
+                Crt::Optional<Crt::String> GetVersion() noexcept { return m_version; }
+                void SetState(Crt::Optional<LifecycleState> state) noexcept;
+                Crt::Optional<LifecycleState> GetState() noexcept;
                 void SetConfiguration(const Crt::Optional<Crt::JsonObject> &configuration) noexcept
                 {
                     m_configuration = configuration;
                 }
-                const Crt::Optional<Crt::JsonObject> &GetConfiguration() noexcept { return m_configuration; }
-
+                Crt::Optional<Crt::JsonObject> GetConfiguration() noexcept { return m_configuration; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ComponentDetails &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
@@ -639,20 +673,40 @@ namespace Aws
                     : m_allocator(allocator)
                 {
                 }
-                SubscriptionResponseMessage(const SubscriptionResponseMessage &) = default;
-
+                SubscriptionResponseMessage &operator=(const SubscriptionResponseMessage &) noexcept;
+                SubscriptionResponseMessage(const SubscriptionResponseMessage &objectToCopy) { *this = objectToCopy; }
                 void SetJsonMessage(const Crt::Optional<JsonMessage> &jsonMessage) noexcept
                 {
                     m_jsonMessage = jsonMessage;
+                    m_chosenMember = TAG_JSON_MESSAGE;
                 }
-                const Crt::Optional<JsonMessage> &GetJsonMessage() noexcept { return m_jsonMessage; }
-
+                Crt::Optional<JsonMessage> GetJsonMessage() noexcept
+                {
+                    if (m_chosenMember == TAG_JSON_MESSAGE)
+                    {
+                        return m_jsonMessage;
+                    }
+                    else
+                    {
+                        return Crt::Optional<JsonMessage>();
+                    }
+                }
                 void SetBinaryMessage(const Crt::Optional<BinaryMessage> &binaryMessage) noexcept
                 {
                     m_binaryMessage = binaryMessage;
+                    m_chosenMember = TAG_BINARY_MESSAGE;
                 }
-                const Crt::Optional<BinaryMessage> &GetBinaryMessage() noexcept { return m_binaryMessage; }
-
+                Crt::Optional<BinaryMessage> GetBinaryMessage() noexcept
+                {
+                    if (m_chosenMember == TAG_BINARY_MESSAGE)
+                    {
+                        return m_binaryMessage;
+                    }
+                    else
+                    {
+                        return Crt::Optional<BinaryMessage>();
+                    }
+                }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(SubscriptionResponseMessage &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -667,6 +721,11 @@ namespace Aws
 
               private:
                 Crt::Allocator *m_allocator;
+                enum ChosenMember
+                {
+                    TAG_JSON_MESSAGE,
+                    TAG_BINARY_MESSAGE
+                } m_chosenMember;
                 Crt::Optional<JsonMessage> m_jsonMessage;
                 Crt::Optional<BinaryMessage> m_binaryMessage;
             };
@@ -678,18 +737,28 @@ namespace Aws
                     : m_allocator(allocator)
                 {
                 }
-                ValidateConfigurationUpdateEvents(const ValidateConfigurationUpdateEvents &) = default;
-
+                ValidateConfigurationUpdateEvents &operator=(const ValidateConfigurationUpdateEvents &) noexcept;
+                ValidateConfigurationUpdateEvents(const ValidateConfigurationUpdateEvents &objectToCopy)
+                {
+                    *this = objectToCopy;
+                }
                 void SetValidateConfigurationUpdateEvent(
                     const Crt::Optional<ValidateConfigurationUpdateEvent> &validateConfigurationUpdateEvent) noexcept
                 {
                     m_validateConfigurationUpdateEvent = validateConfigurationUpdateEvent;
+                    m_chosenMember = TAG_VALIDATE_CONFIGURATION_UPDATE_EVENT;
                 }
-                const Crt::Optional<ValidateConfigurationUpdateEvent> &GetValidateConfigurationUpdateEvent() noexcept
+                Crt::Optional<ValidateConfigurationUpdateEvent> GetValidateConfigurationUpdateEvent() noexcept
                 {
-                    return m_validateConfigurationUpdateEvent;
+                    if (m_chosenMember == TAG_VALIDATE_CONFIGURATION_UPDATE_EVENT)
+                    {
+                        return m_validateConfigurationUpdateEvent;
+                    }
+                    else
+                    {
+                        return Crt::Optional<ValidateConfigurationUpdateEvent>();
+                    }
                 }
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ValidateConfigurationUpdateEvents &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -704,6 +773,10 @@ namespace Aws
 
               private:
                 Crt::Allocator *m_allocator;
+                enum ChosenMember
+                {
+                    TAG_VALIDATE_CONFIGURATION_UPDATE_EVENT
+                } m_chosenMember;
                 Crt::Optional<ValidateConfigurationUpdateEvent> m_validateConfigurationUpdateEvent;
             };
 
@@ -714,18 +787,25 @@ namespace Aws
                     : m_allocator(allocator)
                 {
                 }
-                ConfigurationUpdateEvents(const ConfigurationUpdateEvents &) = default;
-
+                ConfigurationUpdateEvents &operator=(const ConfigurationUpdateEvents &) noexcept;
+                ConfigurationUpdateEvents(const ConfigurationUpdateEvents &objectToCopy) { *this = objectToCopy; }
                 void SetConfigurationUpdateEvent(
                     const Crt::Optional<ConfigurationUpdateEvent> &configurationUpdateEvent) noexcept
                 {
                     m_configurationUpdateEvent = configurationUpdateEvent;
+                    m_chosenMember = TAG_CONFIGURATION_UPDATE_EVENT;
                 }
-                const Crt::Optional<ConfigurationUpdateEvent> &GetConfigurationUpdateEvent() noexcept
+                Crt::Optional<ConfigurationUpdateEvent> GetConfigurationUpdateEvent() noexcept
                 {
-                    return m_configurationUpdateEvent;
+                    if (m_chosenMember == TAG_CONFIGURATION_UPDATE_EVENT)
+                    {
+                        return m_configurationUpdateEvent;
+                    }
+                    else
+                    {
+                        return Crt::Optional<ConfigurationUpdateEvent>();
+                    }
                 }
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ConfigurationUpdateEvents &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -740,6 +820,10 @@ namespace Aws
 
               private:
                 Crt::Allocator *m_allocator;
+                enum ChosenMember
+                {
+                    TAG_CONFIGURATION_UPDATE_EVENT
+                } m_chosenMember;
                 Crt::Optional<ConfigurationUpdateEvent> m_configurationUpdateEvent;
             };
 
@@ -749,11 +833,24 @@ namespace Aws
                 explicit IoTCoreMessage(Crt::Allocator *allocator = Crt::g_allocator) noexcept : m_allocator(allocator)
                 {
                 }
-                IoTCoreMessage(const IoTCoreMessage &) = default;
-
-                void SetMessage(const Crt::Optional<MQTTMessage> &message) noexcept { m_message = message; }
-                const Crt::Optional<MQTTMessage> &GetMessage() noexcept { return m_message; }
-
+                IoTCoreMessage &operator=(const IoTCoreMessage &) noexcept;
+                IoTCoreMessage(const IoTCoreMessage &objectToCopy) { *this = objectToCopy; }
+                void SetMessage(const Crt::Optional<MQTTMessage> &message) noexcept
+                {
+                    m_message = message;
+                    m_chosenMember = TAG_MESSAGE;
+                }
+                Crt::Optional<MQTTMessage> GetMessage() noexcept
+                {
+                    if (m_chosenMember == TAG_MESSAGE)
+                    {
+                        return m_message;
+                    }
+                    else
+                    {
+                        return Crt::Optional<MQTTMessage>();
+                    }
+                }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(IoTCoreMessage &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -768,6 +865,10 @@ namespace Aws
 
               private:
                 Crt::Allocator *m_allocator;
+                enum ChosenMember
+                {
+                    TAG_MESSAGE
+                } m_chosenMember;
                 Crt::Optional<MQTTMessage> m_message;
             };
 
@@ -785,10 +886,8 @@ namespace Aws
                 {
                 }
                 InvalidArtifactsDirectoryPathError(const InvalidArtifactsDirectoryPathError &) = default;
-
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(InvalidArtifactsDirectoryPathError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -815,10 +914,8 @@ namespace Aws
                 {
                 }
                 InvalidRecipeDirectoryPathError(const InvalidRecipeDirectoryPathError &) = default;
-
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(InvalidRecipeDirectoryPathError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -844,13 +941,11 @@ namespace Aws
                 {
                 }
                 CreateLocalDeploymentResponse(const CreateLocalDeploymentResponse &) = default;
-
                 void SetDeploymentId(const Crt::Optional<Crt::String> &deploymentId) noexcept
                 {
                     m_deploymentId = deploymentId;
                 }
-                const Crt::Optional<Crt::String> &GetDeploymentId() noexcept { return m_deploymentId; }
-
+                Crt::Optional<Crt::String> GetDeploymentId() noexcept { return m_deploymentId; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(CreateLocalDeploymentResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -876,65 +971,54 @@ namespace Aws
                 {
                 }
                 CreateLocalDeploymentRequest(const CreateLocalDeploymentRequest &) = default;
-
                 void SetGroupName(const Crt::Optional<Crt::String> &groupName) noexcept { m_groupName = groupName; }
-                const Crt::Optional<Crt::String> &GetGroupName() noexcept { return m_groupName; }
-
+                Crt::Optional<Crt::String> GetGroupName() noexcept { return m_groupName; }
                 void SetRootComponentVersionsToAdd(
                     const Crt::Optional<Crt::Map<Crt::String, Crt::String>> &rootComponentVersionsToAdd) noexcept
                 {
                     m_rootComponentVersionsToAdd = rootComponentVersionsToAdd;
                 }
-                const Crt::Optional<Crt::Map<Crt::String, Crt::String>> &GetRootComponentVersionsToAdd() noexcept
+                Crt::Optional<Crt::Map<Crt::String, Crt::String>> GetRootComponentVersionsToAdd() noexcept
                 {
                     return m_rootComponentVersionsToAdd;
                 }
-
                 void SetRootComponentsToRemove(
                     const Crt::Optional<Crt::Vector<Crt::String>> &rootComponentsToRemove) noexcept
                 {
                     m_rootComponentsToRemove = rootComponentsToRemove;
                 }
-                const Crt::Optional<Crt::Vector<Crt::String>> &GetRootComponentsToRemove() noexcept
+                Crt::Optional<Crt::Vector<Crt::String>> GetRootComponentsToRemove() noexcept
                 {
                     return m_rootComponentsToRemove;
                 }
-
                 void SetComponentToConfiguration(
                     const Crt::Optional<Crt::Map<Crt::String, Crt::JsonObject>> &componentToConfiguration) noexcept
                 {
                     m_componentToConfiguration = componentToConfiguration;
                 }
-                const Crt::Optional<Crt::Map<Crt::String, Crt::JsonObject>> &GetComponentToConfiguration() noexcept
+                Crt::Optional<Crt::Map<Crt::String, Crt::JsonObject>> GetComponentToConfiguration() noexcept
                 {
                     return m_componentToConfiguration;
                 }
-
                 void SetComponentToRunWithInfo(
                     const Crt::Optional<Crt::Map<Crt::String, RunWithInfo>> &componentToRunWithInfo) noexcept
                 {
                     m_componentToRunWithInfo = componentToRunWithInfo;
                 }
-                const Crt::Optional<Crt::Map<Crt::String, RunWithInfo>> &GetComponentToRunWithInfo() noexcept
+                Crt::Optional<Crt::Map<Crt::String, RunWithInfo>> GetComponentToRunWithInfo() noexcept
                 {
                     return m_componentToRunWithInfo;
                 }
-
                 void SetRecipeDirectoryPath(const Crt::Optional<Crt::String> &recipeDirectoryPath) noexcept
                 {
                     m_recipeDirectoryPath = recipeDirectoryPath;
                 }
-                const Crt::Optional<Crt::String> &GetRecipeDirectoryPath() noexcept { return m_recipeDirectoryPath; }
-
+                Crt::Optional<Crt::String> GetRecipeDirectoryPath() noexcept { return m_recipeDirectoryPath; }
                 void SetArtifactsDirectoryPath(const Crt::Optional<Crt::String> &artifactsDirectoryPath) noexcept
                 {
                     m_artifactsDirectoryPath = artifactsDirectoryPath;
                 }
-                const Crt::Optional<Crt::String> &GetArtifactsDirectoryPath() noexcept
-                {
-                    return m_artifactsDirectoryPath;
-                }
-
+                Crt::Optional<Crt::String> GetArtifactsDirectoryPath() noexcept { return m_artifactsDirectoryPath; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(CreateLocalDeploymentRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -966,7 +1050,6 @@ namespace Aws
                 {
                 }
                 PauseComponentResponse(const PauseComponentResponse &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(PauseComponentResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -991,13 +1074,11 @@ namespace Aws
                 {
                 }
                 PauseComponentRequest(const PauseComponentRequest &) = default;
-
                 void SetComponentName(const Crt::Optional<Crt::String> &componentName) noexcept
                 {
                     m_componentName = componentName;
                 }
-                const Crt::Optional<Crt::String> &GetComponentName() noexcept { return m_componentName; }
-
+                Crt::Optional<Crt::String> GetComponentName() noexcept { return m_componentName; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(PauseComponentRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -1023,13 +1104,10 @@ namespace Aws
                 {
                 }
                 StopComponentResponse(const StopComponentResponse &) = default;
-
-                void SetStopStatus(const Crt::Optional<Crt::String> &stopStatus) noexcept { m_stopStatus = stopStatus; }
-                const Crt::Optional<Crt::String> &GetStopStatus() noexcept { return m_stopStatus; }
-
+                void SetStopStatus(Crt::Optional<RequestStatus> stopStatus) noexcept;
+                Crt::Optional<RequestStatus> GetStopStatus() noexcept;
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(StopComponentResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -1056,13 +1134,11 @@ namespace Aws
                 {
                 }
                 StopComponentRequest(const StopComponentRequest &) = default;
-
                 void SetComponentName(const Crt::Optional<Crt::String> &componentName) noexcept
                 {
                     m_componentName = componentName;
                 }
-                const Crt::Optional<Crt::String> &GetComponentName() noexcept { return m_componentName; }
-
+                Crt::Optional<Crt::String> GetComponentName() noexcept { return m_componentName; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(StopComponentRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -1088,16 +1164,14 @@ namespace Aws
                 {
                 }
                 ListLocalDeploymentsResponse(const ListLocalDeploymentsResponse &) = default;
-
                 void SetLocalDeployments(const Crt::Optional<Crt::Vector<LocalDeployment>> &localDeployments) noexcept
                 {
                     m_localDeployments = localDeployments;
                 }
-                const Crt::Optional<Crt::Vector<LocalDeployment>> &GetLocalDeployments() noexcept
+                Crt::Optional<Crt::Vector<LocalDeployment>> GetLocalDeployments() noexcept
                 {
                     return m_localDeployments;
                 }
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ListLocalDeploymentsResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -1123,7 +1197,6 @@ namespace Aws
                 {
                 }
                 ListLocalDeploymentsRequest(const ListLocalDeploymentsRequest &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ListLocalDeploymentsRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -1148,7 +1221,6 @@ namespace Aws
                 {
                 }
                 SubscribeToComponentUpdatesResponse(const SubscribeToComponentUpdatesResponse &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(SubscribeToComponentUpdatesResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -1174,7 +1246,6 @@ namespace Aws
                 {
                 }
                 SubscribeToComponentUpdatesRequest(const SubscribeToComponentUpdatesRequest &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(SubscribeToComponentUpdatesRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -1200,19 +1271,15 @@ namespace Aws
                 {
                 }
                 ListNamedShadowsForThingResponse(const ListNamedShadowsForThingResponse &) = default;
-
                 void SetResults(const Crt::Optional<Crt::Vector<Crt::String>> &results) noexcept
                 {
                     m_results = results;
                 }
-                const Crt::Optional<Crt::Vector<Crt::String>> &GetResults() noexcept { return m_results; }
-
+                Crt::Optional<Crt::Vector<Crt::String>> GetResults() noexcept { return m_results; }
                 void SetTimestamp(const Crt::Optional<Crt::DateTime> &timestamp) noexcept { m_timestamp = timestamp; }
-                const Crt::Optional<Crt::DateTime> &GetTimestamp() noexcept { return m_timestamp; }
-
+                Crt::Optional<Crt::DateTime> GetTimestamp() noexcept { return m_timestamp; }
                 void SetNextToken(const Crt::Optional<Crt::String> &nextToken) noexcept { m_nextToken = nextToken; }
-                const Crt::Optional<Crt::String> &GetNextToken() noexcept { return m_nextToken; }
-
+                Crt::Optional<Crt::String> GetNextToken() noexcept { return m_nextToken; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ListNamedShadowsForThingResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -1240,16 +1307,12 @@ namespace Aws
                 {
                 }
                 ListNamedShadowsForThingRequest(const ListNamedShadowsForThingRequest &) = default;
-
                 void SetThingName(const Crt::Optional<Crt::String> &thingName) noexcept { m_thingName = thingName; }
-                const Crt::Optional<Crt::String> &GetThingName() noexcept { return m_thingName; }
-
+                Crt::Optional<Crt::String> GetThingName() noexcept { return m_thingName; }
                 void SetNextToken(const Crt::Optional<Crt::String> &nextToken) noexcept { m_nextToken = nextToken; }
-                const Crt::Optional<Crt::String> &GetNextToken() noexcept { return m_nextToken; }
-
+                Crt::Optional<Crt::String> GetNextToken() noexcept { return m_nextToken; }
                 void SetPageSize(const Crt::Optional<int> &pageSize) noexcept { m_pageSize = pageSize; }
-                const Crt::Optional<int> &GetPageSize() noexcept { return m_pageSize; }
-
+                Crt::Optional<int> GetPageSize() noexcept { return m_pageSize; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ListNamedShadowsForThingRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -1277,7 +1340,6 @@ namespace Aws
                 {
                 }
                 UpdateStateResponse(const UpdateStateResponse &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(UpdateStateResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -1302,10 +1364,8 @@ namespace Aws
                 {
                 }
                 UpdateStateRequest(const UpdateStateRequest &) = default;
-
-                void SetState(const Crt::Optional<Crt::String> &state) noexcept { m_state = state; }
-                const Crt::Optional<Crt::String> &GetState() noexcept { return m_state; }
-
+                void SetState(Crt::Optional<ReportedLifecycleState> state) noexcept;
+                Crt::Optional<ReportedLifecycleState> GetState() noexcept;
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(UpdateStateRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -1331,25 +1391,20 @@ namespace Aws
                 {
                 }
                 GetSecretValueResponse(const GetSecretValueResponse &) = default;
-
                 void SetSecretId(const Crt::Optional<Crt::String> &secretId) noexcept { m_secretId = secretId; }
-                const Crt::Optional<Crt::String> &GetSecretId() noexcept { return m_secretId; }
-
+                Crt::Optional<Crt::String> GetSecretId() noexcept { return m_secretId; }
                 void SetVersionId(const Crt::Optional<Crt::String> &versionId) noexcept { m_versionId = versionId; }
-                const Crt::Optional<Crt::String> &GetVersionId() noexcept { return m_versionId; }
-
+                Crt::Optional<Crt::String> GetVersionId() noexcept { return m_versionId; }
                 void SetVersionStage(const Crt::Optional<Crt::Vector<Crt::String>> &versionStage) noexcept
                 {
                     m_versionStage = versionStage;
                 }
-                const Crt::Optional<Crt::Vector<Crt::String>> &GetVersionStage() noexcept { return m_versionStage; }
-
+                Crt::Optional<Crt::Vector<Crt::String>> GetVersionStage() noexcept { return m_versionStage; }
                 void SetSecretValue(const Crt::Optional<SecretValue> &secretValue) noexcept
                 {
                     m_secretValue = secretValue;
                 }
-                const Crt::Optional<SecretValue> &GetSecretValue() noexcept { return m_secretValue; }
-
+                Crt::Optional<SecretValue> GetSecretValue() noexcept { return m_secretValue; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(GetSecretValueResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -1378,19 +1433,15 @@ namespace Aws
                 {
                 }
                 GetSecretValueRequest(const GetSecretValueRequest &) = default;
-
                 void SetSecretId(const Crt::Optional<Crt::String> &secretId) noexcept { m_secretId = secretId; }
-                const Crt::Optional<Crt::String> &GetSecretId() noexcept { return m_secretId; }
-
+                Crt::Optional<Crt::String> GetSecretId() noexcept { return m_secretId; }
                 void SetVersionId(const Crt::Optional<Crt::String> &versionId) noexcept { m_versionId = versionId; }
-                const Crt::Optional<Crt::String> &GetVersionId() noexcept { return m_versionId; }
-
+                Crt::Optional<Crt::String> GetVersionId() noexcept { return m_versionId; }
                 void SetVersionStage(const Crt::Optional<Crt::String> &versionStage) noexcept
                 {
                     m_versionStage = versionStage;
                 }
-                const Crt::Optional<Crt::String> &GetVersionStage() noexcept { return m_versionStage; }
-
+                Crt::Optional<Crt::String> GetVersionStage() noexcept { return m_versionStage; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(GetSecretValueRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -1418,13 +1469,11 @@ namespace Aws
                 {
                 }
                 GetLocalDeploymentStatusResponse(const GetLocalDeploymentStatusResponse &) = default;
-
                 void SetDeployment(const Crt::Optional<LocalDeployment> &deployment) noexcept
                 {
                     m_deployment = deployment;
                 }
-                const Crt::Optional<LocalDeployment> &GetDeployment() noexcept { return m_deployment; }
-
+                Crt::Optional<LocalDeployment> GetDeployment() noexcept { return m_deployment; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(GetLocalDeploymentStatusResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -1450,13 +1499,11 @@ namespace Aws
                 {
                 }
                 GetLocalDeploymentStatusRequest(const GetLocalDeploymentStatusRequest &) = default;
-
                 void SetDeploymentId(const Crt::Optional<Crt::String> &deploymentId) noexcept
                 {
                     m_deploymentId = deploymentId;
                 }
-                const Crt::Optional<Crt::String> &GetDeploymentId() noexcept { return m_deploymentId; }
-
+                Crt::Optional<Crt::String> GetDeploymentId() noexcept { return m_deploymentId; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(GetLocalDeploymentStatusRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -1482,10 +1529,8 @@ namespace Aws
                 {
                 }
                 ComponentNotFoundError(const ComponentNotFoundError &) = default;
-
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ComponentNotFoundError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -1511,16 +1556,10 @@ namespace Aws
                 {
                 }
                 RestartComponentResponse(const RestartComponentResponse &) = default;
-
-                void SetRestartStatus(const Crt::Optional<Crt::String> &restartStatus) noexcept
-                {
-                    m_restartStatus = restartStatus;
-                }
-                const Crt::Optional<Crt::String> &GetRestartStatus() noexcept { return m_restartStatus; }
-
+                void SetRestartStatus(Crt::Optional<RequestStatus> restartStatus) noexcept;
+                Crt::Optional<RequestStatus> GetRestartStatus() noexcept;
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(RestartComponentResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -1547,13 +1586,11 @@ namespace Aws
                 {
                 }
                 RestartComponentRequest(const RestartComponentRequest &) = default;
-
                 void SetComponentName(const Crt::Optional<Crt::String> &componentName) noexcept
                 {
                     m_componentName = componentName;
                 }
-                const Crt::Optional<Crt::String> &GetComponentName() noexcept { return m_componentName; }
-
+                Crt::Optional<Crt::String> GetComponentName() noexcept { return m_componentName; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(RestartComponentRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -1579,10 +1616,8 @@ namespace Aws
                 {
                 }
                 InvalidTokenError(const InvalidTokenError &) = default;
-
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(InvalidTokenError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -1608,10 +1643,8 @@ namespace Aws
                 {
                 }
                 ValidateAuthorizationTokenResponse(const ValidateAuthorizationTokenResponse &) = default;
-
                 void SetIsValid(const Crt::Optional<bool> &isValid) noexcept { m_isValid = isValid; }
-                const Crt::Optional<bool> &GetIsValid() noexcept { return m_isValid; }
-
+                Crt::Optional<bool> GetIsValid() noexcept { return m_isValid; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ValidateAuthorizationTokenResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -1638,10 +1671,8 @@ namespace Aws
                 {
                 }
                 ValidateAuthorizationTokenRequest(const ValidateAuthorizationTokenRequest &) = default;
-
                 void SetToken(const Crt::Optional<Crt::String> &token) noexcept { m_token = token; }
-                const Crt::Optional<Crt::String> &GetToken() noexcept { return m_token; }
-
+                Crt::Optional<Crt::String> GetToken() noexcept { return m_token; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ValidateAuthorizationTokenRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -1667,10 +1698,8 @@ namespace Aws
                 {
                 }
                 FailedUpdateConditionCheckError(const FailedUpdateConditionCheckError &) = default;
-
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(FailedUpdateConditionCheckError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -1696,7 +1725,6 @@ namespace Aws
                 {
                 }
                 UpdateConfigurationResponse(const UpdateConfigurationResponse &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(UpdateConfigurationResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -1721,22 +1749,18 @@ namespace Aws
                 {
                 }
                 UpdateConfigurationRequest(const UpdateConfigurationRequest &) = default;
-
                 void SetKeyPath(const Crt::Optional<Crt::Vector<Crt::String>> &keyPath) noexcept
                 {
                     m_keyPath = keyPath;
                 }
-                const Crt::Optional<Crt::Vector<Crt::String>> &GetKeyPath() noexcept { return m_keyPath; }
-
+                Crt::Optional<Crt::Vector<Crt::String>> GetKeyPath() noexcept { return m_keyPath; }
                 void SetTimestamp(const Crt::Optional<Crt::DateTime> &timestamp) noexcept { m_timestamp = timestamp; }
-                const Crt::Optional<Crt::DateTime> &GetTimestamp() noexcept { return m_timestamp; }
-
+                Crt::Optional<Crt::DateTime> GetTimestamp() noexcept { return m_timestamp; }
                 void SetValueToMerge(const Crt::Optional<Crt::JsonObject> &valueToMerge) noexcept
                 {
                     m_valueToMerge = valueToMerge;
                 }
-                const Crt::Optional<Crt::JsonObject> &GetValueToMerge() noexcept { return m_valueToMerge; }
-
+                Crt::Optional<Crt::JsonObject> GetValueToMerge() noexcept { return m_valueToMerge; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(UpdateConfigurationRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -1763,10 +1787,8 @@ namespace Aws
                 {
                 }
                 ConflictError(const ConflictError &) = default;
-
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ConflictError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -1792,10 +1814,8 @@ namespace Aws
                 {
                 }
                 UpdateThingShadowResponse(const UpdateThingShadowResponse &) = default;
-
                 void SetPayload(const Crt::Optional<Crt::Vector<uint8_t>> &payload) noexcept { m_payload = payload; }
-                const Crt::Optional<Crt::Vector<uint8_t>> &GetPayload() noexcept { return m_payload; }
-
+                Crt::Optional<Crt::Vector<uint8_t>> GetPayload() noexcept { return m_payload; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(UpdateThingShadowResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -1821,16 +1841,12 @@ namespace Aws
                 {
                 }
                 UpdateThingShadowRequest(const UpdateThingShadowRequest &) = default;
-
                 void SetThingName(const Crt::Optional<Crt::String> &thingName) noexcept { m_thingName = thingName; }
-                const Crt::Optional<Crt::String> &GetThingName() noexcept { return m_thingName; }
-
+                Crt::Optional<Crt::String> GetThingName() noexcept { return m_thingName; }
                 void SetShadowName(const Crt::Optional<Crt::String> &shadowName) noexcept { m_shadowName = shadowName; }
-                const Crt::Optional<Crt::String> &GetShadowName() noexcept { return m_shadowName; }
-
+                Crt::Optional<Crt::String> GetShadowName() noexcept { return m_shadowName; }
                 void SetPayload(const Crt::Optional<Crt::Vector<uint8_t>> &payload) noexcept { m_payload = payload; }
-                const Crt::Optional<Crt::Vector<uint8_t>> &GetPayload() noexcept { return m_payload; }
-
+                Crt::Optional<Crt::Vector<uint8_t>> GetPayload() noexcept { return m_payload; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(UpdateThingShadowRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -1858,7 +1874,6 @@ namespace Aws
                 {
                 }
                 SendConfigurationValidityReportResponse(const SendConfigurationValidityReportResponse &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(
                     SendConfigurationValidityReportResponse &,
@@ -1886,17 +1901,15 @@ namespace Aws
                 {
                 }
                 SendConfigurationValidityReportRequest(const SendConfigurationValidityReportRequest &) = default;
-
                 void SetConfigurationValidityReport(
                     const Crt::Optional<ConfigurationValidityReport> &configurationValidityReport) noexcept
                 {
                     m_configurationValidityReport = configurationValidityReport;
                 }
-                const Crt::Optional<ConfigurationValidityReport> &GetConfigurationValidityReport() noexcept
+                Crt::Optional<ConfigurationValidityReport> GetConfigurationValidityReport() noexcept
                 {
                     return m_configurationValidityReport;
                 }
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(
                     SendConfigurationValidityReportRequest &,
@@ -1925,10 +1938,8 @@ namespace Aws
                 {
                 }
                 GetThingShadowResponse(const GetThingShadowResponse &) = default;
-
                 void SetPayload(const Crt::Optional<Crt::Vector<uint8_t>> &payload) noexcept { m_payload = payload; }
-                const Crt::Optional<Crt::Vector<uint8_t>> &GetPayload() noexcept { return m_payload; }
-
+                Crt::Optional<Crt::Vector<uint8_t>> GetPayload() noexcept { return m_payload; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(GetThingShadowResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -1954,13 +1965,10 @@ namespace Aws
                 {
                 }
                 GetThingShadowRequest(const GetThingShadowRequest &) = default;
-
                 void SetThingName(const Crt::Optional<Crt::String> &thingName) noexcept { m_thingName = thingName; }
-                const Crt::Optional<Crt::String> &GetThingName() noexcept { return m_thingName; }
-
+                Crt::Optional<Crt::String> GetThingName() noexcept { return m_thingName; }
                 void SetShadowName(const Crt::Optional<Crt::String> &shadowName) noexcept { m_shadowName = shadowName; }
-                const Crt::Optional<Crt::String> &GetShadowName() noexcept { return m_shadowName; }
-
+                Crt::Optional<Crt::String> GetShadowName() noexcept { return m_shadowName; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(GetThingShadowRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -1987,34 +1995,25 @@ namespace Aws
                 {
                 }
                 CreateDebugPasswordResponse(const CreateDebugPasswordResponse &) = default;
-
                 void SetPassword(const Crt::Optional<Crt::String> &password) noexcept { m_password = password; }
-                const Crt::Optional<Crt::String> &GetPassword() noexcept { return m_password; }
-
+                Crt::Optional<Crt::String> GetPassword() noexcept { return m_password; }
                 void SetUsername(const Crt::Optional<Crt::String> &username) noexcept { m_username = username; }
-                const Crt::Optional<Crt::String> &GetUsername() noexcept { return m_username; }
-
+                Crt::Optional<Crt::String> GetUsername() noexcept { return m_username; }
                 void SetPasswordExpiration(const Crt::Optional<Crt::DateTime> &passwordExpiration) noexcept
                 {
                     m_passwordExpiration = passwordExpiration;
                 }
-                const Crt::Optional<Crt::DateTime> &GetPasswordExpiration() noexcept { return m_passwordExpiration; }
-
+                Crt::Optional<Crt::DateTime> GetPasswordExpiration() noexcept { return m_passwordExpiration; }
                 void SetCertificateSHA256Hash(const Crt::Optional<Crt::String> &certificateSHA256Hash) noexcept
                 {
                     m_certificateSHA256Hash = certificateSHA256Hash;
                 }
-                const Crt::Optional<Crt::String> &GetCertificateSHA256Hash() noexcept
-                {
-                    return m_certificateSHA256Hash;
-                }
-
+                Crt::Optional<Crt::String> GetCertificateSHA256Hash() noexcept { return m_certificateSHA256Hash; }
                 void SetCertificateSHA1Hash(const Crt::Optional<Crt::String> &certificateSHA1Hash) noexcept
                 {
                     m_certificateSHA1Hash = certificateSHA1Hash;
                 }
-                const Crt::Optional<Crt::String> &GetCertificateSHA1Hash() noexcept { return m_certificateSHA1Hash; }
-
+                Crt::Optional<Crt::String> GetCertificateSHA1Hash() noexcept { return m_certificateSHA1Hash; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(CreateDebugPasswordResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -2044,7 +2043,6 @@ namespace Aws
                 {
                 }
                 CreateDebugPasswordRequest(const CreateDebugPasswordRequest &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(CreateDebugPasswordRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -2069,13 +2067,11 @@ namespace Aws
                 {
                 }
                 ListComponentsResponse(const ListComponentsResponse &) = default;
-
                 void SetComponents(const Crt::Optional<Crt::Vector<ComponentDetails>> &components) noexcept
                 {
                     m_components = components;
                 }
-                const Crt::Optional<Crt::Vector<ComponentDetails>> &GetComponents() noexcept { return m_components; }
-
+                Crt::Optional<Crt::Vector<ComponentDetails>> GetComponents() noexcept { return m_components; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ListComponentsResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -2101,7 +2097,6 @@ namespace Aws
                 {
                 }
                 ListComponentsRequest(const ListComponentsRequest &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ListComponentsRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -2126,7 +2121,6 @@ namespace Aws
                 {
                 }
                 PublishToTopicResponse(const PublishToTopicResponse &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(PublishToTopicResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -2151,16 +2145,13 @@ namespace Aws
                 {
                 }
                 PublishToTopicRequest(const PublishToTopicRequest &) = default;
-
                 void SetTopic(const Crt::Optional<Crt::String> &topic) noexcept { m_topic = topic; }
-                const Crt::Optional<Crt::String> &GetTopic() noexcept { return m_topic; }
-
+                Crt::Optional<Crt::String> GetTopic() noexcept { return m_topic; }
                 void SetPublishMessage(const Crt::Optional<PublishMessage> &publishMessage) noexcept
                 {
                     m_publishMessage = publishMessage;
                 }
-                const Crt::Optional<PublishMessage> &GetPublishMessage() noexcept { return m_publishMessage; }
-
+                Crt::Optional<PublishMessage> GetPublishMessage() noexcept { return m_publishMessage; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(PublishToTopicRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -2187,13 +2178,11 @@ namespace Aws
                 {
                 }
                 GetComponentDetailsResponse(const GetComponentDetailsResponse &) = default;
-
                 void SetComponentDetails(const Crt::Optional<ComponentDetails> &componentDetails) noexcept
                 {
                     m_componentDetails = componentDetails;
                 }
-                const Crt::Optional<ComponentDetails> &GetComponentDetails() noexcept { return m_componentDetails; }
-
+                Crt::Optional<ComponentDetails> GetComponentDetails() noexcept { return m_componentDetails; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(GetComponentDetailsResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -2219,13 +2208,11 @@ namespace Aws
                 {
                 }
                 GetComponentDetailsRequest(const GetComponentDetailsRequest &) = default;
-
                 void SetComponentName(const Crt::Optional<Crt::String> &componentName) noexcept
                 {
                     m_componentName = componentName;
                 }
-                const Crt::Optional<Crt::String> &GetComponentName() noexcept { return m_componentName; }
-
+                Crt::Optional<Crt::String> GetComponentName() noexcept { return m_componentName; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(GetComponentDetailsRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -2251,10 +2238,8 @@ namespace Aws
                 {
                 }
                 SubscribeToTopicResponse(const SubscribeToTopicResponse &) = default;
-
                 void SetTopicName(const Crt::Optional<Crt::String> &topicName) noexcept { m_topicName = topicName; }
-                const Crt::Optional<Crt::String> &GetTopicName() noexcept { return m_topicName; }
-
+                Crt::Optional<Crt::String> GetTopicName() noexcept { return m_topicName; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(SubscribeToTopicResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -2280,10 +2265,8 @@ namespace Aws
                 {
                 }
                 SubscribeToTopicRequest(const SubscribeToTopicRequest &) = default;
-
                 void SetTopic(const Crt::Optional<Crt::String> &topic) noexcept { m_topic = topic; }
-                const Crt::Optional<Crt::String> &GetTopic() noexcept { return m_topic; }
-
+                Crt::Optional<Crt::String> GetTopic() noexcept { return m_topic; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(SubscribeToTopicRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -2309,16 +2292,13 @@ namespace Aws
                 {
                 }
                 GetConfigurationResponse(const GetConfigurationResponse &) = default;
-
                 void SetComponentName(const Crt::Optional<Crt::String> &componentName) noexcept
                 {
                     m_componentName = componentName;
                 }
-                const Crt::Optional<Crt::String> &GetComponentName() noexcept { return m_componentName; }
-
+                Crt::Optional<Crt::String> GetComponentName() noexcept { return m_componentName; }
                 void SetValue(const Crt::Optional<Crt::JsonObject> &value) noexcept { m_value = value; }
-                const Crt::Optional<Crt::JsonObject> &GetValue() noexcept { return m_value; }
-
+                Crt::Optional<Crt::JsonObject> GetValue() noexcept { return m_value; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(GetConfigurationResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -2345,19 +2325,16 @@ namespace Aws
                 {
                 }
                 GetConfigurationRequest(const GetConfigurationRequest &) = default;
-
                 void SetComponentName(const Crt::Optional<Crt::String> &componentName) noexcept
                 {
                     m_componentName = componentName;
                 }
-                const Crt::Optional<Crt::String> &GetComponentName() noexcept { return m_componentName; }
-
+                Crt::Optional<Crt::String> GetComponentName() noexcept { return m_componentName; }
                 void SetKeyPath(const Crt::Optional<Crt::Vector<Crt::String>> &keyPath) noexcept
                 {
                     m_keyPath = keyPath;
                 }
-                const Crt::Optional<Crt::Vector<Crt::String>> &GetKeyPath() noexcept { return m_keyPath; }
-
+                Crt::Optional<Crt::Vector<Crt::String>> GetKeyPath() noexcept { return m_keyPath; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(GetConfigurationRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -2386,7 +2363,6 @@ namespace Aws
                 }
                 SubscribeToValidateConfigurationUpdatesResponse(
                     const SubscribeToValidateConfigurationUpdatesResponse &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(
                     SubscribeToValidateConfigurationUpdatesResponse &,
@@ -2416,7 +2392,6 @@ namespace Aws
                 }
                 SubscribeToValidateConfigurationUpdatesRequest(const SubscribeToValidateConfigurationUpdatesRequest &) =
                     default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(
                     SubscribeToValidateConfigurationUpdatesRequest &,
@@ -2444,7 +2419,6 @@ namespace Aws
                 {
                 }
                 DeferComponentUpdateResponse(const DeferComponentUpdateResponse &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(DeferComponentUpdateResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -2469,22 +2443,18 @@ namespace Aws
                 {
                 }
                 DeferComponentUpdateRequest(const DeferComponentUpdateRequest &) = default;
-
                 void SetDeploymentId(const Crt::Optional<Crt::String> &deploymentId) noexcept
                 {
                     m_deploymentId = deploymentId;
                 }
-                const Crt::Optional<Crt::String> &GetDeploymentId() noexcept { return m_deploymentId; }
-
+                Crt::Optional<Crt::String> GetDeploymentId() noexcept { return m_deploymentId; }
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SetRecheckAfterMs(const Crt::Optional<int> &recheckAfterMs) noexcept
                 {
                     m_recheckAfterMs = recheckAfterMs;
                 }
-                const Crt::Optional<int> &GetRecheckAfterMs() noexcept { return m_recheckAfterMs; }
-
+                Crt::Optional<int> GetRecheckAfterMs() noexcept { return m_recheckAfterMs; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(DeferComponentUpdateRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -2512,10 +2482,8 @@ namespace Aws
                 {
                 }
                 InvalidArgumentsError(const InvalidArgumentsError &) = default;
-
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(InvalidArgumentsError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -2541,10 +2509,8 @@ namespace Aws
                 {
                 }
                 DeleteThingShadowResponse(const DeleteThingShadowResponse &) = default;
-
                 void SetPayload(const Crt::Optional<Crt::Vector<uint8_t>> &payload) noexcept { m_payload = payload; }
-                const Crt::Optional<Crt::Vector<uint8_t>> &GetPayload() noexcept { return m_payload; }
-
+                Crt::Optional<Crt::Vector<uint8_t>> GetPayload() noexcept { return m_payload; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(DeleteThingShadowResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -2570,13 +2536,10 @@ namespace Aws
                 {
                 }
                 DeleteThingShadowRequest(const DeleteThingShadowRequest &) = default;
-
                 void SetThingName(const Crt::Optional<Crt::String> &thingName) noexcept { m_thingName = thingName; }
-                const Crt::Optional<Crt::String> &GetThingName() noexcept { return m_thingName; }
-
+                Crt::Optional<Crt::String> GetThingName() noexcept { return m_thingName; }
                 void SetShadowName(const Crt::Optional<Crt::String> &shadowName) noexcept { m_shadowName = shadowName; }
-                const Crt::Optional<Crt::String> &GetShadowName() noexcept { return m_shadowName; }
-
+                Crt::Optional<Crt::String> GetShadowName() noexcept { return m_shadowName; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(DeleteThingShadowRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -2603,7 +2566,6 @@ namespace Aws
                 {
                 }
                 SubscribeToConfigurationUpdateResponse(const SubscribeToConfigurationUpdateResponse &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(
                     SubscribeToConfigurationUpdateResponse &,
@@ -2631,19 +2593,16 @@ namespace Aws
                 {
                 }
                 SubscribeToConfigurationUpdateRequest(const SubscribeToConfigurationUpdateRequest &) = default;
-
                 void SetComponentName(const Crt::Optional<Crt::String> &componentName) noexcept
                 {
                     m_componentName = componentName;
                 }
-                const Crt::Optional<Crt::String> &GetComponentName() noexcept { return m_componentName; }
-
+                Crt::Optional<Crt::String> GetComponentName() noexcept { return m_componentName; }
                 void SetKeyPath(const Crt::Optional<Crt::Vector<Crt::String>> &keyPath) noexcept
                 {
                     m_keyPath = keyPath;
                 }
-                const Crt::Optional<Crt::Vector<Crt::String>> &GetKeyPath() noexcept { return m_keyPath; }
-
+                Crt::Optional<Crt::Vector<Crt::String>> GetKeyPath() noexcept { return m_keyPath; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(SubscribeToConfigurationUpdateRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -2671,7 +2630,6 @@ namespace Aws
                 {
                 }
                 PublishToIoTCoreResponse(const PublishToIoTCoreResponse &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(PublishToIoTCoreResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -2696,16 +2654,12 @@ namespace Aws
                 {
                 }
                 PublishToIoTCoreRequest(const PublishToIoTCoreRequest &) = default;
-
                 void SetTopicName(const Crt::Optional<Crt::String> &topicName) noexcept { m_topicName = topicName; }
-                const Crt::Optional<Crt::String> &GetTopicName() noexcept { return m_topicName; }
-
-                void SetQos(const Crt::Optional<Crt::String> &qos) noexcept { m_qos = qos; }
-                const Crt::Optional<Crt::String> &GetQos() noexcept { return m_qos; }
-
+                Crt::Optional<Crt::String> GetTopicName() noexcept { return m_topicName; }
+                void SetQos(Crt::Optional<QOS> qos) noexcept;
+                Crt::Optional<QOS> GetQos() noexcept;
                 void SetPayload(const Crt::Optional<Crt::Vector<uint8_t>> &payload) noexcept { m_payload = payload; }
-                const Crt::Optional<Crt::Vector<uint8_t>> &GetPayload() noexcept { return m_payload; }
-
+                Crt::Optional<Crt::Vector<uint8_t>> GetPayload() noexcept { return m_payload; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(PublishToIoTCoreRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -2733,22 +2687,18 @@ namespace Aws
                 {
                 }
                 ResourceNotFoundError(const ResourceNotFoundError &) = default;
-
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SetResourceType(const Crt::Optional<Crt::String> &resourceType) noexcept
                 {
                     m_resourceType = resourceType;
                 }
-                const Crt::Optional<Crt::String> &GetResourceType() noexcept { return m_resourceType; }
-
+                Crt::Optional<Crt::String> GetResourceType() noexcept { return m_resourceType; }
                 void SetResourceName(const Crt::Optional<Crt::String> &resourceName) noexcept
                 {
                     m_resourceName = resourceName;
                 }
-                const Crt::Optional<Crt::String> &GetResourceName() noexcept { return m_resourceName; }
-
+                Crt::Optional<Crt::String> GetResourceName() noexcept { return m_resourceName; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ResourceNotFoundError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -2776,7 +2726,6 @@ namespace Aws
                 {
                 }
                 ResumeComponentResponse(const ResumeComponentResponse &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ResumeComponentResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -2801,13 +2750,11 @@ namespace Aws
                 {
                 }
                 ResumeComponentRequest(const ResumeComponentRequest &) = default;
-
                 void SetComponentName(const Crt::Optional<Crt::String> &componentName) noexcept
                 {
                     m_componentName = componentName;
                 }
-                const Crt::Optional<Crt::String> &GetComponentName() noexcept { return m_componentName; }
-
+                Crt::Optional<Crt::String> GetComponentName() noexcept { return m_componentName; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ResumeComponentRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
@@ -2833,10 +2780,8 @@ namespace Aws
                 {
                 }
                 UnauthorizedError(const UnauthorizedError &) = default;
-
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(UnauthorizedError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -2859,10 +2804,8 @@ namespace Aws
               public:
                 explicit ServiceError(Crt::Allocator *allocator = Crt::g_allocator) noexcept : m_allocator(allocator) {}
                 ServiceError(const ServiceError &) = default;
-
                 void SetMessage(const Crt::Optional<Crt::String> &message) noexcept { m_message = message; }
-                const Crt::Optional<Crt::String> &GetMessage() noexcept { return m_message; }
-
+                Crt::Optional<Crt::String> GetMessage() noexcept { return m_message; }
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(ServiceError &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationError> s_allocateFromPayload(
@@ -2888,7 +2831,6 @@ namespace Aws
                 {
                 }
                 SubscribeToIoTCoreResponse(const SubscribeToIoTCoreResponse &) = default;
-
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(SubscribeToIoTCoreResponse &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
@@ -2913,13 +2855,10 @@ namespace Aws
                 {
                 }
                 SubscribeToIoTCoreRequest(const SubscribeToIoTCoreRequest &) = default;
-
                 void SetTopicName(const Crt::Optional<Crt::String> &topicName) noexcept { m_topicName = topicName; }
-                const Crt::Optional<Crt::String> &GetTopicName() noexcept { return m_topicName; }
-
-                void SetQos(const Crt::Optional<Crt::String> &qos) noexcept { m_qos = qos; }
-                const Crt::Optional<Crt::String> &GetQos() noexcept { return m_qos; }
-
+                Crt::Optional<Crt::String> GetTopicName() noexcept { return m_topicName; }
+                void SetQos(Crt::Optional<QOS> qos) noexcept;
+                Crt::Optional<QOS> GetQos() noexcept;
                 void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
                 static void s_loadFromJsonView(SubscribeToIoTCoreRequest &, const Crt::JsonView &) noexcept;
                 static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(

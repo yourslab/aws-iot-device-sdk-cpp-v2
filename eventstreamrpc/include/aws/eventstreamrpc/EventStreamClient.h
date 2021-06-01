@@ -490,8 +490,8 @@ namespace Aws
 
         enum AWS_EVENTSTREAMRPC_API ResultType
         {
-            APPLICATION_RESPONSE,
-            APPLICATION_ERROR,
+            OPERATION_RESPONSE,
+            OPERATION_ERROR,
             RPC_ERROR
         };
 

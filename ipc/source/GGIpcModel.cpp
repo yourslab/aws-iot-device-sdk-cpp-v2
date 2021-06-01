@@ -505,13 +505,13 @@ namespace Aws
 
             void ComponentUpdatePolicyEvents::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
             {
-                if (m_preUpdateEvent.has_value())
+                if (m_chosenMember == TAG_PRE_UPDATE_EVENT && m_preUpdateEvent.has_value())
                 {
                     Crt::JsonObject preComponentUpdateEventValue;
                     m_preUpdateEvent.value().SerializeToJsonObject(preComponentUpdateEventValue);
                     payloadObject.WithObject("preUpdateEvent", std::move(preComponentUpdateEventValue));
                 }
-                if (m_postUpdateEvent.has_value())
+                else if (m_chosenMember == TAG_POST_UPDATE_EVENT && m_postUpdateEvent.has_value())
                 {
                     Crt::JsonObject postComponentUpdateEventValue;
                     m_postUpdateEvent.value().SerializeToJsonObject(postComponentUpdateEventValue);
@@ -528,14 +528,32 @@ namespace Aws
                     componentUpdatePolicyEvents.m_preUpdateEvent = PreComponentUpdateEvent();
                     PreComponentUpdateEvent::s_loadFromJsonView(
                         componentUpdatePolicyEvents.m_preUpdateEvent.value(), jsonView.GetJsonObject("preUpdateEvent"));
+                    componentUpdatePolicyEvents.m_chosenMember = TAG_PRE_UPDATE_EVENT;
                 }
-                if (jsonView.ValueExists("postUpdateEvent"))
+                else if (jsonView.ValueExists("postUpdateEvent"))
                 {
                     componentUpdatePolicyEvents.m_postUpdateEvent = PostComponentUpdateEvent();
                     PostComponentUpdateEvent::s_loadFromJsonView(
                         componentUpdatePolicyEvents.m_postUpdateEvent.value(),
                         jsonView.GetJsonObject("postUpdateEvent"));
+                    componentUpdatePolicyEvents.m_chosenMember = TAG_POST_UPDATE_EVENT;
                 }
+            }
+
+            ComponentUpdatePolicyEvents &ComponentUpdatePolicyEvents::operator=(
+                const ComponentUpdatePolicyEvents &objectToCopy) noexcept
+            {
+                if (objectToCopy.m_chosenMember == TAG_PRE_UPDATE_EVENT)
+                {
+                    m_preUpdateEvent = objectToCopy.m_preUpdateEvent;
+                    m_chosenMember = objectToCopy.m_chosenMember;
+                }
+                else if (objectToCopy.m_chosenMember == TAG_POST_UPDATE_EVENT)
+                {
+                    m_postUpdateEvent = objectToCopy.m_postUpdateEvent;
+                    m_chosenMember = objectToCopy.m_chosenMember;
+                }
+                return *this;
             }
 
             Crt::String ComponentUpdatePolicyEvents::GetModelName() const noexcept
@@ -564,11 +582,11 @@ namespace Aws
 
             void SecretValue::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
             {
-                if (m_secretString.has_value())
+                if (m_chosenMember == TAG_SECRET_STRING && m_secretString.has_value())
                 {
                     payloadObject.WithString("secretString", m_secretString.value());
                 }
-                if (m_secretBinary.has_value())
+                else if (m_chosenMember == TAG_SECRET_BINARY && m_secretBinary.has_value())
                 {
                     if (m_secretBinary.value().size() > 0)
                     {
@@ -582,15 +600,32 @@ namespace Aws
                 if (jsonView.ValueExists("secretString"))
                 {
                     secretValue.m_secretString = Crt::Optional<Crt::String>(jsonView.GetString("secretString"));
+                    secretValue.m_chosenMember = TAG_SECRET_STRING;
                 }
-                if (jsonView.ValueExists("secretBinary"))
+                else if (jsonView.ValueExists("secretBinary"))
                 {
                     if (jsonView.GetString("secretBinary").size() > 0)
                     {
                         secretValue.m_secretBinary =
                             Crt::Optional<Crt::Vector<uint8_t>>(Crt::Base64Decode(jsonView.GetString("secretBinary")));
                     }
+                    secretValue.m_chosenMember = TAG_SECRET_BINARY;
                 }
+            }
+
+            SecretValue &SecretValue::operator=(const SecretValue &objectToCopy) noexcept
+            {
+                if (objectToCopy.m_chosenMember == TAG_SECRET_STRING)
+                {
+                    m_secretString = objectToCopy.m_secretString;
+                    m_chosenMember = objectToCopy.m_chosenMember;
+                }
+                else if (objectToCopy.m_chosenMember == TAG_SECRET_BINARY)
+                {
+                    m_secretBinary = objectToCopy.m_secretBinary;
+                    m_chosenMember = objectToCopy.m_chosenMember;
+                }
+                return *this;
             }
 
             Crt::String SecretValue::GetModelName() const noexcept { return Crt::String("aws.greengrass#SecretValue"); }
@@ -638,6 +673,51 @@ namespace Aws
                 {
                     localDeployment.m_status = Crt::Optional<Crt::String>(jsonView.GetString("status"));
                 }
+            }
+
+            void LocalDeployment::SetStatus(Crt::Optional<DeploymentStatus> status) noexcept
+            {
+                switch (status.value())
+                {
+                    case DEPLOYMENT_STATUS_QUEUED:
+                        m_status = Crt::String("QUEUED");
+                        break;
+                    case DEPLOYMENT_STATUS_IN_PROGRESS:
+                        m_status = Crt::String("IN_PROGRESS");
+                        break;
+                    case DEPLOYMENT_STATUS_SUCCEEDED:
+                        m_status = Crt::String("SUCCEEDED");
+                        break;
+                    case DEPLOYMENT_STATUS_FAILED:
+                        m_status = Crt::String("FAILED");
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            Crt::Optional<DeploymentStatus> LocalDeployment::GetStatus() noexcept
+            {
+                if (!m_status.has_value())
+                    return Crt::Optional<DeploymentStatus>();
+                if (m_status.value() == Crt::String("QUEUED"))
+                {
+                    return Crt::Optional<DeploymentStatus>(DEPLOYMENT_STATUS_QUEUED);
+                }
+                if (m_status.value() == Crt::String("IN_PROGRESS"))
+                {
+                    return Crt::Optional<DeploymentStatus>(DEPLOYMENT_STATUS_IN_PROGRESS);
+                }
+                if (m_status.value() == Crt::String("SUCCEEDED"))
+                {
+                    return Crt::Optional<DeploymentStatus>(DEPLOYMENT_STATUS_SUCCEEDED);
+                }
+                if (m_status.value() == Crt::String("FAILED"))
+                {
+                    return Crt::Optional<DeploymentStatus>(DEPLOYMENT_STATUS_FAILED);
+                }
+
+                return Crt::Optional<DeploymentStatus>();
             }
 
             Crt::String LocalDeployment::GetModelName() const noexcept
@@ -699,6 +779,37 @@ namespace Aws
                 }
             }
 
+            void ConfigurationValidityReport::SetStatus(Crt::Optional<ConfigurationValidityStatus> status) noexcept
+            {
+                switch (status.value())
+                {
+                    case CONFIGURATION_VALIDITY_STATUS_ACCEPTED:
+                        m_status = Crt::String("ACCEPTED");
+                        break;
+                    case CONFIGURATION_VALIDITY_STATUS_REJECTED:
+                        m_status = Crt::String("REJECTED");
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            Crt::Optional<ConfigurationValidityStatus> ConfigurationValidityReport::GetStatus() noexcept
+            {
+                if (!m_status.has_value())
+                    return Crt::Optional<ConfigurationValidityStatus>();
+                if (m_status.value() == Crt::String("ACCEPTED"))
+                {
+                    return Crt::Optional<ConfigurationValidityStatus>(CONFIGURATION_VALIDITY_STATUS_ACCEPTED);
+                }
+                if (m_status.value() == Crt::String("REJECTED"))
+                {
+                    return Crt::Optional<ConfigurationValidityStatus>(CONFIGURATION_VALIDITY_STATUS_REJECTED);
+                }
+
+                return Crt::Optional<ConfigurationValidityStatus>();
+            }
+
             Crt::String ConfigurationValidityReport::GetModelName() const noexcept
             {
                 return Crt::String("aws.greengrass#ConfigurationValidityReport");
@@ -725,13 +836,13 @@ namespace Aws
 
             void PublishMessage::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
             {
-                if (m_jsonMessage.has_value())
+                if (m_chosenMember == TAG_JSON_MESSAGE && m_jsonMessage.has_value())
                 {
                     Crt::JsonObject jsonMessageValue;
                     m_jsonMessage.value().SerializeToJsonObject(jsonMessageValue);
                     payloadObject.WithObject("jsonMessage", std::move(jsonMessageValue));
                 }
-                if (m_binaryMessage.has_value())
+                else if (m_chosenMember == TAG_BINARY_MESSAGE && m_binaryMessage.has_value())
                 {
                     Crt::JsonObject binaryMessageValue;
                     m_binaryMessage.value().SerializeToJsonObject(binaryMessageValue);
@@ -748,13 +859,30 @@ namespace Aws
                     publishMessage.m_jsonMessage = JsonMessage();
                     JsonMessage::s_loadFromJsonView(
                         publishMessage.m_jsonMessage.value(), jsonView.GetJsonObject("jsonMessage"));
+                    publishMessage.m_chosenMember = TAG_JSON_MESSAGE;
                 }
-                if (jsonView.ValueExists("binaryMessage"))
+                else if (jsonView.ValueExists("binaryMessage"))
                 {
                     publishMessage.m_binaryMessage = BinaryMessage();
                     BinaryMessage::s_loadFromJsonView(
                         publishMessage.m_binaryMessage.value(), jsonView.GetJsonObject("binaryMessage"));
+                    publishMessage.m_chosenMember = TAG_BINARY_MESSAGE;
                 }
+            }
+
+            PublishMessage &PublishMessage::operator=(const PublishMessage &objectToCopy) noexcept
+            {
+                if (objectToCopy.m_chosenMember == TAG_JSON_MESSAGE)
+                {
+                    m_jsonMessage = objectToCopy.m_jsonMessage;
+                    m_chosenMember = objectToCopy.m_chosenMember;
+                }
+                else if (objectToCopy.m_chosenMember == TAG_BINARY_MESSAGE)
+                {
+                    m_binaryMessage = objectToCopy.m_binaryMessage;
+                    m_chosenMember = objectToCopy.m_chosenMember;
+                }
+                return *this;
             }
 
             Crt::String PublishMessage::GetModelName() const noexcept
@@ -824,6 +952,79 @@ namespace Aws
                 }
             }
 
+            void ComponentDetails::SetState(Crt::Optional<LifecycleState> state) noexcept
+            {
+                switch (state.value())
+                {
+                    case LIFECYCLE_STATE_RUNNING:
+                        m_state = Crt::String("RUNNING");
+                        break;
+                    case LIFECYCLE_STATE_ERRORED:
+                        m_state = Crt::String("ERRORED");
+                        break;
+                    case LIFECYCLE_STATE_NEW:
+                        m_state = Crt::String("NEW");
+                        break;
+                    case LIFECYCLE_STATE_FINISHED:
+                        m_state = Crt::String("FINISHED");
+                        break;
+                    case LIFECYCLE_STATE_INSTALLED:
+                        m_state = Crt::String("INSTALLED");
+                        break;
+                    case LIFECYCLE_STATE_BROKEN:
+                        m_state = Crt::String("BROKEN");
+                        break;
+                    case LIFECYCLE_STATE_STARTING:
+                        m_state = Crt::String("STARTING");
+                        break;
+                    case LIFECYCLE_STATE_STOPPING:
+                        m_state = Crt::String("STOPPING");
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            Crt::Optional<LifecycleState> ComponentDetails::GetState() noexcept
+            {
+                if (!m_state.has_value())
+                    return Crt::Optional<LifecycleState>();
+                if (m_state.value() == Crt::String("RUNNING"))
+                {
+                    return Crt::Optional<LifecycleState>(LIFECYCLE_STATE_RUNNING);
+                }
+                if (m_state.value() == Crt::String("ERRORED"))
+                {
+                    return Crt::Optional<LifecycleState>(LIFECYCLE_STATE_ERRORED);
+                }
+                if (m_state.value() == Crt::String("NEW"))
+                {
+                    return Crt::Optional<LifecycleState>(LIFECYCLE_STATE_NEW);
+                }
+                if (m_state.value() == Crt::String("FINISHED"))
+                {
+                    return Crt::Optional<LifecycleState>(LIFECYCLE_STATE_FINISHED);
+                }
+                if (m_state.value() == Crt::String("INSTALLED"))
+                {
+                    return Crt::Optional<LifecycleState>(LIFECYCLE_STATE_INSTALLED);
+                }
+                if (m_state.value() == Crt::String("BROKEN"))
+                {
+                    return Crt::Optional<LifecycleState>(LIFECYCLE_STATE_BROKEN);
+                }
+                if (m_state.value() == Crt::String("STARTING"))
+                {
+                    return Crt::Optional<LifecycleState>(LIFECYCLE_STATE_STARTING);
+                }
+                if (m_state.value() == Crt::String("STOPPING"))
+                {
+                    return Crt::Optional<LifecycleState>(LIFECYCLE_STATE_STOPPING);
+                }
+
+                return Crt::Optional<LifecycleState>();
+            }
+
             Crt::String ComponentDetails::GetModelName() const noexcept
             {
                 return Crt::String("aws.greengrass#ComponentDetails");
@@ -850,13 +1051,13 @@ namespace Aws
 
             void SubscriptionResponseMessage::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
             {
-                if (m_jsonMessage.has_value())
+                if (m_chosenMember == TAG_JSON_MESSAGE && m_jsonMessage.has_value())
                 {
                     Crt::JsonObject jsonMessageValue;
                     m_jsonMessage.value().SerializeToJsonObject(jsonMessageValue);
                     payloadObject.WithObject("jsonMessage", std::move(jsonMessageValue));
                 }
-                if (m_binaryMessage.has_value())
+                else if (m_chosenMember == TAG_BINARY_MESSAGE && m_binaryMessage.has_value())
                 {
                     Crt::JsonObject binaryMessageValue;
                     m_binaryMessage.value().SerializeToJsonObject(binaryMessageValue);
@@ -873,13 +1074,31 @@ namespace Aws
                     subscriptionResponseMessage.m_jsonMessage = JsonMessage();
                     JsonMessage::s_loadFromJsonView(
                         subscriptionResponseMessage.m_jsonMessage.value(), jsonView.GetJsonObject("jsonMessage"));
+                    subscriptionResponseMessage.m_chosenMember = TAG_JSON_MESSAGE;
                 }
-                if (jsonView.ValueExists("binaryMessage"))
+                else if (jsonView.ValueExists("binaryMessage"))
                 {
                     subscriptionResponseMessage.m_binaryMessage = BinaryMessage();
                     BinaryMessage::s_loadFromJsonView(
                         subscriptionResponseMessage.m_binaryMessage.value(), jsonView.GetJsonObject("binaryMessage"));
+                    subscriptionResponseMessage.m_chosenMember = TAG_BINARY_MESSAGE;
                 }
+            }
+
+            SubscriptionResponseMessage &SubscriptionResponseMessage::operator=(
+                const SubscriptionResponseMessage &objectToCopy) noexcept
+            {
+                if (objectToCopy.m_chosenMember == TAG_JSON_MESSAGE)
+                {
+                    m_jsonMessage = objectToCopy.m_jsonMessage;
+                    m_chosenMember = objectToCopy.m_chosenMember;
+                }
+                else if (objectToCopy.m_chosenMember == TAG_BINARY_MESSAGE)
+                {
+                    m_binaryMessage = objectToCopy.m_binaryMessage;
+                    m_chosenMember = objectToCopy.m_chosenMember;
+                }
+                return *this;
             }
 
             Crt::String SubscriptionResponseMessage::GetModelName() const noexcept
@@ -908,7 +1127,8 @@ namespace Aws
 
             void ValidateConfigurationUpdateEvents::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
             {
-                if (m_validateConfigurationUpdateEvent.has_value())
+                if (m_chosenMember == TAG_VALIDATE_CONFIGURATION_UPDATE_EVENT &&
+                    m_validateConfigurationUpdateEvent.has_value())
                 {
                     Crt::JsonObject validateConfigurationUpdateEventValue;
                     m_validateConfigurationUpdateEvent.value().SerializeToJsonObject(
@@ -929,7 +1149,19 @@ namespace Aws
                     ValidateConfigurationUpdateEvent::s_loadFromJsonView(
                         validateConfigurationUpdateEvents.m_validateConfigurationUpdateEvent.value(),
                         jsonView.GetJsonObject("validateConfigurationUpdateEvent"));
+                    validateConfigurationUpdateEvents.m_chosenMember = TAG_VALIDATE_CONFIGURATION_UPDATE_EVENT;
                 }
+            }
+
+            ValidateConfigurationUpdateEvents &ValidateConfigurationUpdateEvents::operator=(
+                const ValidateConfigurationUpdateEvents &objectToCopy) noexcept
+            {
+                if (objectToCopy.m_chosenMember == TAG_VALIDATE_CONFIGURATION_UPDATE_EVENT)
+                {
+                    m_validateConfigurationUpdateEvent = objectToCopy.m_validateConfigurationUpdateEvent;
+                    m_chosenMember = objectToCopy.m_chosenMember;
+                }
+                return *this;
             }
 
             Crt::String ValidateConfigurationUpdateEvents::GetModelName() const noexcept
@@ -959,7 +1191,7 @@ namespace Aws
 
             void ConfigurationUpdateEvents::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
             {
-                if (m_configurationUpdateEvent.has_value())
+                if (m_chosenMember == TAG_CONFIGURATION_UPDATE_EVENT && m_configurationUpdateEvent.has_value())
                 {
                     Crt::JsonObject configurationUpdateEventValue;
                     m_configurationUpdateEvent.value().SerializeToJsonObject(configurationUpdateEventValue);
@@ -977,7 +1209,19 @@ namespace Aws
                     ConfigurationUpdateEvent::s_loadFromJsonView(
                         configurationUpdateEvents.m_configurationUpdateEvent.value(),
                         jsonView.GetJsonObject("configurationUpdateEvent"));
+                    configurationUpdateEvents.m_chosenMember = TAG_CONFIGURATION_UPDATE_EVENT;
                 }
+            }
+
+            ConfigurationUpdateEvents &ConfigurationUpdateEvents::operator=(
+                const ConfigurationUpdateEvents &objectToCopy) noexcept
+            {
+                if (objectToCopy.m_chosenMember == TAG_CONFIGURATION_UPDATE_EVENT)
+                {
+                    m_configurationUpdateEvent = objectToCopy.m_configurationUpdateEvent;
+                    m_chosenMember = objectToCopy.m_chosenMember;
+                }
+                return *this;
             }
 
             Crt::String ConfigurationUpdateEvents::GetModelName() const noexcept
@@ -1006,7 +1250,7 @@ namespace Aws
 
             void IoTCoreMessage::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
             {
-                if (m_message.has_value())
+                if (m_chosenMember == TAG_MESSAGE && m_message.has_value())
                 {
                     Crt::JsonObject mQTTMessageValue;
                     m_message.value().SerializeToJsonObject(mQTTMessageValue);
@@ -1023,7 +1267,18 @@ namespace Aws
                     ioTCoreMessage.m_message = MQTTMessage();
                     MQTTMessage::s_loadFromJsonView(
                         ioTCoreMessage.m_message.value(), jsonView.GetJsonObject("message"));
+                    ioTCoreMessage.m_chosenMember = TAG_MESSAGE;
                 }
+            }
+
+            IoTCoreMessage &IoTCoreMessage::operator=(const IoTCoreMessage &objectToCopy) noexcept
+            {
+                if (objectToCopy.m_chosenMember == TAG_MESSAGE)
+                {
+                    m_message = objectToCopy.m_message;
+                    m_chosenMember = objectToCopy.m_chosenMember;
+                }
+                return *this;
             }
 
             Crt::String IoTCoreMessage::GetModelName() const noexcept
@@ -1443,6 +1698,37 @@ namespace Aws
                 {
                     stopComponentResponse.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
+            }
+
+            void StopComponentResponse::SetStopStatus(Crt::Optional<RequestStatus> stopStatus) noexcept
+            {
+                switch (stopStatus.value())
+                {
+                    case REQUEST_STATUS_SUCCEEDED:
+                        m_stopStatus = Crt::String("SUCCEEDED");
+                        break;
+                    case REQUEST_STATUS_FAILED:
+                        m_stopStatus = Crt::String("FAILED");
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            Crt::Optional<RequestStatus> StopComponentResponse::GetStopStatus() noexcept
+            {
+                if (!m_stopStatus.has_value())
+                    return Crt::Optional<RequestStatus>();
+                if (m_stopStatus.value() == Crt::String("SUCCEEDED"))
+                {
+                    return Crt::Optional<RequestStatus>(REQUEST_STATUS_SUCCEEDED);
+                }
+                if (m_stopStatus.value() == Crt::String("FAILED"))
+                {
+                    return Crt::Optional<RequestStatus>(REQUEST_STATUS_FAILED);
+                }
+
+                return Crt::Optional<RequestStatus>();
             }
 
             Crt::String StopComponentResponse::GetModelName() const noexcept
@@ -1878,6 +2164,37 @@ namespace Aws
                 }
             }
 
+            void UpdateStateRequest::SetState(Crt::Optional<ReportedLifecycleState> state) noexcept
+            {
+                switch (state.value())
+                {
+                    case REPORTED_LIFECYCLE_STATE_RUNNING:
+                        m_state = Crt::String("RUNNING");
+                        break;
+                    case REPORTED_LIFECYCLE_STATE_ERRORED:
+                        m_state = Crt::String("ERRORED");
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            Crt::Optional<ReportedLifecycleState> UpdateStateRequest::GetState() noexcept
+            {
+                if (!m_state.has_value())
+                    return Crt::Optional<ReportedLifecycleState>();
+                if (m_state.value() == Crt::String("RUNNING"))
+                {
+                    return Crt::Optional<ReportedLifecycleState>(REPORTED_LIFECYCLE_STATE_RUNNING);
+                }
+                if (m_state.value() == Crt::String("ERRORED"))
+                {
+                    return Crt::Optional<ReportedLifecycleState>(REPORTED_LIFECYCLE_STATE_ERRORED);
+                }
+
+                return Crt::Optional<ReportedLifecycleState>();
+            }
+
             Crt::String UpdateStateRequest::GetModelName() const noexcept
             {
                 return Crt::String("aws.greengrass#UpdateStateRequest");
@@ -2203,6 +2520,37 @@ namespace Aws
                 {
                     restartComponentResponse.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
                 }
+            }
+
+            void RestartComponentResponse::SetRestartStatus(Crt::Optional<RequestStatus> restartStatus) noexcept
+            {
+                switch (restartStatus.value())
+                {
+                    case REQUEST_STATUS_SUCCEEDED:
+                        m_restartStatus = Crt::String("SUCCEEDED");
+                        break;
+                    case REQUEST_STATUS_FAILED:
+                        m_restartStatus = Crt::String("FAILED");
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            Crt::Optional<RequestStatus> RestartComponentResponse::GetRestartStatus() noexcept
+            {
+                if (!m_restartStatus.has_value())
+                    return Crt::Optional<RequestStatus>();
+                if (m_restartStatus.value() == Crt::String("SUCCEEDED"))
+                {
+                    return Crt::Optional<RequestStatus>(REQUEST_STATUS_SUCCEEDED);
+                }
+                if (m_restartStatus.value() == Crt::String("FAILED"))
+                {
+                    return Crt::Optional<RequestStatus>(REQUEST_STATUS_FAILED);
+                }
+
+                return Crt::Optional<RequestStatus>();
             }
 
             Crt::String RestartComponentResponse::GetModelName() const noexcept
@@ -3997,6 +4345,37 @@ namespace Aws
                 }
             }
 
+            void PublishToIoTCoreRequest::SetQos(Crt::Optional<QOS> qos) noexcept
+            {
+                switch (qos.value())
+                {
+                    case QOS_AT_MOST_ONCE:
+                        m_qos = Crt::String("0");
+                        break;
+                    case QOS_AT_LEAST_ONCE:
+                        m_qos = Crt::String("1");
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            Crt::Optional<QOS> PublishToIoTCoreRequest::GetQos() noexcept
+            {
+                if (!m_qos.has_value())
+                    return Crt::Optional<QOS>();
+                if (m_qos.value() == Crt::String("0"))
+                {
+                    return Crt::Optional<QOS>(QOS_AT_MOST_ONCE);
+                }
+                if (m_qos.value() == Crt::String("1"))
+                {
+                    return Crt::Optional<QOS>(QOS_AT_LEAST_ONCE);
+                }
+
+                return Crt::Optional<QOS>();
+            }
+
             Crt::String PublishToIoTCoreRequest::GetModelName() const noexcept
             {
                 return Crt::String("aws.greengrass#PublishToIoTCoreRequest");
@@ -4306,6 +4685,37 @@ namespace Aws
                 }
             }
 
+            void SubscribeToIoTCoreRequest::SetQos(Crt::Optional<QOS> qos) noexcept
+            {
+                switch (qos.value())
+                {
+                    case QOS_AT_MOST_ONCE:
+                        m_qos = Crt::String("0");
+                        break;
+                    case QOS_AT_LEAST_ONCE:
+                        m_qos = Crt::String("1");
+                        break;
+                    default:
+                        break;
+                }
+            }
+
+            Crt::Optional<QOS> SubscribeToIoTCoreRequest::GetQos() noexcept
+            {
+                if (!m_qos.has_value())
+                    return Crt::Optional<QOS>();
+                if (m_qos.value() == Crt::String("0"))
+                {
+                    return Crt::Optional<QOS>(QOS_AT_MOST_ONCE);
+                }
+                if (m_qos.value() == Crt::String("1"))
+                {
+                    return Crt::Optional<QOS>(QOS_AT_LEAST_ONCE);
+                }
+
+                return Crt::Optional<QOS>();
+            }
+
             Crt::String SubscribeToIoTCoreRequest::GetModelName() const noexcept
             {
                 return Crt::String("aws.greengrass#SubscribeToIoTCoreRequest");
@@ -4403,7 +4813,8 @@ namespace Aws
                 const SubscribeToIoTCoreRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String SubscribeToIoTCoreOperation::GetModelName() const noexcept
@@ -4463,7 +4874,8 @@ namespace Aws
                 const ResumeComponentRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String ResumeComponentOperation::GetModelName() const noexcept
@@ -4523,7 +4935,8 @@ namespace Aws
                 const PublishToIoTCoreRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String PublishToIoTCoreOperation::GetModelName() const noexcept
@@ -4605,7 +5018,8 @@ namespace Aws
                 const SubscribeToConfigurationUpdateRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String SubscribeToConfigurationUpdateOperation::GetModelName() const noexcept
@@ -4664,7 +5078,8 @@ namespace Aws
                 const DeleteThingShadowRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String DeleteThingShadowOperation::GetModelName() const noexcept
@@ -4724,7 +5139,8 @@ namespace Aws
                 const DeferComponentUpdateRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String DeferComponentUpdateOperation::GetModelName() const noexcept
@@ -4804,7 +5220,8 @@ namespace Aws
                 const SubscribeToValidateConfigurationUpdatesRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String SubscribeToValidateConfigurationUpdatesOperation::GetModelName() const noexcept
@@ -4864,7 +5281,8 @@ namespace Aws
                 const GetConfigurationRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String GetConfigurationOperation::GetModelName() const noexcept
@@ -4949,7 +5367,8 @@ namespace Aws
                 const SubscribeToTopicRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String SubscribeToTopicOperation::GetModelName() const noexcept
@@ -5009,7 +5428,8 @@ namespace Aws
                 const GetComponentDetailsRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String GetComponentDetailsOperation::GetModelName() const noexcept
@@ -5069,7 +5489,8 @@ namespace Aws
                 const PublishToTopicRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String PublishToTopicOperation::GetModelName() const noexcept
@@ -5129,7 +5550,8 @@ namespace Aws
                 const ListComponentsRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String ListComponentsOperation::GetModelName() const noexcept
@@ -5189,7 +5611,8 @@ namespace Aws
                 const CreateDebugPasswordRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String CreateDebugPasswordOperation::GetModelName() const noexcept
@@ -5249,7 +5672,8 @@ namespace Aws
                 const GetThingShadowRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String GetThingShadowOperation::GetModelName() const noexcept
@@ -5309,7 +5733,8 @@ namespace Aws
                 const SendConfigurationValidityReportRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String SendConfigurationValidityReportOperation::GetModelName() const noexcept
@@ -5368,7 +5793,8 @@ namespace Aws
                 const UpdateThingShadowRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String UpdateThingShadowOperation::GetModelName() const noexcept
@@ -5428,7 +5854,8 @@ namespace Aws
                 const UpdateConfigurationRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String UpdateConfigurationOperation::GetModelName() const noexcept
@@ -5488,7 +5915,8 @@ namespace Aws
                 const ValidateAuthorizationTokenRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String ValidateAuthorizationTokenOperation::GetModelName() const noexcept
@@ -5548,7 +5976,8 @@ namespace Aws
                 const RestartComponentRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String RestartComponentOperation::GetModelName() const noexcept
@@ -5608,7 +6037,8 @@ namespace Aws
                 const GetLocalDeploymentStatusRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String GetLocalDeploymentStatusOperation::GetModelName() const noexcept
@@ -5668,7 +6098,8 @@ namespace Aws
                 const GetSecretValueRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String GetSecretValueOperation::GetModelName() const noexcept
@@ -5728,7 +6159,8 @@ namespace Aws
                 const UpdateStateRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String UpdateStateOperation::GetModelName() const noexcept
@@ -5788,7 +6220,8 @@ namespace Aws
                 const ListNamedShadowsForThingRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String ListNamedShadowsForThingOperation::GetModelName() const noexcept
@@ -5870,7 +6303,8 @@ namespace Aws
                 const SubscribeToComponentUpdatesRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String SubscribeToComponentUpdatesOperation::GetModelName() const noexcept
@@ -5930,7 +6364,8 @@ namespace Aws
                 const ListLocalDeploymentsRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String ListLocalDeploymentsOperation::GetModelName() const noexcept
@@ -5990,7 +6425,8 @@ namespace Aws
                 const StopComponentRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String StopComponentOperation::GetModelName() const noexcept
@@ -6050,7 +6486,8 @@ namespace Aws
                 const PauseComponentRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String PauseComponentOperation::GetModelName() const noexcept
@@ -6110,7 +6547,8 @@ namespace Aws
                 const CreateLocalDeploymentRequest &request,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept
             {
-                return ClientOperation::Activate((const OperationRequest *)&request, onMessageFlushCallback);
+                return ClientOperation::Activate(
+                    static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
             }
 
             Crt::String CreateLocalDeploymentOperation::GetModelName() const noexcept
