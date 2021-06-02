@@ -43,29 +43,6 @@ static int s_PublishToIoTCore(struct aws_allocator *allocator, void *ctx)
         auto connectedStatus = client.Connect(lifecycleHandler);
         ASSERT_TRUE(connectedStatus.get().baseStatus == EVENT_STREAM_RPC_SUCCESS);
 
-        /* Subscribe to Topic */
-        {
-            Ipc::SubscribeToTopicStreamHandler streamHandler;
-            Ipc::SubscribeToTopicOperation operation = client.NewSubscribeToTopic(streamHandler);
-            Ipc::SubscribeToTopicRequest request(Aws::Crt::String("topic"), allocator);
-            auto activate = operation.Activate(request, nullptr);
-            activate.wait();
-            auto response = operation.GetOperationResult();
-            response.wait();
-        }
-
-        /* Publish to Topic */
-        {
-            Ipc::PublishToTopicOperation operation = client.NewPublishToTopic();
-            Ipc::PublishMessage publishMessage(allocator);
-            Ipc::PublishToTopicRequest request(
-                Aws::Crt::String("example"), Ipc::PublishMessage(publishMessage), allocator);
-            auto activate = operation.Activate(request, nullptr);
-            activate.wait();
-            auto response = operation.GetOperationResult();
-            response.get();
-        }
-
         client.Close();
     }
 
