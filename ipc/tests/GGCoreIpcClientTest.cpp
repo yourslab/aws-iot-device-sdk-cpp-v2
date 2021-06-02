@@ -4,7 +4,7 @@
  */
 #include <aws/crt/Api.h>
 
-#include <aws/ipc/GGCoreIpcClient.h>
+#include <aws/ipc/GGIpcClient.h>
 
 #include <aws/testing/aws_test_harness.h>
 
@@ -39,7 +39,7 @@ static int s_PublishToIoTCore(struct aws_allocator *allocator, void *ctx)
         auto messageAmender = [&](void) -> MessageAmendment & { return connectionAmendment; };
 
         ConnectionLifecycleHandler lifecycleHandler;
-        Ipc::GreengrassIpcClient client(lifecycleHandler, clientBootstrap);
+        Ipc::GreengrassIpcClient client(clientBootstrap);
         auto connectedStatus = client.Connect(lifecycleHandler);
         ASSERT_TRUE(connectedStatus.get().baseStatus == EVENT_STREAM_RPC_SUCCESS);
 
