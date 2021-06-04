@@ -418,6 +418,7 @@ namespace Aws
                 }
                 if (jsonView.ValueExists("keyPath"))
                 {
+                    configurationUpdateEvent.m_keyPath = {};
                     for (const Crt::JsonView &keyPathJsonView : jsonView.GetArray("keyPath"))
                     {
                         Crt::Optional<Crt::String> keyPathItem;
@@ -1525,6 +1526,7 @@ namespace Aws
                 }
                 if (jsonView.ValueExists("rootComponentsToRemove"))
                 {
+                    createLocalDeploymentRequest.m_rootComponentsToRemove = {};
                     for (const Crt::JsonView &componentListJsonView : jsonView.GetArray("rootComponentsToRemove"))
                     {
                         Crt::Optional<Crt::String> componentListItem;
@@ -1821,6 +1823,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("localDeployments"))
                 {
+                    listLocalDeploymentsResponse.m_localDeployments = {};
                     for (const Crt::JsonView &listOfLocalDeploymentsJsonView : jsonView.GetArray("localDeployments"))
                     {
                         Crt::Optional<LocalDeployment> listOfLocalDeploymentsItem;
@@ -2004,6 +2007,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("results"))
                 {
+                    listNamedShadowsForThingResponse.m_results = {};
                     for (const Crt::JsonView &namedShadowListJsonView : jsonView.GetArray("results"))
                     {
                         Crt::Optional<Crt::String> namedShadowListItem;
@@ -2264,6 +2268,7 @@ namespace Aws
                 }
                 if (jsonView.ValueExists("versionStage"))
                 {
+                    getSecretValueResponse.m_versionStage = {};
                     for (const Crt::JsonView &secretVersionListJsonView : jsonView.GetArray("versionStage"))
                     {
                         Crt::Optional<Crt::String> secretVersionListItem;
@@ -2861,6 +2866,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("keyPath"))
                 {
+                    updateConfigurationRequest.m_keyPath = {};
                     for (const Crt::JsonView &keyPathJsonView : jsonView.GetArray("keyPath"))
                     {
                         Crt::Optional<Crt::String> keyPathItem;
@@ -3388,6 +3394,7 @@ namespace Aws
             {
                 if (jsonView.ValueExists("components"))
                 {
+                    listComponentsResponse.m_components = {};
                     for (const Crt::JsonView &listOfComponentsJsonView : jsonView.GetArray("components"))
                     {
                         Crt::Optional<ComponentDetails> listOfComponentsItem;
@@ -3808,6 +3815,7 @@ namespace Aws
                 }
                 if (jsonView.ValueExists("keyPath"))
                 {
+                    getConfigurationRequest.m_keyPath = {};
                     for (const Crt::JsonView &keyPathJsonView : jsonView.GetArray("keyPath"))
                     {
                         Crt::Optional<Crt::String> keyPathItem;
@@ -4232,6 +4240,7 @@ namespace Aws
                 }
                 if (jsonView.ValueExists("keyPath"))
                 {
+                    subscribeToConfigurationUpdateRequest.m_keyPath = {};
                     for (const Crt::JsonView &keyPathJsonView : jsonView.GetArray("keyPath"))
                     {
                         Crt::Optional<Crt::String> keyPathItem;
