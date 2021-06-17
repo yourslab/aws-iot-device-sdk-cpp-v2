@@ -4,7 +4,7 @@
  */
 #include <aws/crt/Api.h>
 
-#include <aws/ipc/GGIpcClient.h>
+#include <aws/ipc/GreengrassCoreIPCClient.h>
 
 #include <aws/testing/aws_test_harness.h>
 
@@ -29,17 +29,17 @@ static int s_PublishToIoTCore(struct aws_allocator *allocator, void *ctx)
         Aws::Crt::Io::EventLoopGroup eventLoopGroup(0, allocator);
         ASSERT_TRUE(eventLoopGroup);
 
-        UnixSocketResolver unixSocketResolver(eventLoopGroup, 8, allocator);
-        ASSERT_TRUE(unixSocketResolver);
+        Aws::Crt::Io::DefaultHostResolver socketResolver(eventLoopGroup, 8, 30, allocator);
+        ASSERT_TRUE(socketResolver);
 
-        Aws::Crt::Io::ClientBootstrap clientBootstrap(eventLoopGroup, unixSocketResolver, allocator);
+        Aws::Crt::Io::ClientBootstrap clientBootstrap(eventLoopGroup, socketResolver, allocator);
         ASSERT_TRUE(clientBootstrap);
         clientBootstrap.EnableBlockingShutdown();
         MessageAmendment connectionAmendment;
         auto messageAmender = [&](void) -> MessageAmendment & { return connectionAmendment; };
 
         ConnectionLifecycleHandler lifecycleHandler;
-        Ipc::GreengrassIpcClient client(clientBootstrap);
+        GreengrassCoreIPC::GreengrassCoreIPCClient client(clientBootstrap);
         auto connectedStatus = client.Connect(lifecycleHandler);
         ASSERT_TRUE(connectedStatus.get().baseStatus == EVENT_STREAM_RPC_SUCCESS);
 

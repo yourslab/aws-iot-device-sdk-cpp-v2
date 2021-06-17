@@ -32,7 +32,7 @@ namespace Aws
             std::promise<RpcError> onFlushPromise;
         };
 
-        MessageAmendment::MessageAmendment(Crt::Allocator *allocator) : m_headers(), m_payload(), m_allocator(allocator)
+        MessageAmendment::MessageAmendment(Crt::Allocator *allocator) noexcept : m_headers(), m_payload(), m_allocator(allocator)
         {
         }
 
@@ -81,65 +81,31 @@ namespace Aws
             }
         }
 
-        UnixSocketResolver::UnixSocketResolver(
-            Crt::Io::EventLoopGroup &elGroup,
-            size_t maxHosts,
-            Crt::Allocator *allocator) noexcept
-            : m_resolver(nullptr), m_allocator(allocator), m_initialized(false)
-        {
-            struct aws_host_resolver_default_options resolver_options;
-            AWS_ZERO_STRUCT(resolver_options);
-            resolver_options.max_entries = maxHosts;
-            resolver_options.el_group = elGroup.GetUnderlyingHandle();
-
-            m_resolver = aws_host_resolver_new_default(allocator, &resolver_options);
-            if (m_resolver != nullptr)
-            {
-                m_initialized = true;
-            }
-        }
-
-        bool UnixSocketResolver::ResolveHost(
-            const Crt::String &host,
-            const Crt::Io::OnHostResolved &onResolved) noexcept
-        {
-            // Nothing to resolve
-            return true;
-        }
-
-        UnixSocketResolver::~UnixSocketResolver()
-        {
-            aws_host_resolver_release(m_resolver);
-            m_initialized = false;
-        }
-
         ClientConnectionOptions::ClientConnectionOptions()
             : Bootstrap(nullptr), SocketOptions(), TlsOptions(), HostName(), Port(0), ConnectRequestCallback(nullptr)
         {
         }
 
         template <typename T>
-        ProtectedPromise<T>::ProtectedPromise(std::promise<T> &&promise) noexcept
+        ProtectedPromise<T>::ProtectedPromise(std::promise<T> &&promise)
             : m_fulfilled(false), m_promise(std::move(promise))
         {
         }
 
-        template <typename T> ProtectedPromise<T>::ProtectedPromise(ProtectedPromise &&rhs) noexcept
-        {
-            *this = std::move(rhs);
-        }
+        template <typename T> ProtectedPromise<T>::ProtectedPromise(ProtectedPromise &&rhs) { *this = std::move(rhs); }
 
-        template <typename T> ProtectedPromise<T> &ProtectedPromise<T>::operator=(ProtectedPromise &&rhs) noexcept
+        template <typename T> ProtectedPromise<T> &ProtectedPromise<T>::operator=(ProtectedPromise &&rhs)
         {
             rhs.m_mutex.lock();
             m_fulfilled = rhs.m_fulfilled;
             m_promise = std::move(rhs.m_promise);
+            rhs.m_promise = {};
             rhs.m_mutex.unlock();
 
             return *this;
         }
 
-        template <typename T> void ProtectedPromise<T>::Reset() noexcept
+        template <typename T> void ProtectedPromise<T>::Reset()
         {
             m_mutex.lock();
             m_promise = {};
@@ -147,9 +113,9 @@ namespace Aws
             m_mutex.unlock();
         }
 
-        template <typename T> ProtectedPromise<T>::ProtectedPromise() noexcept : m_fulfilled(false) {}
+        template <typename T> ProtectedPromise<T>::ProtectedPromise() : m_fulfilled(false) {}
 
-        template <typename T> void ProtectedPromise<T>::SetValue(T &&rhs) noexcept
+        template <typename T> void ProtectedPromise<T>::SetValue(T &&rhs)
         {
             if (m_mutex.try_lock())
             {
@@ -162,7 +128,7 @@ namespace Aws
             }
         }
 
-        template <typename T> void ProtectedPromise<T>::SetValue(const T &lhs) noexcept
+        template <typename T> void ProtectedPromise<T>::SetValue(const T &lhs)
         {
             if (m_mutex.try_lock())
             {
@@ -175,10 +141,7 @@ namespace Aws
             }
         }
 
-        template <typename T> std::future<T> ProtectedPromise<T>::GetFuture() noexcept
-        {
-            return m_promise.get_future();
-        }
+        template <typename T> std::future<T> ProtectedPromise<T>::GetFuture() { return m_promise.get_future(); }
 
         class EventStreamCppToNativeCrtBuilder
         {
@@ -225,6 +188,15 @@ namespace Aws
             m_closedPromise = std::move(rhs.m_closedPromise);
             m_onConnectRequestCallback = rhs.m_onConnectRequestCallback;
 
+            /* Reset rhs. */
+            rhs.m_allocator = nullptr;
+            rhs.m_underlyingConnection = nullptr;
+            rhs.m_clientState = DISCONNECTED;
+            rhs.m_lifecycleHandler = nullptr;
+            rhs.m_connectMessageAmender = nullptr;
+            rhs.m_closedPromise = {};
+            rhs.m_onConnectRequestCallback = nullptr;
+
             return *this;
         }
 
@@ -234,7 +206,8 @@ namespace Aws
         }
 
         ClientConnection::ClientConnection(Crt::Allocator *allocator) noexcept
-            : m_allocator(allocator), m_underlyingConnection(nullptr), m_clientState(CONNECTING_TO_SOCKET)
+            : m_allocator(allocator), m_underlyingConnection(nullptr), m_clientState(DISCONNECTED),
+              m_lifecycleHandler(nullptr), m_connectMessageAmender(nullptr), m_onConnectRequestCallback(nullptr)
         {
         }
 
@@ -247,7 +220,11 @@ namespace Aws
             }
         }
 
-        bool ConnectionLifecycleHandler::OnErrorCallback(int errorCode) { return true; }
+        bool ConnectionLifecycleHandler::OnErrorCallback(int errorCode)
+        {
+            /* Returning true implies that the connection will close upon receiving an error. */
+            return true;
+        }
 
         void ConnectionLifecycleHandler::OnPingCallback(
             const Crt::List<EventStreamHeader> &headers,
@@ -475,6 +452,16 @@ namespace Aws
             m_underlyingHandle.header_value_len = m_valueByteBuf.len;
         }
 
+        EventStreamHeader &EventStreamHeader::operator=(const EventStreamHeader &lhs) noexcept
+        {
+            m_allocator = lhs.m_allocator;
+            m_valueByteBuf = Crt::ByteBufNewCopy(lhs.m_allocator, lhs.m_valueByteBuf.buffer, lhs.m_valueByteBuf.len);
+            m_underlyingHandle = lhs.m_underlyingHandle;
+            m_underlyingHandle.header_value.variable_len_val = m_valueByteBuf.buffer;
+            m_underlyingHandle.header_value_len = m_valueByteBuf.len;
+            return *this;
+        }
+
         EventStreamHeader::EventStreamHeader(EventStreamHeader &&rhs) noexcept
             : m_allocator(rhs.m_allocator), m_valueByteBuf(rhs.m_valueByteBuf),
               m_underlyingHandle(rhs.m_underlyingHandle)
@@ -680,7 +667,8 @@ namespace Aws
 
         void AbstractShapeBase::s_customDeleter(AbstractShapeBase *shape) noexcept
         {
-            Crt::Delete<AbstractShapeBase>(shape, shape->m_allocator);
+            if (shape->m_allocator)
+                Crt::Delete<AbstractShapeBase>(shape, shape->m_allocator);
         }
 
         ClientContinuation::ClientContinuation(
@@ -878,31 +866,30 @@ namespace Aws
         {
         }
 
-        OperationError::OperationError(Crt::Allocator *allocator) noexcept : AbstractShapeBase(allocator) {}
+        OperationError::OperationError() noexcept {}
 
         void OperationError::SerializeToJsonObject(Crt::JsonObject &payloadObject) const { (void)payloadObject; }
 
-        AbstractShapeBase::AbstractShapeBase(Crt::Allocator *allocator) noexcept : m_allocator(allocator) {}
+        AbstractShapeBase::AbstractShapeBase() noexcept : m_allocator(nullptr) {}
 
         AbstractShapeBase::~AbstractShapeBase() noexcept {}
 
-        OperationResponse::OperationResponse(Crt::Allocator *allocator) noexcept : AbstractShapeBase(allocator) {}
+        OperationResponse::OperationResponse() noexcept {}
 
-        OperationRequest::OperationRequest(Crt::Allocator *allocator) noexcept : AbstractShapeBase(allocator) {}
+        OperationRequest::OperationRequest() noexcept {}
 
         ClientOperation::ClientOperation(
             ClientConnection &connection,
             StreamResponseHandler *streamHandler,
             const OperationModelContext &operationModelContext,
             Crt::Allocator *allocator) noexcept
-            : m_operationModelContext(operationModelContext), m_messageCount(0), m_allocator(allocator), m_streamHandler(streamHandler),
-              m_clientContinuation(connection.NewStream(*this)),
-              m_isClosed(false)
+            : m_operationModelContext(operationModelContext), m_messageCount(0), m_allocator(allocator),
+              m_streamHandler(streamHandler), m_clientContinuation(connection.NewStream(*this)), m_isClosed(false)
         {
         }
 
         ClientOperation::ClientOperation(ClientOperation &&rhs) noexcept
-            : m_operationModelContext(rhs.m_operationModelContext), m_messageCount(std::move(rhs.m_messageCount)), 
+            : m_operationModelContext(rhs.m_operationModelContext), m_messageCount(std::move(rhs.m_messageCount)),
               m_allocator(std::move(rhs.m_allocator)), m_streamHandler(rhs.m_streamHandler),
               m_clientContinuation(std::move(rhs.m_clientContinuation)),
               m_initialResponsePromise(std::move(rhs.m_initialResponsePromise)),
@@ -938,12 +925,12 @@ namespace Aws
         }
 
         TaggedResult::TaggedResult(RpcError rpcError) noexcept
-        : m_responseType(RPC_ERROR), m_operationResult(), m_rpcError(rpcError)
+            : m_responseType(RPC_ERROR), m_operationResult(), m_rpcError(rpcError)
         {
         }
 
         TaggedResult::TaggedResult() noexcept
-        : m_responseType(RPC_ERROR), m_operationResult(), m_rpcError({EVENT_STREAM_RPC_INITIALIZATION_ERROR, 0})
+            : m_responseType(RPC_ERROR), m_operationResult(), m_rpcError({EVENT_STREAM_RPC_INITIALIZATION_ERROR, 0})
         {
         }
 

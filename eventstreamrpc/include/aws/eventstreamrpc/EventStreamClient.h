@@ -37,7 +37,6 @@ namespace Aws
     namespace Eventstreamrpc
     {
         class EventStreamHeader;
-        class EventStreamRpcClient;
         class MessageAmendment;
         class ClientConnection;
         class ClientContinuation;
@@ -46,19 +45,28 @@ namespace Aws
         using HeaderValueType = aws_event_stream_header_value_type;
         using MessageType = aws_event_stream_rpc_message_type;
 
+        /**
+         * A callback prototype that is called upon flushing a message over the wire.
+         * @param errorCode A non-zero value if an error occured while attempting to flush the message. 
+         */
         using OnMessageFlushCallback = std::function<void(int errorCode)>;
 
         /**
-         * Allows the application to append headers and change the payload of the CONNECT
-         * packet being sent out.
+         * Allows the application to add headers and change the payload of the CONNECT
+         * packet sent out by the client.
+         * @return The `MessageAmendment` for the client to use during an attempt to connect.
          */
         using ConnectMessageAmender = std::function<MessageAmendment &(void)>;
 
+        /**
+         * A wrapper around an `aws_event_stream_header_value_pair` object.
+         */
         class AWS_EVENTSTREAMRPC_API EventStreamHeader final
         {
           public:
             EventStreamHeader(const EventStreamHeader &lhs) noexcept;
             EventStreamHeader(EventStreamHeader &&rhs) noexcept;
+            EventStreamHeader &operator=(const EventStreamHeader &lhs) noexcept;
             ~EventStreamHeader() noexcept;
             EventStreamHeader(
                 const struct aws_event_stream_header_value_pair &header,
@@ -100,13 +108,19 @@ namespace Aws
             struct aws_event_stream_header_value_pair m_underlyingHandle;
         };
 
+        /**
+         * A means to append headers or modify the payload of a message to be sent by the client.
+         * @note The exception specifiers for move, copy constructors & assignment operators are required since
+         * this class is usually wrapped with `Crt::Optional`.
+         */
         class AWS_EVENTSTREAMRPC_API MessageAmendment final
         {
           public:
             MessageAmendment(const MessageAmendment &lhs) = default;
             MessageAmendment(MessageAmendment &&rhs) = default;
+            MessageAmendment &operator=(const MessageAmendment &rhs) = default;
             ~MessageAmendment() noexcept;
-            explicit MessageAmendment(Crt::Allocator *allocator = Crt::g_allocator);
+            explicit MessageAmendment(Crt::Allocator *allocator = Crt::g_allocator) noexcept;
             MessageAmendment(
                 const Crt::List<EventStreamHeader> &headers,
                 Crt::Optional<Crt::ByteBuf> &payload,
@@ -129,57 +143,11 @@ namespace Aws
             Crt::Allocator *m_allocator;
         };
 
-        class AWS_CRT_CPP_API UnixSocketResolver final : public Crt::Io::HostResolver
-        {
-          public:
-            /**
-             * Resolves UNIX sockets.
-             */
-            UnixSocketResolver(
-                Crt::Io::EventLoopGroup &elGroup,
-                size_t maxHosts,
-                Crt::Allocator *allocator = Crt::g_allocator) noexcept;
-            ~UnixSocketResolver();
-            UnixSocketResolver(const UnixSocketResolver &) = delete;
-            UnixSocketResolver &operator=(const UnixSocketResolver &) = delete;
-            UnixSocketResolver(UnixSocketResolver &&) = delete;
-            UnixSocketResolver &operator=(UnixSocketResolver &&) = delete;
-
-            bool ResolveHost(const Crt::String &host, const Crt::Io::OnHostResolved &onResolved) noexcept override;
-
-            /**
-             * @return true if the instance is in a valid state, false otherwise.
-             */
-            operator bool() const noexcept { return m_initialized; }
-            /**
-             * @return the value of the last aws error encountered by operations on this instance.
-             */
-            int LastError() const noexcept { return aws_last_error(); }
-
-            /// @private
-            aws_host_resolver *GetUnderlyingHandle() noexcept override { return m_resolver; }
-            /// @private
-            aws_host_resolution_config *GetConfig() noexcept override { return NULL; }
-
-          private:
-            aws_host_resolver *m_resolver;
-            Crt::Allocator *m_allocator;
-            bool m_initialized;
-
-            static void s_onHostResolved(
-                struct aws_host_resolver *resolver,
-                const struct aws_string *host_name,
-                int err_code,
-                const struct aws_array_list *host_addresses,
-                void *user_data);
-        };
-
         /**
          * Configuration structure holding all options relating to eventstream RPC connection establishment
          */
         struct AWS_EVENTSTREAMRPC_API ClientConnectionOptions final
         {
-          public:
             ClientConnectionOptions();
             ClientConnectionOptions(const ClientConnectionOptions &rhs) = default;
             ClientConnectionOptions(ClientConnectionOptions &&rhs) = default;
@@ -258,7 +226,6 @@ namespace Aws
             EVENT_STREAM_RPC_UNMAPPED_DATA,
             EVENT_STREAM_RPC_UNSUPPORTED_CONTENT_TYPE,
             EVENT_STREAM_RPC_STREAM_CLOSED_PREMATURELY,
-            EVENT_STREAM_RPC_UNEXPECTED_ERROR,
             EVENT_STREAM_RPC_CRT_ERROR
         };
 
@@ -273,15 +240,15 @@ namespace Aws
         {
             /* A wrapper around std::promise so that it cannot be set twice without having to catch exceptions. */
           public:
-            ProtectedPromise() noexcept;
-            ProtectedPromise(const ProtectedPromise &lhs) noexcept = delete;
-            ProtectedPromise(ProtectedPromise &&rhs) noexcept;
-            ProtectedPromise &operator=(ProtectedPromise &&) noexcept;
-            ProtectedPromise(std::promise<T> &&promise) noexcept;
-            void SetValue(T &&r) noexcept;
-            void SetValue(const T &r) noexcept;
-            std::future<T> GetFuture() noexcept;
-            void Reset() noexcept;
+            ProtectedPromise();
+            ProtectedPromise(const ProtectedPromise &lhs) = delete;
+            ProtectedPromise(ProtectedPromise &&rhs);
+            ProtectedPromise &operator=(ProtectedPromise &&);
+            ProtectedPromise(std::promise<T> &&promise);
+            void SetValue(T &&r);
+            void SetValue(const T &r);
+            std::future<T> GetFuture();
+            void Reset();
 
           private:
             bool m_fulfilled;
@@ -332,7 +299,6 @@ namespace Aws
             enum ClientState
             {
                 DISCONNECTED = 1,
-                CONNECTING_TO_SOCKET,
                 WAITING_FOR_CONNECT_ACK,
                 CONNECTED,
                 DISCONNECTING,
@@ -428,7 +394,7 @@ namespace Aws
         class AWS_EVENTSTREAMRPC_API AbstractShapeBase
         {
           public:
-            AbstractShapeBase(Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+            AbstractShapeBase() noexcept;
             virtual ~AbstractShapeBase() noexcept;
             static void s_customDeleter(AbstractShapeBase *shape) noexcept;
             virtual void SerializeToJsonObject(Crt::JsonObject &payloadObject) const = 0;
@@ -441,7 +407,7 @@ namespace Aws
         class AWS_EVENTSTREAMRPC_API OperationResponse : public AbstractShapeBase
         {
           public:
-            OperationResponse(Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+            OperationResponse() noexcept;
             static void s_customDeleter(OperationResponse *shape) noexcept;
             /* A response does not necessarily have to be serialized so provide a default implementation. */
             virtual void SerializeToJsonObject(Crt::JsonObject &payloadObject) const override;
@@ -450,13 +416,13 @@ namespace Aws
         class AWS_EVENTSTREAMRPC_API OperationRequest : public AbstractShapeBase
         {
           public:
-            OperationRequest(Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+            OperationRequest() noexcept;
         };
 
         class AWS_EVENTSTREAMRPC_API OperationError : public AbstractShapeBase
         {
           public:
-            explicit OperationError(Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+            explicit OperationError() noexcept;
             static void s_customDeleter(OperationError *shape) noexcept;
             virtual void SerializeToJsonObject(Crt::JsonObject &payloadObject) const override;
             virtual Crt::Optional<Crt::String> GetMessage() noexcept = 0;
