@@ -47,7 +47,7 @@ namespace Aws
 
         /**
          * A callback prototype that is called upon flushing a message over the wire.
-         * @param errorCode A non-zero value if an error occured while attempting to flush the message. 
+         * @param errorCode A non-zero value if an error occured while attempting to flush the message.
          */
         using OnMessageFlushCallback = std::function<void(int errorCode)>;
 
@@ -56,7 +56,7 @@ namespace Aws
          * packet sent out by the client.
          * @return The `MessageAmendment` for the client to use during an attempt to connect.
          */
-        using ConnectMessageAmender = std::function<MessageAmendment &(void)>;
+        using ConnectMessageAmender = std::function<const MessageAmendment &(void)>;
 
         /**
          * A wrapper around an `aws_event_stream_header_value_pair` object.
@@ -144,25 +144,65 @@ namespace Aws
         };
 
         /**
-         * Configuration structure holding all options relating to eventstream RPC connection establishment
+         * Configuration structure holding all configurations relating to eventstream RPC connection establishment
          */
-        struct AWS_EVENTSTREAMRPC_API ClientConnectionOptions final
+        class ConnectionConfig
         {
-            ClientConnectionOptions();
-            ClientConnectionOptions(const ClientConnectionOptions &rhs) = default;
-            ClientConnectionOptions(ClientConnectionOptions &&rhs) = default;
+          public:
+            ConnectionConfig() noexcept : m_clientBootstrap(nullptr), m_connectRequestCallback(nullptr) {}
+            Crt::Optional<Crt::String> GetHostName() const noexcept { return m_hostName; }
+            Crt::Optional<uint16_t> GetPort() const noexcept { return m_port; }
+            Crt::Optional<Crt::Io::SocketDomain> GetSocketDomain() const noexcept { return m_socketDomain; }
+            Crt::Optional<Crt::Io::SocketType> GetSocketType() const noexcept { return m_socketType; }
+            Crt::Optional<MessageAmendment> GetConnectAmendment() const noexcept { return m_connectAmendment; }
+            Crt::Optional<Crt::Io::TlsConnectionOptions> GetTlsConnectionOptions() const noexcept
+            {
+                return m_tlsConnectionOptions;
+            }
+            Crt::Io::ClientBootstrap *GetClientBootstrap() const noexcept { return m_clientBootstrap; }
+            OnMessageFlushCallback GetConnectRequestCallback() const noexcept { return m_connectRequestCallback; }
+            ConnectMessageAmender GetConnectMessageAmender() const noexcept
+            {
+                if (m_connectAmendment.has_value())
+                {
+                    return [&](void) -> const MessageAmendment & { return m_connectAmendment.value(); };
+                }
+                else
+                {
+                    return nullptr;
+                }
+            }
 
-            ~ClientConnectionOptions() = default;
+            void SetHostName(Crt::String hostName) noexcept { m_hostName = hostName; }
+            void SetPort(uint16_t port) noexcept { m_port = port; }
+            void SetSocketDomain(Crt::Io::SocketDomain socketDomain) noexcept { m_socketDomain = socketDomain; }
+            void SetSocketType(Crt::Io::SocketType socketType) noexcept { m_socketType = socketType; }
+            void SetConnectAmendment(MessageAmendment connectAmendment) noexcept
+            {
+                m_connectAmendment = connectAmendment;
+            }
+            void SetTlsConnectionOptions(Crt::Io::TlsConnectionOptions tlsConnectionOptions) noexcept
+            {
+                m_tlsConnectionOptions = tlsConnectionOptions;
+            }
+            void SetClientBootstrap(Crt::Io::ClientBootstrap *clientBootstrap) noexcept
+            {
+                m_clientBootstrap = clientBootstrap;
+            }
+            void SetConnectRequestCallback(OnMessageFlushCallback connectRequestCallback) noexcept
+            {
+                m_connectRequestCallback = connectRequestCallback;
+            }
 
-            ClientConnectionOptions &operator=(const ClientConnectionOptions &rhs) = default;
-            ClientConnectionOptions &operator=(ClientConnectionOptions &&rhs) = default;
-
-            Crt::Io::ClientBootstrap *Bootstrap;
-            Crt::Io::SocketOptions SocketOptions;
-            Crt::Optional<Crt::Io::TlsConnectionOptions> TlsOptions;
-            Crt::String HostName;
-            uint16_t Port;
-            OnMessageFlushCallback ConnectRequestCallback;
+          protected:
+            Crt::Optional<Crt::String> m_hostName;
+            Crt::Optional<uint16_t> m_port;
+            Crt::Optional<Crt::Io::SocketDomain> m_socketDomain;
+            Crt::Optional<Crt::Io::SocketType> m_socketType;
+            Crt::Optional<Crt::Io::TlsConnectionOptions> m_tlsConnectionOptions;
+            Crt::Io::ClientBootstrap *m_clientBootstrap;
+            Crt::Optional<MessageAmendment> m_connectAmendment;
+            OnMessageFlushCallback m_connectRequestCallback;
         };
 
         class AWS_EVENTSTREAMRPC_API ConnectionLifecycleHandler
@@ -216,7 +256,7 @@ namespace Aws
             virtual void OnContinuationClosed() = 0;
         };
 
-        enum EventStreamRpcError
+        enum EventStreamRpcStatusCode
         {
             EVENT_STREAM_RPC_SUCCESS = 0,
             EVENT_STREAM_RPC_NULL_PARAMETER,
@@ -231,7 +271,7 @@ namespace Aws
 
         struct RpcError
         {
-            EventStreamRpcError baseStatus;
+            EventStreamRpcStatusCode baseStatus;
             int crtError;
             operator bool() const noexcept { return baseStatus == EVENT_STREAM_RPC_SUCCESS; }
         };
@@ -267,7 +307,7 @@ namespace Aws
             ClientConnection &operator=(ClientConnection &&) noexcept;
 
             std::future<RpcError> Connect(
-                const ClientConnectionOptions &connectionOptions,
+                const ConnectionConfig &connectionOptions,
                 ConnectionLifecycleHandler *connectionLifecycleHandler,
                 ConnectMessageAmender connectMessageAmender) noexcept;
 
@@ -569,7 +609,6 @@ namespace Aws
             ClientOperation(ClientOperation &&clientOperation) noexcept;
             std::future<RpcError> Close(OnMessageFlushCallback onMessageFlushCallback = nullptr) noexcept;
             std::future<TaggedResult> GetOperationResult() noexcept;
-            // virtual bool IsStreaming() = 0;
 
           protected:
             std::future<RpcError> Activate(
@@ -582,8 +621,8 @@ namespace Aws
             const OperationModelContext &m_operationModelContext;
 
           private:
-            EventStreamRpcError HandleData(const Crt::String &modelName, const Crt::Optional<Crt::ByteBuf> &payload);
-            EventStreamRpcError HandleError(
+            EventStreamRpcStatusCode HandleData(const Crt::String &modelName, const Crt::Optional<Crt::ByteBuf> &payload);
+            EventStreamRpcStatusCode HandleError(
                 const Crt::String &modelName,
                 const Crt::Optional<Crt::ByteBuf> &payload,
                 uint16_t messageFlags);

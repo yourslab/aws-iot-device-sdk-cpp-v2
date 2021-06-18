@@ -20,7 +20,7 @@ if (NOT CMAKE_CXX_STANDARD)
 endif()
 
 file(GLOB AWS_GREENGRASSIPC_HEADERS
-        "include/aws/ipc/*.h"
+        "include/aws/greengrass/*.h"
 )
 
 file(GLOB AWS_GREENGRASSIPC_SRC
@@ -33,7 +33,7 @@ file(GLOB AWS_GREENGRASSIPC_CPP_SRC
 
 if (WIN32)
     if (MSVC)
-        source_group("Header Files\\aws\\ipc\\" FILES ${AWS_GREENGRASSIPC_HEADERS})
+        source_group("Header Files\\aws\\greengrass\\" FILES ${AWS_GREENGRASSIPC_HEADERS})
 
         source_group("Source Files" FILES ${AWS_GREENGRASSIPC_SRC})
     endif ()
@@ -98,7 +98,7 @@ endif()
 
 target_link_libraries(GreengrassIpc-cpp ${DEP_AWS_LIBS})
 
-install(FILES ${AWS_GREENGRASSIPC_HEADERS} DESTINATION "include/aws/ipc/" COMPONENT Development)
+install(FILES ${AWS_GREENGRASSIPC_HEADERS} DESTINATION "include/aws/greengrass/" COMPONENT Development)
 
 if (BUILD_SHARED_LIBS)
     set(TARGET_DIR "shared")

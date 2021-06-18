@@ -81,11 +81,6 @@ namespace Aws
             }
         }
 
-        ClientConnectionOptions::ClientConnectionOptions()
-            : Bootstrap(nullptr), SocketOptions(), TlsOptions(), HostName(), Port(0), ConnectRequestCallback(nullptr)
-        {
-        }
-
         template <typename T>
         ProtectedPromise<T>::ProtectedPromise(std::promise<T> &&promise)
             : m_fulfilled(false), m_promise(std::move(promise))
@@ -239,32 +234,74 @@ namespace Aws
         void ConnectionLifecycleHandler::OnDisconnectCallback(int errorCode) { (void)errorCode; }
 
         std::future<RpcError> ClientConnection::Connect(
-            const ClientConnectionOptions &connectionOptions,
+            const ConnectionConfig &connectionConfig,
             ConnectionLifecycleHandler *connectionLifecycleHandler,
             ConnectMessageAmender connectMessageAmender) noexcept
         {
             m_connectAckedPromise.Reset();
             m_closedPromise = {};
             m_lifecycleHandler = connectionLifecycleHandler;
+            EventStreamRpcStatusCode baseError = EVENT_STREAM_RPC_SUCCESS;
 
-            m_onConnectRequestCallback = connectionOptions.ConnectRequestCallback;
+            m_onConnectRequestCallback = connectionConfig.GetConnectRequestCallback();
 
             struct aws_event_stream_rpc_client_connection_options connOptions;
             AWS_ZERO_STRUCT(connOptions);
-            connOptions.host_name = connectionOptions.HostName.c_str();
-            connOptions.port = connectionOptions.Port;
-            connOptions.socket_options = &connectionOptions.SocketOptions.GetImpl();
-            connOptions.bootstrap = connectionOptions.Bootstrap->GetUnderlyingHandle();
+            if(connectionConfig.GetHostName().has_value())
+            {
+                connOptions.host_name = connectionConfig.GetHostName().value().c_str();
+            }
+            else
+            {
+                baseError = EVENT_STREAM_RPC_NULL_PARAMETER;
+            }
+            if(connectionConfig.GetPort().has_value())
+            {
+                connOptions.port = connectionConfig.GetPort().value();
+            }
+            else
+            {
+                baseError = EVENT_STREAM_RPC_NULL_PARAMETER;
+            }
+
+            if(connectionConfig.GetClientBootstrap() != nullptr)
+            {
+                connOptions.bootstrap = connectionConfig.GetClientBootstrap()->GetUnderlyingHandle();
+            }
+            else
+            {
+                baseError = EVENT_STREAM_RPC_NULL_PARAMETER;
+            }
+
+            if (baseError)
+            {
+                m_connectAckedPromise.SetValue({baseError, 0});
+                return m_connectAckedPromise.GetFuture();
+            }
+
+            Crt::Io::SocketOptions socketOptions;
+            if (connectionConfig.GetSocketDomain().has_value())
+            {
+                socketOptions.SetSocketDomain(connectionConfig.GetSocketDomain().value());
+            }
+            if (connectionConfig.GetSocketType().has_value())
+            {
+                socketOptions.SetSocketType(connectionConfig.GetSocketType().value());
+            }        
+            connOptions.socket_options = &socketOptions.GetImpl();
+
             connOptions.on_connection_setup = ClientConnection::s_onConnectionSetup;
             connOptions.on_connection_protocol_message = ClientConnection::s_onProtocolMessage;
             connOptions.on_connection_shutdown = ClientConnection::s_onConnectionShutdown;
             connOptions.user_data = reinterpret_cast<void *>(this);
             m_lifecycleHandler = connectionLifecycleHandler;
-            m_connectMessageAmender = connectMessageAmender;
+            if(connectMessageAmender) {
+                m_connectMessageAmender = connectMessageAmender;
+            }
 
-            if (connectionOptions.TlsOptions.has_value())
+            if (connectionConfig.GetTlsConnectionOptions().has_value())
             {
-                connOptions.tls_options = connectionOptions.TlsOptions->GetUnderlyingHandle();
+                connOptions.tls_options = connectionConfig.GetTlsConnectionOptions()->GetUnderlyingHandle();
             }
 
             int crtError = aws_event_stream_rpc_client_connection_connect(m_allocator, &connOptions);
@@ -515,7 +552,7 @@ namespace Aws
 
                 if (thisConnection->m_connectMessageAmender)
                 {
-                    MessageAmendment &connectAmendment = thisConnection->m_connectMessageAmender();
+                    MessageAmendment connectAmendment(thisConnection->m_connectMessageAmender());
                     auto &amenderHeaderList = connectAmendment.GetHeaders();
                     /* The version header is necessary for establishing the connection. */
                     messageAmendment.AddHeader(EventStreamHeader(
@@ -1015,7 +1052,7 @@ namespace Aws
             return nullptr;
         }
 
-        EventStreamRpcError ClientOperation::HandleData(
+        EventStreamRpcStatusCode ClientOperation::HandleData(
             const Crt::String &modelName,
             const Crt::Optional<Crt::ByteBuf> &payload)
         {
@@ -1056,7 +1093,7 @@ namespace Aws
             return EVENT_STREAM_RPC_SUCCESS;
         }
 
-        EventStreamRpcError ClientOperation::HandleError(
+        EventStreamRpcStatusCode ClientOperation::HandleError(
             const Crt::String &modelName,
             const Crt::Optional<Crt::ByteBuf> &payload,
             uint16_t messageFlags)
@@ -1120,7 +1157,7 @@ namespace Aws
             MessageType messageType,
             uint32_t messageFlags)
         {
-            EventStreamRpcError errorCode = EVENT_STREAM_RPC_SUCCESS;
+            EventStreamRpcStatusCode errorCode = EVENT_STREAM_RPC_SUCCESS;
             const EventStreamHeader *modelHeader = nullptr;
             const EventStreamHeader *contentHeader = nullptr;
 
@@ -1172,7 +1209,7 @@ namespace Aws
             {
                 if (m_messageCount == 1)
                 {
-                    RpcError promiseValue = {(EventStreamRpcError)errorCode, 0};
+                    RpcError promiseValue = {(EventStreamRpcStatusCode)errorCode, 0};
                     m_initialResponsePromise.SetValue(TaggedResult(promiseValue));
                 }
                 else
