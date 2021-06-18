@@ -22,24 +22,26 @@ namespace Awstest
       public:
         Product() noexcept {}
         Product(const Product &) = default;
-        void SetName(const Crt::String &name) noexcept { m_name = name; }
-        Crt::Optional<Crt::String> GetName() noexcept { return m_name; }
+        void SetName(const Aws::Crt::String &name) noexcept { m_name = name; }
+        Aws::Crt::Optional<Aws::Crt::String> GetName() noexcept { return m_name; }
         void SetPrice(const float &price) noexcept { m_price = price; }
-        Crt::Optional<float> GetPrice() noexcept { return m_price; }
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(Product &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        Aws::Crt::Optional<float> GetPrice() noexcept { return m_price; }
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(Product &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(Product *) noexcept;
         /* This needs to be defined so that `Product` can be used as a key in maps. */
         bool operator<(const Product &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
-        Crt::Optional<Crt::String> m_name;
-        Crt::Optional<float> m_price;
+        Aws::Crt::Allocator *m_allocator;
+        Aws::Crt::Optional<Aws::Crt::String> m_name;
+        Aws::Crt::Optional<float> m_price;
     };
 
     class Customer : public AbstractShapeBase
@@ -48,26 +50,28 @@ namespace Awstest
         Customer() noexcept {}
         Customer(const Customer &) = default;
         void SetId(const int64_t &id) noexcept { m_id = id; }
-        Crt::Optional<int64_t> GetId() noexcept { return m_id; }
-        void SetFirstName(const Crt::String &firstName) noexcept { m_firstName = firstName; }
-        Crt::Optional<Crt::String> GetFirstName() noexcept { return m_firstName; }
-        void SetLastName(const Crt::String &lastName) noexcept { m_lastName = lastName; }
-        Crt::Optional<Crt::String> GetLastName() noexcept { return m_lastName; }
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(Customer &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        Aws::Crt::Optional<int64_t> GetId() noexcept { return m_id; }
+        void SetFirstName(const Aws::Crt::String &firstName) noexcept { m_firstName = firstName; }
+        Aws::Crt::Optional<Aws::Crt::String> GetFirstName() noexcept { return m_firstName; }
+        void SetLastName(const Aws::Crt::String &lastName) noexcept { m_lastName = lastName; }
+        Aws::Crt::Optional<Aws::Crt::String> GetLastName() noexcept { return m_lastName; }
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(Customer &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(Customer *) noexcept;
         /* This needs to be defined so that `Customer` can be used as a key in maps. */
         bool operator<(const Customer &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
-        Crt::Optional<int64_t> m_id;
-        Crt::Optional<Crt::String> m_firstName;
-        Crt::Optional<Crt::String> m_lastName;
+        Aws::Crt::Allocator *m_allocator;
+        Aws::Crt::Optional<int64_t> m_id;
+        Aws::Crt::Optional<Aws::Crt::String> m_firstName;
+        Aws::Crt::Optional<Aws::Crt::String> m_lastName;
     };
 
     enum FruitEnum
@@ -83,24 +87,26 @@ namespace Awstest
       public:
         Pair() noexcept {}
         Pair(const Pair &) = default;
-        void SetKey(const Crt::String &key) noexcept { m_key = key; }
-        Crt::Optional<Crt::String> GetKey() noexcept { return m_key; }
-        void SetValue(const Crt::String &value) noexcept { m_value = value; }
-        Crt::Optional<Crt::String> GetValue() noexcept { return m_value; }
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(Pair &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        void SetKey(const Aws::Crt::String &key) noexcept { m_key = key; }
+        Aws::Crt::Optional<Aws::Crt::String> GetKey() noexcept { return m_key; }
+        void SetValue(const Aws::Crt::String &value) noexcept { m_value = value; }
+        Aws::Crt::Optional<Aws::Crt::String> GetValue() noexcept { return m_value; }
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(Pair &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(Pair *) noexcept;
         /* This needs to be defined so that `Pair` can be used as a key in maps. */
         bool operator<(const Pair &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
-        Crt::Optional<Crt::String> m_key;
-        Crt::Optional<Crt::String> m_value;
+        Aws::Crt::Allocator *m_allocator;
+        Aws::Crt::Optional<Aws::Crt::String> m_key;
+        Aws::Crt::Optional<Aws::Crt::String> m_value;
     };
 
     class MessageData : public AbstractShapeBase
@@ -108,57 +114,65 @@ namespace Awstest
       public:
         MessageData() noexcept {}
         MessageData(const MessageData &) = default;
-        void SetStringMessage(const Crt::String &stringMessage) noexcept { m_stringMessage = stringMessage; }
-        Crt::Optional<Crt::String> GetStringMessage() noexcept { return m_stringMessage; }
+        void SetStringMessage(const Aws::Crt::String &stringMessage) noexcept { m_stringMessage = stringMessage; }
+        Aws::Crt::Optional<Aws::Crt::String> GetStringMessage() noexcept { return m_stringMessage; }
         void SetBooleanMessage(const bool &booleanMessage) noexcept { m_booleanMessage = booleanMessage; }
-        Crt::Optional<bool> GetBooleanMessage() noexcept { return m_booleanMessage; }
-        void SetTimeMessage(const Crt::DateTime &timeMessage) noexcept { m_timeMessage = timeMessage; }
-        Crt::Optional<Crt::DateTime> GetTimeMessage() noexcept { return m_timeMessage; }
-        void SetDocumentMessage(const Crt::JsonObject &documentMessage) noexcept
+        Aws::Crt::Optional<bool> GetBooleanMessage() noexcept { return m_booleanMessage; }
+        void SetTimeMessage(const Aws::Crt::DateTime &timeMessage) noexcept { m_timeMessage = timeMessage; }
+        Aws::Crt::Optional<Aws::Crt::DateTime> GetTimeMessage() noexcept { return m_timeMessage; }
+        void SetDocumentMessage(const Aws::Crt::JsonObject &documentMessage) noexcept
         {
             m_documentMessage = documentMessage;
         }
-        Crt::Optional<Crt::JsonObject> GetDocumentMessage() noexcept { return m_documentMessage; }
+        Aws::Crt::Optional<Aws::Crt::JsonObject> GetDocumentMessage() noexcept { return m_documentMessage; }
         void SetEnumMessage(FruitEnum enumMessage) noexcept;
-        Crt::Optional<FruitEnum> GetEnumMessage() noexcept;
-        void SetBlobMessage(const Crt::Vector<uint8_t> &blobMessage) noexcept { m_blobMessage = blobMessage; }
-        Crt::Optional<Crt::Vector<uint8_t>> GetBlobMessage() noexcept { return m_blobMessage; }
-        void SetStringListMessage(const Crt::Vector<Crt::String> &stringListMessage) noexcept
+        Aws::Crt::Optional<FruitEnum> GetEnumMessage() noexcept;
+        void SetBlobMessage(const Aws::Crt::Vector<uint8_t> &blobMessage) noexcept { m_blobMessage = blobMessage; }
+        Aws::Crt::Optional<Aws::Crt::Vector<uint8_t>> GetBlobMessage() noexcept { return m_blobMessage; }
+        void SetStringListMessage(const Aws::Crt::Vector<Aws::Crt::String> &stringListMessage) noexcept
         {
             m_stringListMessage = stringListMessage;
         }
-        Crt::Optional<Crt::Vector<Crt::String>> GetStringListMessage() noexcept { return m_stringListMessage; }
-        void SetKeyValuePairList(const Crt::Vector<Pair> &keyValuePairList) noexcept
+        Aws::Crt::Optional<Aws::Crt::Vector<Aws::Crt::String>> GetStringListMessage() noexcept
+        {
+            return m_stringListMessage;
+        }
+        void SetKeyValuePairList(const Aws::Crt::Vector<Pair> &keyValuePairList) noexcept
         {
             m_keyValuePairList = keyValuePairList;
         }
-        Crt::Optional<Crt::Vector<Pair>> GetKeyValuePairList() noexcept { return m_keyValuePairList; }
-        void SetStringToValue(const Crt::Map<Crt::String, Product> &stringToValue) noexcept
+        Aws::Crt::Optional<Aws::Crt::Vector<Pair>> GetKeyValuePairList() noexcept { return m_keyValuePairList; }
+        void SetStringToValue(const Aws::Crt::Map<Aws::Crt::String, Product> &stringToValue) noexcept
         {
             m_stringToValue = stringToValue;
         }
-        Crt::Optional<Crt::Map<Crt::String, Product>> GetStringToValue() noexcept { return m_stringToValue; }
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(MessageData &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        Aws::Crt::Optional<Aws::Crt::Map<Aws::Crt::String, Product>> GetStringToValue() noexcept
+        {
+            return m_stringToValue;
+        }
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(MessageData &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<AbstractShapeBase> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(MessageData *) noexcept;
         /* This needs to be defined so that `MessageData` can be used as a key in maps. */
         bool operator<(const MessageData &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
-        Crt::Optional<Crt::String> m_stringMessage;
-        Crt::Optional<bool> m_booleanMessage;
-        Crt::Optional<Crt::DateTime> m_timeMessage;
-        Crt::Optional<Crt::JsonObject> m_documentMessage;
-        Crt::Optional<Crt::String> m_enumMessage;
-        Crt::Optional<Crt::Vector<uint8_t>> m_blobMessage;
-        Crt::Optional<Crt::Vector<Crt::String>> m_stringListMessage;
-        Crt::Optional<Crt::Vector<Pair>> m_keyValuePairList;
-        Crt::Optional<Crt::Map<Crt::String, Product>> m_stringToValue;
+        Aws::Crt::Allocator *m_allocator;
+        Aws::Crt::Optional<Aws::Crt::String> m_stringMessage;
+        Aws::Crt::Optional<bool> m_booleanMessage;
+        Aws::Crt::Optional<Aws::Crt::DateTime> m_timeMessage;
+        Aws::Crt::Optional<Aws::Crt::JsonObject> m_documentMessage;
+        Aws::Crt::Optional<Aws::Crt::String> m_enumMessage;
+        Aws::Crt::Optional<Aws::Crt::Vector<uint8_t>> m_blobMessage;
+        Aws::Crt::Optional<Aws::Crt::Vector<Aws::Crt::String>> m_stringListMessage;
+        Aws::Crt::Optional<Aws::Crt::Vector<Pair>> m_keyValuePairList;
+        Aws::Crt::Optional<Aws::Crt::Map<Aws::Crt::String, Product>> m_stringToValue;
     };
 
     class EchoStreamingMessage : public OperationResponse
@@ -172,7 +186,7 @@ namespace Awstest
             m_streamMessage = streamMessage;
             m_chosenMember = TAG_STREAM_MESSAGE;
         }
-        Crt::Optional<MessageData> GetStreamMessage() noexcept
+        Aws::Crt::Optional<MessageData> GetStreamMessage() noexcept
         {
             if (m_chosenMember == TAG_STREAM_MESSAGE)
             {
@@ -180,7 +194,7 @@ namespace Awstest
             }
             else
             {
-                return Crt::Optional<MessageData>();
+                return Aws::Crt::Optional<MessageData>();
             }
         }
         void SetKeyValuePair(const Pair &keyValuePair) noexcept
@@ -188,7 +202,7 @@ namespace Awstest
             m_keyValuePair = keyValuePair;
             m_chosenMember = TAG_KEY_VALUE_PAIR;
         }
-        Crt::Optional<Pair> GetKeyValuePair() noexcept
+        Aws::Crt::Optional<Pair> GetKeyValuePair() noexcept
         {
             if (m_chosenMember == TAG_KEY_VALUE_PAIR)
             {
@@ -196,28 +210,30 @@ namespace Awstest
             }
             else
             {
-                return Crt::Optional<Pair>();
+                return Aws::Crt::Optional<Pair>();
             }
         }
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(EchoStreamingMessage &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(EchoStreamingMessage &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(EchoStreamingMessage *) noexcept;
         /* This needs to be defined so that `EchoStreamingMessage` can be used as a key in maps. */
         bool operator<(const EchoStreamingMessage &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
+        Aws::Crt::Allocator *m_allocator;
         enum ChosenMember
         {
             TAG_STREAM_MESSAGE,
             TAG_KEY_VALUE_PAIR
         } m_chosenMember;
-        Crt::Optional<MessageData> m_streamMessage;
-        Crt::Optional<Pair> m_keyValuePair;
+        Aws::Crt::Optional<MessageData> m_streamMessage;
+        Aws::Crt::Optional<Pair> m_keyValuePair;
     };
 
     class GetAllProductsResponse : public OperationResponse
@@ -225,21 +241,23 @@ namespace Awstest
       public:
         GetAllProductsResponse() noexcept {}
         GetAllProductsResponse(const GetAllProductsResponse &) = default;
-        void SetProducts(const Crt::Map<Crt::String, Product> &products) noexcept { m_products = products; }
-        Crt::Optional<Crt::Map<Crt::String, Product>> GetProducts() noexcept { return m_products; }
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(GetAllProductsResponse &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        void SetProducts(const Aws::Crt::Map<Aws::Crt::String, Product> &products) noexcept { m_products = products; }
+        Aws::Crt::Optional<Aws::Crt::Map<Aws::Crt::String, Product>> GetProducts() noexcept { return m_products; }
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(GetAllProductsResponse &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(GetAllProductsResponse *) noexcept;
         /* This needs to be defined so that `GetAllProductsResponse` can be used as a key in maps. */
         bool operator<(const GetAllProductsResponse &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
-        Crt::Optional<Crt::Map<Crt::String, Product>> m_products;
+        Aws::Crt::Allocator *m_allocator;
+        Aws::Crt::Optional<Aws::Crt::Map<Aws::Crt::String, Product>> m_products;
     };
 
     class GetAllProductsRequest : public OperationRequest
@@ -247,18 +265,20 @@ namespace Awstest
       public:
         GetAllProductsRequest() noexcept {}
         GetAllProductsRequest(const GetAllProductsRequest &) = default;
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(GetAllProductsRequest &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(GetAllProductsRequest &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(GetAllProductsRequest *) noexcept;
         /* This needs to be defined so that `GetAllProductsRequest` can be used as a key in maps. */
         bool operator<(const GetAllProductsRequest &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
+        Aws::Crt::Allocator *m_allocator;
     };
 
     class GetAllCustomersResponse : public OperationResponse
@@ -266,21 +286,23 @@ namespace Awstest
       public:
         GetAllCustomersResponse() noexcept {}
         GetAllCustomersResponse(const GetAllCustomersResponse &) = default;
-        void SetCustomers(const Crt::Vector<Customer> &customers) noexcept { m_customers = customers; }
-        Crt::Optional<Crt::Vector<Customer>> GetCustomers() noexcept { return m_customers; }
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(GetAllCustomersResponse &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        void SetCustomers(const Aws::Crt::Vector<Customer> &customers) noexcept { m_customers = customers; }
+        Aws::Crt::Optional<Aws::Crt::Vector<Customer>> GetCustomers() noexcept { return m_customers; }
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(GetAllCustomersResponse &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(GetAllCustomersResponse *) noexcept;
         /* This needs to be defined so that `GetAllCustomersResponse` can be used as a key in maps. */
         bool operator<(const GetAllCustomersResponse &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
-        Crt::Optional<Crt::Vector<Customer>> m_customers;
+        Aws::Crt::Allocator *m_allocator;
+        Aws::Crt::Optional<Aws::Crt::Vector<Customer>> m_customers;
     };
 
     class GetAllCustomersRequest : public OperationRequest
@@ -288,18 +310,20 @@ namespace Awstest
       public:
         GetAllCustomersRequest() noexcept {}
         GetAllCustomersRequest(const GetAllCustomersRequest &) = default;
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(GetAllCustomersRequest &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(GetAllCustomersRequest &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(GetAllCustomersRequest *) noexcept;
         /* This needs to be defined so that `GetAllCustomersRequest` can be used as a key in maps. */
         bool operator<(const GetAllCustomersRequest &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
+        Aws::Crt::Allocator *m_allocator;
     };
 
     class EchoMessageResponse : public OperationResponse
@@ -308,20 +332,22 @@ namespace Awstest
         EchoMessageResponse() noexcept {}
         EchoMessageResponse(const EchoMessageResponse &) = default;
         void SetMessage(const MessageData &message) noexcept { m_message = message; }
-        Crt::Optional<MessageData> GetMessage() noexcept { return m_message; }
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(EchoMessageResponse &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        Aws::Crt::Optional<MessageData> GetMessage() noexcept { return m_message; }
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(EchoMessageResponse &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(EchoMessageResponse *) noexcept;
         /* This needs to be defined so that `EchoMessageResponse` can be used as a key in maps. */
         bool operator<(const EchoMessageResponse &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
-        Crt::Optional<MessageData> m_message;
+        Aws::Crt::Allocator *m_allocator;
+        Aws::Crt::Optional<MessageData> m_message;
     };
 
     class EchoMessageRequest : public OperationRequest
@@ -330,20 +356,22 @@ namespace Awstest
         EchoMessageRequest() noexcept {}
         EchoMessageRequest(const EchoMessageRequest &) = default;
         void SetMessage(const MessageData &message) noexcept { m_message = message; }
-        Crt::Optional<MessageData> GetMessage() noexcept { return m_message; }
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(EchoMessageRequest &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        Aws::Crt::Optional<MessageData> GetMessage() noexcept { return m_message; }
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(EchoMessageRequest &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(EchoMessageRequest *) noexcept;
         /* This needs to be defined so that `EchoMessageRequest` can be used as a key in maps. */
         bool operator<(const EchoMessageRequest &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
-        Crt::Optional<MessageData> m_message;
+        Aws::Crt::Allocator *m_allocator;
+        Aws::Crt::Optional<MessageData> m_message;
     };
 
     class EchoStreamingResponse : public OperationResponse
@@ -351,18 +379,20 @@ namespace Awstest
       public:
         EchoStreamingResponse() noexcept {}
         EchoStreamingResponse(const EchoStreamingResponse &) = default;
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(EchoStreamingResponse &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(EchoStreamingResponse &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(EchoStreamingResponse *) noexcept;
         /* This needs to be defined so that `EchoStreamingResponse` can be used as a key in maps. */
         bool operator<(const EchoStreamingResponse &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
+        Aws::Crt::Allocator *m_allocator;
     };
 
     class EchoStreamingRequest : public OperationRequest
@@ -370,18 +400,20 @@ namespace Awstest
       public:
         EchoStreamingRequest() noexcept {}
         EchoStreamingRequest(const EchoStreamingRequest &) = default;
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(EchoStreamingRequest &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(EchoStreamingRequest &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(EchoStreamingRequest *) noexcept;
         /* This needs to be defined so that `EchoStreamingRequest` can be used as a key in maps. */
         bool operator<(const EchoStreamingRequest &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
+        Aws::Crt::Allocator *m_allocator;
     };
 
     class ServiceError : public OperationError
@@ -389,24 +421,26 @@ namespace Awstest
       public:
         ServiceError() noexcept {}
         ServiceError(const ServiceError &) = default;
-        void SetMessage(const Crt::String &message) noexcept { m_message = message; }
-        Crt::Optional<Crt::String> GetMessage() noexcept override { return m_message; }
-        void SetValue(const Crt::String &value) noexcept { m_value = value; }
-        Crt::Optional<Crt::String> GetValue() noexcept { return m_value; }
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(ServiceError &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<OperationError> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        void SetMessage(const Aws::Crt::String &message) noexcept { m_message = message; }
+        Aws::Crt::Optional<Aws::Crt::String> GetMessage() noexcept override { return m_message; }
+        void SetValue(const Aws::Crt::String &value) noexcept { m_value = value; }
+        Aws::Crt::Optional<Aws::Crt::String> GetValue() noexcept { return m_value; }
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(ServiceError &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<OperationError> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(ServiceError *) noexcept;
         /* This needs to be defined so that `ServiceError` can be used as a key in maps. */
         bool operator<(const ServiceError &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
-        Crt::Optional<Crt::String> m_message;
-        Crt::Optional<Crt::String> m_value;
+        Aws::Crt::Allocator *m_allocator;
+        Aws::Crt::Optional<Aws::Crt::String> m_message;
+        Aws::Crt::Optional<Aws::Crt::String> m_value;
     };
 
     class CauseServiceErrorResponse : public OperationResponse
@@ -414,18 +448,20 @@ namespace Awstest
       public:
         CauseServiceErrorResponse() noexcept {}
         CauseServiceErrorResponse(const CauseServiceErrorResponse &) = default;
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(CauseServiceErrorResponse &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<OperationResponse> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(CauseServiceErrorResponse &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<OperationResponse> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(CauseServiceErrorResponse *) noexcept;
         /* This needs to be defined so that `CauseServiceErrorResponse` can be used as a key in maps. */
         bool operator<(const CauseServiceErrorResponse &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
+        Aws::Crt::Allocator *m_allocator;
     };
 
     class CauseServiceErrorRequest : public OperationRequest
@@ -433,34 +469,36 @@ namespace Awstest
       public:
         CauseServiceErrorRequest() noexcept {}
         CauseServiceErrorRequest(const CauseServiceErrorRequest &) = default;
-        void SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept override;
-        static void s_loadFromJsonView(CauseServiceErrorRequest &, const Crt::JsonView &) noexcept;
-        static Crt::ScopedResource<OperationRequest> s_allocateFromPayload(Crt::StringView, Crt::Allocator *) noexcept;
+        void SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept override;
+        static void s_loadFromJsonView(CauseServiceErrorRequest &, const Aws::Crt::JsonView &) noexcept;
+        static Aws::Crt::ScopedResource<OperationRequest> s_allocateFromPayload(
+            Aws::Crt::StringView,
+            Aws::Crt::Allocator *) noexcept;
         static void s_customDeleter(CauseServiceErrorRequest *) noexcept;
         /* This needs to be defined so that `CauseServiceErrorRequest` can be used as a key in maps. */
         bool operator<(const CauseServiceErrorRequest &) const noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
 
       private:
-        Crt::Allocator *m_allocator;
+        Aws::Crt::Allocator *m_allocator;
     };
 
     class GetAllProductsOperationContext : public OperationModelContext
     {
       public:
         GetAllProductsOperationContext(const EchoTestRpcServiceModel &serviceModel) noexcept;
-        Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
-            Crt::StringView stringView,
-            Crt::Allocator *allocator) const noexcept override;
-        Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
-            Crt::StringView stringView,
-            Crt::Allocator *allocator) const noexcept override;
-        Crt::String GetRequestModelName() const noexcept override;
-        Crt::String GetInitialResponseModelName() const noexcept override;
-        Crt::Optional<Crt::String> GetStreamingResponseModelName() const noexcept override;
-        Crt::String GetOperationName() const noexcept override;
+        Aws::Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
+            Aws::Crt::StringView stringView,
+            Aws::Crt::Allocator *allocator) const noexcept override;
+        Aws::Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
+            Aws::Crt::StringView stringView,
+            Aws::Crt::Allocator *allocator) const noexcept override;
+        Aws::Crt::String GetRequestModelName() const noexcept override;
+        Aws::Crt::String GetInitialResponseModelName() const noexcept override;
+        Aws::Crt::Optional<Aws::Crt::String> GetStreamingResponseModelName() const noexcept override;
+        Aws::Crt::String GetOperationName() const noexcept override;
     };
 
     class GetAllProductsResult
@@ -485,30 +523,30 @@ namespace Awstest
         GetAllProductsOperation(
             ClientConnection &connection,
             const GetAllProductsOperationContext &operationContext,
-            Crt::Allocator *allocator) noexcept;
+            Aws::Crt::Allocator *allocator) noexcept;
         std::future<RpcError> Activate(
             const GetAllProductsRequest &request,
             OnMessageFlushCallback onMessageFlushCallback) noexcept;
         std::future<GetAllProductsResult> GetResult() noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
     };
 
     class CauseServiceErrorOperationContext : public OperationModelContext
     {
       public:
         CauseServiceErrorOperationContext(const EchoTestRpcServiceModel &serviceModel) noexcept;
-        Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
-            Crt::StringView stringView,
-            Crt::Allocator *allocator) const noexcept override;
-        Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
-            Crt::StringView stringView,
-            Crt::Allocator *allocator) const noexcept override;
-        Crt::String GetRequestModelName() const noexcept override;
-        Crt::String GetInitialResponseModelName() const noexcept override;
-        Crt::Optional<Crt::String> GetStreamingResponseModelName() const noexcept override;
-        Crt::String GetOperationName() const noexcept override;
+        Aws::Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
+            Aws::Crt::StringView stringView,
+            Aws::Crt::Allocator *allocator) const noexcept override;
+        Aws::Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
+            Aws::Crt::StringView stringView,
+            Aws::Crt::Allocator *allocator) const noexcept override;
+        Aws::Crt::String GetRequestModelName() const noexcept override;
+        Aws::Crt::String GetInitialResponseModelName() const noexcept override;
+        Aws::Crt::Optional<Aws::Crt::String> GetStreamingResponseModelName() const noexcept override;
+        Aws::Crt::String GetOperationName() const noexcept override;
     };
 
     class CauseServiceErrorResult
@@ -533,14 +571,14 @@ namespace Awstest
         CauseServiceErrorOperation(
             ClientConnection &connection,
             const CauseServiceErrorOperationContext &operationContext,
-            Crt::Allocator *allocator) noexcept;
+            Aws::Crt::Allocator *allocator) noexcept;
         std::future<RpcError> Activate(
             const CauseServiceErrorRequest &request,
             OnMessageFlushCallback onMessageFlushCallback) noexcept;
         std::future<CauseServiceErrorResult> GetResult() noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
     };
 
     class CauseStreamServiceToErrorStreamHandler : public StreamResponseHandler
@@ -558,28 +596,28 @@ namespace Awstest
         /**
          * Invoked when a message is received on this continuation.
          */
-        void OnStreamEvent(Crt::ScopedResource<OperationResponse> response) override;
+        void OnStreamEvent(Aws::Crt::ScopedResource<OperationResponse> response) override;
         /**
          * Invoked when a message is received on this continuation but results in an error.
          *
          * This callback can return true so that the stream is closed afterwards.
          */
-        bool OnStreamError(Crt::ScopedResource<OperationError> error, RpcError rpcError) override;
+        bool OnStreamError(Aws::Crt::ScopedResource<OperationError> error, RpcError rpcError) override;
     };
     class CauseStreamServiceToErrorOperationContext : public OperationModelContext
     {
       public:
         CauseStreamServiceToErrorOperationContext(const EchoTestRpcServiceModel &serviceModel) noexcept;
-        Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
-            Crt::StringView stringView,
-            Crt::Allocator *allocator) const noexcept override;
-        Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
-            Crt::StringView stringView,
-            Crt::Allocator *allocator) const noexcept override;
-        Crt::String GetRequestModelName() const noexcept override;
-        Crt::String GetInitialResponseModelName() const noexcept override;
-        Crt::Optional<Crt::String> GetStreamingResponseModelName() const noexcept override;
-        Crt::String GetOperationName() const noexcept override;
+        Aws::Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
+            Aws::Crt::StringView stringView,
+            Aws::Crt::Allocator *allocator) const noexcept override;
+        Aws::Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
+            Aws::Crt::StringView stringView,
+            Aws::Crt::Allocator *allocator) const noexcept override;
+        Aws::Crt::String GetRequestModelName() const noexcept override;
+        Aws::Crt::String GetInitialResponseModelName() const noexcept override;
+        Aws::Crt::Optional<Aws::Crt::String> GetStreamingResponseModelName() const noexcept override;
+        Aws::Crt::String GetOperationName() const noexcept override;
     };
 
     class CauseStreamServiceToErrorResult
@@ -607,14 +645,14 @@ namespace Awstest
             ClientConnection &connection,
             CauseStreamServiceToErrorStreamHandler *streamHandler,
             const CauseStreamServiceToErrorOperationContext &operationContext,
-            Crt::Allocator *allocator) noexcept;
+            Aws::Crt::Allocator *allocator) noexcept;
         std::future<RpcError> Activate(
-            const CauseStreamServiceToErrorRequest &request,
+            const EchoStreamingRequest &request,
             OnMessageFlushCallback onMessageFlushCallback) noexcept;
         std::future<CauseStreamServiceToErrorResult> GetResult() noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
     };
 
     class EchoStreamMessagesStreamHandler : public StreamResponseHandler
@@ -626,28 +664,28 @@ namespace Awstest
         /**
          * Invoked when a message is received on this continuation.
          */
-        void OnStreamEvent(Crt::ScopedResource<OperationResponse> response) override;
+        void OnStreamEvent(Aws::Crt::ScopedResource<OperationResponse> response) override;
         /**
          * Invoked when a message is received on this continuation but results in an error.
          *
          * This callback can return true so that the stream is closed afterwards.
          */
-        bool OnStreamError(Crt::ScopedResource<OperationError> error, RpcError rpcError) override;
+        bool OnStreamError(Aws::Crt::ScopedResource<OperationError> error, RpcError rpcError) override;
     };
     class EchoStreamMessagesOperationContext : public OperationModelContext
     {
       public:
         EchoStreamMessagesOperationContext(const EchoTestRpcServiceModel &serviceModel) noexcept;
-        Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
-            Crt::StringView stringView,
-            Crt::Allocator *allocator) const noexcept override;
-        Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
-            Crt::StringView stringView,
-            Crt::Allocator *allocator) const noexcept override;
-        Crt::String GetRequestModelName() const noexcept override;
-        Crt::String GetInitialResponseModelName() const noexcept override;
-        Crt::Optional<Crt::String> GetStreamingResponseModelName() const noexcept override;
-        Crt::String GetOperationName() const noexcept override;
+        Aws::Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
+            Aws::Crt::StringView stringView,
+            Aws::Crt::Allocator *allocator) const noexcept override;
+        Aws::Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
+            Aws::Crt::StringView stringView,
+            Aws::Crt::Allocator *allocator) const noexcept override;
+        Aws::Crt::String GetRequestModelName() const noexcept override;
+        Aws::Crt::String GetInitialResponseModelName() const noexcept override;
+        Aws::Crt::Optional<Aws::Crt::String> GetStreamingResponseModelName() const noexcept override;
+        Aws::Crt::String GetOperationName() const noexcept override;
     };
 
     class EchoStreamMessagesResult
@@ -673,30 +711,30 @@ namespace Awstest
             ClientConnection &connection,
             EchoStreamMessagesStreamHandler *streamHandler,
             const EchoStreamMessagesOperationContext &operationContext,
-            Crt::Allocator *allocator) noexcept;
+            Aws::Crt::Allocator *allocator) noexcept;
         std::future<RpcError> Activate(
-            const EchoStreamMessagesRequest &request,
+            const EchoStreamingRequest &request,
             OnMessageFlushCallback onMessageFlushCallback) noexcept;
         std::future<EchoStreamMessagesResult> GetResult() noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
     };
 
     class EchoMessageOperationContext : public OperationModelContext
     {
       public:
         EchoMessageOperationContext(const EchoTestRpcServiceModel &serviceModel) noexcept;
-        Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
-            Crt::StringView stringView,
-            Crt::Allocator *allocator) const noexcept override;
-        Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
-            Crt::StringView stringView,
-            Crt::Allocator *allocator) const noexcept override;
-        Crt::String GetRequestModelName() const noexcept override;
-        Crt::String GetInitialResponseModelName() const noexcept override;
-        Crt::Optional<Crt::String> GetStreamingResponseModelName() const noexcept override;
-        Crt::String GetOperationName() const noexcept override;
+        Aws::Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
+            Aws::Crt::StringView stringView,
+            Aws::Crt::Allocator *allocator) const noexcept override;
+        Aws::Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
+            Aws::Crt::StringView stringView,
+            Aws::Crt::Allocator *allocator) const noexcept override;
+        Aws::Crt::String GetRequestModelName() const noexcept override;
+        Aws::Crt::String GetInitialResponseModelName() const noexcept override;
+        Aws::Crt::Optional<Aws::Crt::String> GetStreamingResponseModelName() const noexcept override;
+        Aws::Crt::String GetOperationName() const noexcept override;
     };
 
     class EchoMessageResult
@@ -721,30 +759,30 @@ namespace Awstest
         EchoMessageOperation(
             ClientConnection &connection,
             const EchoMessageOperationContext &operationContext,
-            Crt::Allocator *allocator) noexcept;
+            Aws::Crt::Allocator *allocator) noexcept;
         std::future<RpcError> Activate(
             const EchoMessageRequest &request,
             OnMessageFlushCallback onMessageFlushCallback) noexcept;
         std::future<EchoMessageResult> GetResult() noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
     };
 
     class GetAllCustomersOperationContext : public OperationModelContext
     {
       public:
         GetAllCustomersOperationContext(const EchoTestRpcServiceModel &serviceModel) noexcept;
-        Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
-            Crt::StringView stringView,
-            Crt::Allocator *allocator) const noexcept override;
-        Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
-            Crt::StringView stringView,
-            Crt::Allocator *allocator) const noexcept override;
-        Crt::String GetRequestModelName() const noexcept override;
-        Crt::String GetInitialResponseModelName() const noexcept override;
-        Crt::Optional<Crt::String> GetStreamingResponseModelName() const noexcept override;
-        Crt::String GetOperationName() const noexcept override;
+        Aws::Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
+            Aws::Crt::StringView stringView,
+            Aws::Crt::Allocator *allocator) const noexcept override;
+        Aws::Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
+            Aws::Crt::StringView stringView,
+            Aws::Crt::Allocator *allocator) const noexcept override;
+        Aws::Crt::String GetRequestModelName() const noexcept override;
+        Aws::Crt::String GetInitialResponseModelName() const noexcept override;
+        Aws::Crt::Optional<Aws::Crt::String> GetStreamingResponseModelName() const noexcept override;
+        Aws::Crt::String GetOperationName() const noexcept override;
     };
 
     class GetAllCustomersResult
@@ -769,25 +807,25 @@ namespace Awstest
         GetAllCustomersOperation(
             ClientConnection &connection,
             const GetAllCustomersOperationContext &operationContext,
-            Crt::Allocator *allocator) noexcept;
+            Aws::Crt::Allocator *allocator) noexcept;
         std::future<RpcError> Activate(
             const GetAllCustomersRequest &request,
             OnMessageFlushCallback onMessageFlushCallback) noexcept;
         std::future<GetAllCustomersResult> GetResult() noexcept;
 
       protected:
-        Crt::String GetModelName() const noexcept override;
+        Aws::Crt::String GetModelName() const noexcept override;
     };
 
     class EchoTestRpcServiceModel : public ServiceModel
     {
       public:
         EchoTestRpcServiceModel() noexcept;
-        Crt::ScopedResource<OperationError> AllocateOperationErrorFromPayload(
-            const Crt::String &errorModelName,
-            Crt::StringView stringView,
-            Crt::Allocator *allocator) const noexcept override;
-        void AssignModelNameToErrorResponse(Crt::String, ErrorResponseFactory) noexcept;
+        Aws::Crt::ScopedResource<OperationError> AllocateOperationErrorFromPayload(
+            const Aws::Crt::String &errorModelName,
+            Aws::Crt::StringView stringView,
+            Aws::Crt::Allocator *allocator) const noexcept override;
+        void AssignModelNameToErrorResponse(Aws::Crt::String, ErrorResponseFactory) noexcept;
 
       private:
         friend class EchoTestRpcClient;
@@ -797,6 +835,6 @@ namespace Awstest
         EchoStreamMessagesOperationContext m_echoStreamMessagesOperationContext;
         EchoMessageOperationContext m_echoMessageOperationContext;
         GetAllCustomersOperationContext m_getAllCustomersOperationContext;
-        Crt::Map<Crt::String, ErrorResponseFactory> m_modelNameToErrorResponse;
+        Aws::Crt::Map<Aws::Crt::String, ErrorResponseFactory> m_modelNameToErrorResponse;
     };
 } // namespace Awstest

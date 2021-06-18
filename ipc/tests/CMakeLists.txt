@@ -18,6 +18,20 @@ if (WIN32)
     endif ()
 endif()
 
+if (UNIX AND NOT APPLE)
+    include(GNUInstallDirs)
+elseif(NOT DEFINED CMAKE_INSTALL_LIBDIR)
+    set(CMAKE_INSTALL_LIBDIR "lib")
+
+    if (${CMAKE_INSTALL_LIBDIR} STREQUAL "lib64")
+        set(FIND_LIBRARY_USE_LIB64_PATHS true)
+    endif()
+endif()
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_PREFIX_PATH}/${CMAKE_INSTALL_LIBDIR}/cmake")
+if (NOT CMAKE_CXX_STANDARD)
+    set(CMAKE_CXX_STANDARD 11)
+endif()
+
 install(FILES ${AWS_ECHOTESTRPC_HEADERS} DESTINATION "include/awstest/" COMPONENT Development)
 
 file(GLOB TEST_SRC "*.cpp")
@@ -30,5 +44,9 @@ aws_use_package(aws-crt-cpp)
 aws_use_package(GreengrassIpc-cpp)
 
 if (UNIX AND NOT APPLE)
+    add_test_case(EventStreamConnect)
     generate_cpp_test_driver(${TEST_BINARY_NAME})
+    target_include_directories(${TEST_BINARY_NAME} PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+        $<INSTALL_INTERFACE:include>)
 endif()

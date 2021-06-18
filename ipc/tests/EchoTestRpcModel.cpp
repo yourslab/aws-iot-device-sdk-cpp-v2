@@ -3,7 +3,7 @@
 
 namespace Awstest
 {
-    void Product::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void Product::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         if (m_name.has_value())
         {
@@ -15,33 +15,33 @@ namespace Awstest
         }
     }
 
-    void Product::s_loadFromJsonView(Product &product, const Crt::JsonView &jsonView) noexcept
+    void Product::s_loadFromJsonView(Product &product, const Aws::Crt::JsonView &jsonView) noexcept
     {
         if (jsonView.ValueExists("name"))
         {
-            product.m_name = Crt::Optional<Crt::String>(jsonView.GetString("name"));
+            product.m_name = Aws::Crt::Optional<Aws::Crt::String>(jsonView.GetString("name"));
         }
         if (jsonView.ValueExists("price"))
         {
-            product.m_price = Crt::Optional<float>(static_cast<float>(jsonView.GetDouble("price")));
+            product.m_price = Aws::Crt::Optional<float>(static_cast<float>(jsonView.GetDouble("price")));
         }
     }
 
-    Crt::String Product::GetModelName() const noexcept { return Crt::String("awstest#Product"); }
+    Aws::Crt::String Product::GetModelName() const noexcept { return Aws::Crt::String("awstest#Product"); }
 
-    Crt::ScopedResource<AbstractShapeBase> Product::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<AbstractShapeBase> Product::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<Product> shape(Crt::New<Product>(allocator), Product::s_customDeleter);
+        Aws::Crt::ScopedResource<Product> shape(Aws::Crt::New<Product>(allocator), Product::s_customDeleter);
         shape->m_allocator = allocator;
         Product::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<AbstractShapeBase *>(shape.release());
-        return Crt::ScopedResource<AbstractShapeBase>(operationResponse, AbstractShapeBase::s_customDeleter);
+        return Aws::Crt::ScopedResource<AbstractShapeBase>(operationResponse, AbstractShapeBase::s_customDeleter);
     }
 
     void Product::s_customDeleter(Product *shape) noexcept
@@ -49,7 +49,7 @@ namespace Awstest
         AbstractShapeBase::s_customDeleter(static_cast<AbstractShapeBase *>(shape));
     }
 
-    void Customer::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void Customer::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         if (m_id.has_value())
         {
@@ -65,37 +65,37 @@ namespace Awstest
         }
     }
 
-    void Customer::s_loadFromJsonView(Customer &customer, const Crt::JsonView &jsonView) noexcept
+    void Customer::s_loadFromJsonView(Customer &customer, const Aws::Crt::JsonView &jsonView) noexcept
     {
         if (jsonView.ValueExists("id"))
         {
-            customer.m_id = Crt::Optional<int64_t>(jsonView.GetInt64("id"));
+            customer.m_id = Aws::Crt::Optional<int64_t>(jsonView.GetInt64("id"));
         }
         if (jsonView.ValueExists("firstName"))
         {
-            customer.m_firstName = Crt::Optional<Crt::String>(jsonView.GetString("firstName"));
+            customer.m_firstName = Aws::Crt::Optional<Aws::Crt::String>(jsonView.GetString("firstName"));
         }
         if (jsonView.ValueExists("lastName"))
         {
-            customer.m_lastName = Crt::Optional<Crt::String>(jsonView.GetString("lastName"));
+            customer.m_lastName = Aws::Crt::Optional<Aws::Crt::String>(jsonView.GetString("lastName"));
         }
     }
 
-    Crt::String Customer::GetModelName() const noexcept { return Crt::String("awstest#Customer"); }
+    Aws::Crt::String Customer::GetModelName() const noexcept { return Aws::Crt::String("awstest#Customer"); }
 
-    Crt::ScopedResource<AbstractShapeBase> Customer::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<AbstractShapeBase> Customer::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<Customer> shape(Crt::New<Customer>(allocator), Customer::s_customDeleter);
+        Aws::Crt::ScopedResource<Customer> shape(Aws::Crt::New<Customer>(allocator), Customer::s_customDeleter);
         shape->m_allocator = allocator;
         Customer::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<AbstractShapeBase *>(shape.release());
-        return Crt::ScopedResource<AbstractShapeBase>(operationResponse, AbstractShapeBase::s_customDeleter);
+        return Aws::Crt::ScopedResource<AbstractShapeBase>(operationResponse, AbstractShapeBase::s_customDeleter);
     }
 
     void Customer::s_customDeleter(Customer *shape) noexcept
@@ -103,7 +103,7 @@ namespace Awstest
         AbstractShapeBase::s_customDeleter(static_cast<AbstractShapeBase *>(shape));
     }
 
-    void Pair::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void Pair::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         if (m_key.has_value())
         {
@@ -115,33 +115,33 @@ namespace Awstest
         }
     }
 
-    void Pair::s_loadFromJsonView(Pair &pair, const Crt::JsonView &jsonView) noexcept
+    void Pair::s_loadFromJsonView(Pair &pair, const Aws::Crt::JsonView &jsonView) noexcept
     {
         if (jsonView.ValueExists("key"))
         {
-            pair.m_key = Crt::Optional<Crt::String>(jsonView.GetString("key"));
+            pair.m_key = Aws::Crt::Optional<Aws::Crt::String>(jsonView.GetString("key"));
         }
         if (jsonView.ValueExists("value"))
         {
-            pair.m_value = Crt::Optional<Crt::String>(jsonView.GetString("value"));
+            pair.m_value = Aws::Crt::Optional<Aws::Crt::String>(jsonView.GetString("value"));
         }
     }
 
-    Crt::String Pair::GetModelName() const noexcept { return Crt::String("awstest#Pair"); }
+    Aws::Crt::String Pair::GetModelName() const noexcept { return Aws::Crt::String("awstest#Pair"); }
 
-    Crt::ScopedResource<AbstractShapeBase> Pair::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<AbstractShapeBase> Pair::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<Pair> shape(Crt::New<Pair>(allocator), Pair::s_customDeleter);
+        Aws::Crt::ScopedResource<Pair> shape(Aws::Crt::New<Pair>(allocator), Pair::s_customDeleter);
         shape->m_allocator = allocator;
         Pair::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<AbstractShapeBase *>(shape.release());
-        return Crt::ScopedResource<AbstractShapeBase>(operationResponse, AbstractShapeBase::s_customDeleter);
+        return Aws::Crt::ScopedResource<AbstractShapeBase>(operationResponse, AbstractShapeBase::s_customDeleter);
     }
 
     void Pair::s_customDeleter(Pair *shape) noexcept
@@ -149,7 +149,7 @@ namespace Awstest
         AbstractShapeBase::s_customDeleter(static_cast<AbstractShapeBase *>(shape));
     }
 
-    void MessageData::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void MessageData::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         if (m_stringMessage.has_value())
         {
@@ -175,16 +175,16 @@ namespace Awstest
         {
             if (m_blobMessage.value().size() > 0)
             {
-                payloadObject.WithString("blobMessage", Crt::Base64Encode(m_blobMessage.value()));
+                payloadObject.WithString("blobMessage", Aws::Crt::Base64Encode(m_blobMessage.value()));
             }
         }
         if (m_stringListMessage.has_value())
         {
-            Crt::JsonObject stringList;
-            Crt::Vector<Crt::JsonObject> stringListJsonArray;
+            Aws::Crt::JsonObject stringList;
+            Aws::Crt::Vector<Aws::Crt::JsonObject> stringListJsonArray;
             for (const auto &stringListItem : m_stringListMessage.value())
             {
-                Crt::JsonObject stringListJsonArrayItem;
+                Aws::Crt::JsonObject stringListJsonArrayItem;
                 stringListJsonArrayItem.AsString(stringListItem);
                 stringListJsonArray.emplace_back(std::move(stringListJsonArrayItem));
             }
@@ -193,11 +193,11 @@ namespace Awstest
         }
         if (m_keyValuePairList.has_value())
         {
-            Crt::JsonObject keyValuePairList;
-            Crt::Vector<Crt::JsonObject> keyValuePairListJsonArray;
+            Aws::Crt::JsonObject keyValuePairList;
+            Aws::Crt::Vector<Aws::Crt::JsonObject> keyValuePairListJsonArray;
             for (const auto &keyValuePairListItem : m_keyValuePairList.value())
             {
-                Crt::JsonObject keyValuePairListJsonArrayItem;
+                Aws::Crt::JsonObject keyValuePairListJsonArrayItem;
                 keyValuePairListItem.SerializeToJsonObject(keyValuePairListJsonArrayItem);
                 keyValuePairListJsonArray.emplace_back(std::move(keyValuePairListJsonArrayItem));
             }
@@ -206,10 +206,10 @@ namespace Awstest
         }
         if (m_stringToValue.has_value())
         {
-            Crt::JsonObject stringToValueValue;
+            Aws::Crt::JsonObject stringToValueValue;
             for (const auto &stringToValueItem : m_stringToValue.value())
             {
-                Crt::JsonObject stringToValueJsonObject;
+                Aws::Crt::JsonObject stringToValueJsonObject;
                 stringToValueItem.second.SerializeToJsonObject(stringToValueJsonObject);
                 stringToValueValue.WithObject(stringToValueItem.first, std::move(stringToValueJsonObject));
             }
@@ -217,53 +217,54 @@ namespace Awstest
         }
     }
 
-    void MessageData::s_loadFromJsonView(MessageData &messageData, const Crt::JsonView &jsonView) noexcept
+    void MessageData::s_loadFromJsonView(MessageData &messageData, const Aws::Crt::JsonView &jsonView) noexcept
     {
         if (jsonView.ValueExists("stringMessage"))
         {
-            messageData.m_stringMessage = Crt::Optional<Crt::String>(jsonView.GetString("stringMessage"));
+            messageData.m_stringMessage = Aws::Crt::Optional<Aws::Crt::String>(jsonView.GetString("stringMessage"));
         }
         if (jsonView.ValueExists("booleanMessage"))
         {
-            messageData.m_booleanMessage = Crt::Optional<bool>(jsonView.GetBool("booleanMessage"));
+            messageData.m_booleanMessage = Aws::Crt::Optional<bool>(jsonView.GetBool("booleanMessage"));
         }
         if (jsonView.ValueExists("timeMessage"))
         {
-            messageData.m_timeMessage = Crt::Optional<Crt::DateTime>(Crt::DateTime(jsonView.GetDouble("timeMessage")));
+            messageData.m_timeMessage =
+                Aws::Crt::Optional<Aws::Crt::DateTime>(Aws::Crt::DateTime(jsonView.GetDouble("timeMessage")));
         }
         if (jsonView.ValueExists("documentMessage"))
         {
             messageData.m_documentMessage =
-                Crt::Optional<Crt::JsonObject>(jsonView.GetJsonObject("documentMessage").Materialize());
+                Aws::Crt::Optional<Aws::Crt::JsonObject>(jsonView.GetJsonObject("documentMessage").Materialize());
         }
         if (jsonView.ValueExists("enumMessage"))
         {
-            messageData.m_enumMessage = Crt::Optional<Crt::String>(jsonView.GetString("enumMessage"));
+            messageData.m_enumMessage = Aws::Crt::Optional<Aws::Crt::String>(jsonView.GetString("enumMessage"));
         }
         if (jsonView.ValueExists("blobMessage"))
         {
             if (jsonView.GetString("blobMessage").size() > 0)
             {
-                messageData.m_blobMessage =
-                    Crt::Optional<Crt::Vector<uint8_t>>(Crt::Base64Decode(jsonView.GetString("blobMessage")));
+                messageData.m_blobMessage = Aws::Crt::Optional<Aws::Crt::Vector<uint8_t>>(
+                    Aws::Crt::Base64Decode(jsonView.GetString("blobMessage")));
             }
         }
         if (jsonView.ValueExists("stringListMessage"))
         {
-            messageData.m_stringListMessage = Crt::Vector<Crt::String>();
-            for (const Crt::JsonView &stringListJsonView : jsonView.GetArray("stringListMessage"))
+            messageData.m_stringListMessage = Aws::Crt::Vector<Aws::Crt::String>();
+            for (const Aws::Crt::JsonView &stringListJsonView : jsonView.GetArray("stringListMessage"))
             {
-                Crt::Optional<Crt::String> stringListItem;
-                stringListItem = Crt::Optional<Crt::String>(stringListJsonView.AsString());
+                Aws::Crt::Optional<Aws::Crt::String> stringListItem;
+                stringListItem = Aws::Crt::Optional<Aws::Crt::String>(stringListJsonView.AsString());
                 messageData.m_stringListMessage.value().push_back(stringListItem.value());
             }
         }
         if (jsonView.ValueExists("keyValuePairList"))
         {
-            messageData.m_keyValuePairList = Crt::Vector<Pair>();
-            for (const Crt::JsonView &keyValuePairListJsonView : jsonView.GetArray("keyValuePairList"))
+            messageData.m_keyValuePairList = Aws::Crt::Vector<Pair>();
+            for (const Aws::Crt::JsonView &keyValuePairListJsonView : jsonView.GetArray("keyValuePairList"))
             {
-                Crt::Optional<Pair> keyValuePairListItem;
+                Aws::Crt::Optional<Pair> keyValuePairListItem;
                 keyValuePairListItem = Pair();
                 Pair::s_loadFromJsonView(keyValuePairListItem.value(), keyValuePairListJsonView);
                 messageData.m_keyValuePairList.value().push_back(keyValuePairListItem.value());
@@ -271,10 +272,10 @@ namespace Awstest
         }
         if (jsonView.ValueExists("stringToValue"))
         {
-            messageData.m_stringToValue = Crt::Map<Crt::String, Product>();
+            messageData.m_stringToValue = Aws::Crt::Map<Aws::Crt::String, Product>();
             for (const auto &stringToValuePair : jsonView.GetJsonObject("stringToValue").GetAllObjects())
             {
-                Crt::Optional<Product> stringToValueValue;
+                Aws::Crt::Optional<Product> stringToValueValue;
                 stringToValueValue = Product();
                 Product::s_loadFromJsonView(stringToValueValue.value(), stringToValuePair.second);
                 messageData.m_stringToValue.value()[stringToValuePair.first] = stringToValueValue.value();
@@ -287,61 +288,62 @@ namespace Awstest
         switch (enumMessage)
         {
             case FRUIT_ENUM_APPLE:
-                m_enumMessage = Crt::String("apl");
+                m_enumMessage = Aws::Crt::String("apl");
                 break;
             case FRUIT_ENUM_ORANGE:
-                m_enumMessage = Crt::String("org");
+                m_enumMessage = Aws::Crt::String("org");
                 break;
             case FRUIT_ENUM_BANANA:
-                m_enumMessage = Crt::String("ban");
+                m_enumMessage = Aws::Crt::String("ban");
                 break;
             case FRUIT_ENUM_PINEAPPLE:
-                m_enumMessage = Crt::String("pin");
+                m_enumMessage = Aws::Crt::String("pin");
                 break;
             default:
                 break;
         }
     }
 
-    Crt::Optional<FruitEnum> MessageData::GetEnumMessage() noexcept
+    Aws::Crt::Optional<FruitEnum> MessageData::GetEnumMessage() noexcept
     {
         if (!m_enumMessage.has_value())
-            return Crt::Optional<FruitEnum>();
-        if (m_enumMessage.value() == Crt::String("apl"))
+            return Aws::Crt::Optional<FruitEnum>();
+        if (m_enumMessage.value() == Aws::Crt::String("apl"))
         {
-            return Crt::Optional<FruitEnum>(FRUIT_ENUM_APPLE);
+            return Aws::Crt::Optional<FruitEnum>(FRUIT_ENUM_APPLE);
         }
-        if (m_enumMessage.value() == Crt::String("org"))
+        if (m_enumMessage.value() == Aws::Crt::String("org"))
         {
-            return Crt::Optional<FruitEnum>(FRUIT_ENUM_ORANGE);
+            return Aws::Crt::Optional<FruitEnum>(FRUIT_ENUM_ORANGE);
         }
-        if (m_enumMessage.value() == Crt::String("ban"))
+        if (m_enumMessage.value() == Aws::Crt::String("ban"))
         {
-            return Crt::Optional<FruitEnum>(FRUIT_ENUM_BANANA);
+            return Aws::Crt::Optional<FruitEnum>(FRUIT_ENUM_BANANA);
         }
-        if (m_enumMessage.value() == Crt::String("pin"))
+        if (m_enumMessage.value() == Aws::Crt::String("pin"))
         {
-            return Crt::Optional<FruitEnum>(FRUIT_ENUM_PINEAPPLE);
+            return Aws::Crt::Optional<FruitEnum>(FRUIT_ENUM_PINEAPPLE);
         }
 
-        return Crt::Optional<FruitEnum>();
+        return Aws::Crt::Optional<FruitEnum>();
     }
 
-    Crt::String MessageData::GetModelName() const noexcept { return Crt::String("awstest#MessageData"); }
+    Aws::Crt::String MessageData::GetModelName() const noexcept { return Aws::Crt::String("awstest#MessageData"); }
 
-    Crt::ScopedResource<AbstractShapeBase> MessageData::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<AbstractShapeBase> MessageData::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<MessageData> shape(Crt::New<MessageData>(allocator), MessageData::s_customDeleter);
+        Aws::Crt::ScopedResource<MessageData> shape(
+            Aws::Crt::New<MessageData>(allocator), MessageData::s_customDeleter);
         shape->m_allocator = allocator;
         MessageData::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<AbstractShapeBase *>(shape.release());
-        return Crt::ScopedResource<AbstractShapeBase>(operationResponse, AbstractShapeBase::s_customDeleter);
+        return Aws::Crt::ScopedResource<AbstractShapeBase>(operationResponse, AbstractShapeBase::s_customDeleter);
     }
 
     void MessageData::s_customDeleter(MessageData *shape) noexcept
@@ -349,17 +351,17 @@ namespace Awstest
         AbstractShapeBase::s_customDeleter(static_cast<AbstractShapeBase *>(shape));
     }
 
-    void EchoStreamingMessage::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void EchoStreamingMessage::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         if (m_chosenMember == TAG_STREAM_MESSAGE && m_streamMessage.has_value())
         {
-            Crt::JsonObject messageDataValue;
+            Aws::Crt::JsonObject messageDataValue;
             m_streamMessage.value().SerializeToJsonObject(messageDataValue);
             payloadObject.WithObject("streamMessage", std::move(messageDataValue));
         }
         else if (m_chosenMember == TAG_KEY_VALUE_PAIR && m_keyValuePair.has_value())
         {
-            Crt::JsonObject pairValue;
+            Aws::Crt::JsonObject pairValue;
             m_keyValuePair.value().SerializeToJsonObject(pairValue);
             payloadObject.WithObject("keyValuePair", std::move(pairValue));
         }
@@ -367,7 +369,7 @@ namespace Awstest
 
     void EchoStreamingMessage::s_loadFromJsonView(
         EchoStreamingMessage &echoStreamingMessage,
-        const Crt::JsonView &jsonView) noexcept
+        const Aws::Crt::JsonView &jsonView) noexcept
     {
         if (jsonView.ValueExists("streamMessage"))
         {
@@ -400,25 +402,25 @@ namespace Awstest
         return *this;
     }
 
-    Crt::String EchoStreamingMessage::GetModelName() const noexcept
+    Aws::Crt::String EchoStreamingMessage::GetModelName() const noexcept
     {
-        return Crt::String("awstest#EchoStreamingMessage");
+        return Aws::Crt::String("awstest#EchoStreamingMessage");
     }
 
-    Crt::ScopedResource<OperationResponse> EchoStreamingMessage::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<OperationResponse> EchoStreamingMessage::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<EchoStreamingMessage> shape(
-            Crt::New<EchoStreamingMessage>(allocator), EchoStreamingMessage::s_customDeleter);
+        Aws::Crt::ScopedResource<EchoStreamingMessage> shape(
+            Aws::Crt::New<EchoStreamingMessage>(allocator), EchoStreamingMessage::s_customDeleter);
         shape->m_allocator = allocator;
         EchoStreamingMessage::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<OperationResponse *>(shape.release());
-        return Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
+        return Aws::Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
     }
 
     void EchoStreamingMessage::s_customDeleter(EchoStreamingMessage *shape) noexcept
@@ -426,14 +428,14 @@ namespace Awstest
         OperationResponse::s_customDeleter(static_cast<OperationResponse *>(shape));
     }
 
-    void GetAllProductsResponse::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void GetAllProductsResponse::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         if (m_products.has_value())
         {
-            Crt::JsonObject productMapValue;
+            Aws::Crt::JsonObject productMapValue;
             for (const auto &productMapItem : m_products.value())
             {
-                Crt::JsonObject productMapJsonObject;
+                Aws::Crt::JsonObject productMapJsonObject;
                 productMapItem.second.SerializeToJsonObject(productMapJsonObject);
                 productMapValue.WithObject(productMapItem.first, std::move(productMapJsonObject));
             }
@@ -443,14 +445,14 @@ namespace Awstest
 
     void GetAllProductsResponse::s_loadFromJsonView(
         GetAllProductsResponse &getAllProductsResponse,
-        const Crt::JsonView &jsonView) noexcept
+        const Aws::Crt::JsonView &jsonView) noexcept
     {
         if (jsonView.ValueExists("products"))
         {
-            getAllProductsResponse.m_products = Crt::Map<Crt::String, Product>();
+            getAllProductsResponse.m_products = Aws::Crt::Map<Aws::Crt::String, Product>();
             for (const auto &productMapPair : jsonView.GetJsonObject("products").GetAllObjects())
             {
-                Crt::Optional<Product> productMapValue;
+                Aws::Crt::Optional<Product> productMapValue;
                 productMapValue = Product();
                 Product::s_loadFromJsonView(productMapValue.value(), productMapPair.second);
                 getAllProductsResponse.m_products.value()[productMapPair.first] = productMapValue.value();
@@ -458,25 +460,25 @@ namespace Awstest
         }
     }
 
-    Crt::String GetAllProductsResponse::GetModelName() const noexcept
+    Aws::Crt::String GetAllProductsResponse::GetModelName() const noexcept
     {
-        return Crt::String("awstest#GetAllProductsResponse");
+        return Aws::Crt::String("awstest#GetAllProductsResponse");
     }
 
-    Crt::ScopedResource<OperationResponse> GetAllProductsResponse::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<OperationResponse> GetAllProductsResponse::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<GetAllProductsResponse> shape(
-            Crt::New<GetAllProductsResponse>(allocator), GetAllProductsResponse::s_customDeleter);
+        Aws::Crt::ScopedResource<GetAllProductsResponse> shape(
+            Aws::Crt::New<GetAllProductsResponse>(allocator), GetAllProductsResponse::s_customDeleter);
         shape->m_allocator = allocator;
         GetAllProductsResponse::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<OperationResponse *>(shape.release());
-        return Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
+        return Aws::Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
     }
 
     void GetAllProductsResponse::s_customDeleter(GetAllProductsResponse *shape) noexcept
@@ -484,38 +486,38 @@ namespace Awstest
         OperationResponse::s_customDeleter(static_cast<OperationResponse *>(shape));
     }
 
-    void GetAllProductsRequest::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void GetAllProductsRequest::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         (void)payloadObject;
     }
 
     void GetAllProductsRequest::s_loadFromJsonView(
         GetAllProductsRequest &getAllProductsRequest,
-        const Crt::JsonView &jsonView) noexcept
+        const Aws::Crt::JsonView &jsonView) noexcept
     {
         (void)getAllProductsRequest;
         (void)jsonView;
     }
 
-    Crt::String GetAllProductsRequest::GetModelName() const noexcept
+    Aws::Crt::String GetAllProductsRequest::GetModelName() const noexcept
     {
-        return Crt::String("awstest#GetAllProductsRequest");
+        return Aws::Crt::String("awstest#GetAllProductsRequest");
     }
 
-    Crt::ScopedResource<OperationRequest> GetAllProductsRequest::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<OperationRequest> GetAllProductsRequest::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<GetAllProductsRequest> shape(
-            Crt::New<GetAllProductsRequest>(allocator), GetAllProductsRequest::s_customDeleter);
+        Aws::Crt::ScopedResource<GetAllProductsRequest> shape(
+            Aws::Crt::New<GetAllProductsRequest>(allocator), GetAllProductsRequest::s_customDeleter);
         shape->m_allocator = allocator;
         GetAllProductsRequest::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<OperationRequest *>(shape.release());
-        return Crt::ScopedResource<OperationRequest>(operationResponse, OperationRequest::s_customDeleter);
+        return Aws::Crt::ScopedResource<OperationRequest>(operationResponse, OperationRequest::s_customDeleter);
     }
 
     void GetAllProductsRequest::s_customDeleter(GetAllProductsRequest *shape) noexcept
@@ -523,15 +525,15 @@ namespace Awstest
         OperationRequest::s_customDeleter(static_cast<OperationRequest *>(shape));
     }
 
-    void GetAllCustomersResponse::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void GetAllCustomersResponse::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         if (m_customers.has_value())
         {
-            Crt::JsonObject customerList;
-            Crt::Vector<Crt::JsonObject> customerListJsonArray;
+            Aws::Crt::JsonObject customerList;
+            Aws::Crt::Vector<Aws::Crt::JsonObject> customerListJsonArray;
             for (const auto &customerListItem : m_customers.value())
             {
-                Crt::JsonObject customerListJsonArrayItem;
+                Aws::Crt::JsonObject customerListJsonArrayItem;
                 customerListItem.SerializeToJsonObject(customerListJsonArrayItem);
                 customerListJsonArray.emplace_back(std::move(customerListJsonArrayItem));
             }
@@ -542,14 +544,14 @@ namespace Awstest
 
     void GetAllCustomersResponse::s_loadFromJsonView(
         GetAllCustomersResponse &getAllCustomersResponse,
-        const Crt::JsonView &jsonView) noexcept
+        const Aws::Crt::JsonView &jsonView) noexcept
     {
         if (jsonView.ValueExists("customers"))
         {
-            getAllCustomersResponse.m_customers = Crt::Vector<Customer>();
-            for (const Crt::JsonView &customerListJsonView : jsonView.GetArray("customers"))
+            getAllCustomersResponse.m_customers = Aws::Crt::Vector<Customer>();
+            for (const Aws::Crt::JsonView &customerListJsonView : jsonView.GetArray("customers"))
             {
-                Crt::Optional<Customer> customerListItem;
+                Aws::Crt::Optional<Customer> customerListItem;
                 customerListItem = Customer();
                 Customer::s_loadFromJsonView(customerListItem.value(), customerListJsonView);
                 getAllCustomersResponse.m_customers.value().push_back(customerListItem.value());
@@ -557,25 +559,25 @@ namespace Awstest
         }
     }
 
-    Crt::String GetAllCustomersResponse::GetModelName() const noexcept
+    Aws::Crt::String GetAllCustomersResponse::GetModelName() const noexcept
     {
-        return Crt::String("awstest#GetAllCustomersResponse");
+        return Aws::Crt::String("awstest#GetAllCustomersResponse");
     }
 
-    Crt::ScopedResource<OperationResponse> GetAllCustomersResponse::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<OperationResponse> GetAllCustomersResponse::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<GetAllCustomersResponse> shape(
-            Crt::New<GetAllCustomersResponse>(allocator), GetAllCustomersResponse::s_customDeleter);
+        Aws::Crt::ScopedResource<GetAllCustomersResponse> shape(
+            Aws::Crt::New<GetAllCustomersResponse>(allocator), GetAllCustomersResponse::s_customDeleter);
         shape->m_allocator = allocator;
         GetAllCustomersResponse::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<OperationResponse *>(shape.release());
-        return Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
+        return Aws::Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
     }
 
     void GetAllCustomersResponse::s_customDeleter(GetAllCustomersResponse *shape) noexcept
@@ -583,38 +585,38 @@ namespace Awstest
         OperationResponse::s_customDeleter(static_cast<OperationResponse *>(shape));
     }
 
-    void GetAllCustomersRequest::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void GetAllCustomersRequest::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         (void)payloadObject;
     }
 
     void GetAllCustomersRequest::s_loadFromJsonView(
         GetAllCustomersRequest &getAllCustomersRequest,
-        const Crt::JsonView &jsonView) noexcept
+        const Aws::Crt::JsonView &jsonView) noexcept
     {
         (void)getAllCustomersRequest;
         (void)jsonView;
     }
 
-    Crt::String GetAllCustomersRequest::GetModelName() const noexcept
+    Aws::Crt::String GetAllCustomersRequest::GetModelName() const noexcept
     {
-        return Crt::String("awstest#GetAllCustomersRequest");
+        return Aws::Crt::String("awstest#GetAllCustomersRequest");
     }
 
-    Crt::ScopedResource<OperationRequest> GetAllCustomersRequest::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<OperationRequest> GetAllCustomersRequest::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<GetAllCustomersRequest> shape(
-            Crt::New<GetAllCustomersRequest>(allocator), GetAllCustomersRequest::s_customDeleter);
+        Aws::Crt::ScopedResource<GetAllCustomersRequest> shape(
+            Aws::Crt::New<GetAllCustomersRequest>(allocator), GetAllCustomersRequest::s_customDeleter);
         shape->m_allocator = allocator;
         GetAllCustomersRequest::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<OperationRequest *>(shape.release());
-        return Crt::ScopedResource<OperationRequest>(operationResponse, OperationRequest::s_customDeleter);
+        return Aws::Crt::ScopedResource<OperationRequest>(operationResponse, OperationRequest::s_customDeleter);
     }
 
     void GetAllCustomersRequest::s_customDeleter(GetAllCustomersRequest *shape) noexcept
@@ -622,11 +624,11 @@ namespace Awstest
         OperationRequest::s_customDeleter(static_cast<OperationRequest *>(shape));
     }
 
-    void EchoMessageResponse::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void EchoMessageResponse::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         if (m_message.has_value())
         {
-            Crt::JsonObject messageDataValue;
+            Aws::Crt::JsonObject messageDataValue;
             m_message.value().SerializeToJsonObject(messageDataValue);
             payloadObject.WithObject("message", std::move(messageDataValue));
         }
@@ -634,7 +636,7 @@ namespace Awstest
 
     void EchoMessageResponse::s_loadFromJsonView(
         EchoMessageResponse &echoMessageResponse,
-        const Crt::JsonView &jsonView) noexcept
+        const Aws::Crt::JsonView &jsonView) noexcept
     {
         if (jsonView.ValueExists("message"))
         {
@@ -643,25 +645,25 @@ namespace Awstest
         }
     }
 
-    Crt::String EchoMessageResponse::GetModelName() const noexcept
+    Aws::Crt::String EchoMessageResponse::GetModelName() const noexcept
     {
-        return Crt::String("awstest#EchoMessageResponse");
+        return Aws::Crt::String("awstest#EchoMessageResponse");
     }
 
-    Crt::ScopedResource<OperationResponse> EchoMessageResponse::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<OperationResponse> EchoMessageResponse::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<EchoMessageResponse> shape(
-            Crt::New<EchoMessageResponse>(allocator), EchoMessageResponse::s_customDeleter);
+        Aws::Crt::ScopedResource<EchoMessageResponse> shape(
+            Aws::Crt::New<EchoMessageResponse>(allocator), EchoMessageResponse::s_customDeleter);
         shape->m_allocator = allocator;
         EchoMessageResponse::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<OperationResponse *>(shape.release());
-        return Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
+        return Aws::Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
     }
 
     void EchoMessageResponse::s_customDeleter(EchoMessageResponse *shape) noexcept
@@ -669,11 +671,11 @@ namespace Awstest
         OperationResponse::s_customDeleter(static_cast<OperationResponse *>(shape));
     }
 
-    void EchoMessageRequest::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void EchoMessageRequest::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         if (m_message.has_value())
         {
-            Crt::JsonObject messageDataValue;
+            Aws::Crt::JsonObject messageDataValue;
             m_message.value().SerializeToJsonObject(messageDataValue);
             payloadObject.WithObject("message", std::move(messageDataValue));
         }
@@ -681,7 +683,7 @@ namespace Awstest
 
     void EchoMessageRequest::s_loadFromJsonView(
         EchoMessageRequest &echoMessageRequest,
-        const Crt::JsonView &jsonView) noexcept
+        const Aws::Crt::JsonView &jsonView) noexcept
     {
         if (jsonView.ValueExists("message"))
         {
@@ -690,22 +692,25 @@ namespace Awstest
         }
     }
 
-    Crt::String EchoMessageRequest::GetModelName() const noexcept { return Crt::String("awstest#EchoMessageRequest"); }
-
-    Crt::ScopedResource<OperationRequest> EchoMessageRequest::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::String EchoMessageRequest::GetModelName() const noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        return Aws::Crt::String("awstest#EchoMessageRequest");
+    }
 
-        Crt::ScopedResource<EchoMessageRequest> shape(
-            Crt::New<EchoMessageRequest>(allocator), EchoMessageRequest::s_customDeleter);
+    Aws::Crt::ScopedResource<OperationRequest> EchoMessageRequest::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
+    {
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
+
+        Aws::Crt::ScopedResource<EchoMessageRequest> shape(
+            Aws::Crt::New<EchoMessageRequest>(allocator), EchoMessageRequest::s_customDeleter);
         shape->m_allocator = allocator;
         EchoMessageRequest::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<OperationRequest *>(shape.release());
-        return Crt::ScopedResource<OperationRequest>(operationResponse, OperationRequest::s_customDeleter);
+        return Aws::Crt::ScopedResource<OperationRequest>(operationResponse, OperationRequest::s_customDeleter);
     }
 
     void EchoMessageRequest::s_customDeleter(EchoMessageRequest *shape) noexcept
@@ -713,38 +718,38 @@ namespace Awstest
         OperationRequest::s_customDeleter(static_cast<OperationRequest *>(shape));
     }
 
-    void EchoStreamingResponse::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void EchoStreamingResponse::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         (void)payloadObject;
     }
 
     void EchoStreamingResponse::s_loadFromJsonView(
         EchoStreamingResponse &echoStreamingResponse,
-        const Crt::JsonView &jsonView) noexcept
+        const Aws::Crt::JsonView &jsonView) noexcept
     {
         (void)echoStreamingResponse;
         (void)jsonView;
     }
 
-    Crt::String EchoStreamingResponse::GetModelName() const noexcept
+    Aws::Crt::String EchoStreamingResponse::GetModelName() const noexcept
     {
-        return Crt::String("awstest#EchoStreamingResponse");
+        return Aws::Crt::String("awstest#EchoStreamingResponse");
     }
 
-    Crt::ScopedResource<OperationResponse> EchoStreamingResponse::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<OperationResponse> EchoStreamingResponse::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<EchoStreamingResponse> shape(
-            Crt::New<EchoStreamingResponse>(allocator), EchoStreamingResponse::s_customDeleter);
+        Aws::Crt::ScopedResource<EchoStreamingResponse> shape(
+            Aws::Crt::New<EchoStreamingResponse>(allocator), EchoStreamingResponse::s_customDeleter);
         shape->m_allocator = allocator;
         EchoStreamingResponse::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<OperationResponse *>(shape.release());
-        return Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
+        return Aws::Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
     }
 
     void EchoStreamingResponse::s_customDeleter(EchoStreamingResponse *shape) noexcept
@@ -752,38 +757,38 @@ namespace Awstest
         OperationResponse::s_customDeleter(static_cast<OperationResponse *>(shape));
     }
 
-    void EchoStreamingRequest::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void EchoStreamingRequest::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         (void)payloadObject;
     }
 
     void EchoStreamingRequest::s_loadFromJsonView(
         EchoStreamingRequest &echoStreamingRequest,
-        const Crt::JsonView &jsonView) noexcept
+        const Aws::Crt::JsonView &jsonView) noexcept
     {
         (void)echoStreamingRequest;
         (void)jsonView;
     }
 
-    Crt::String EchoStreamingRequest::GetModelName() const noexcept
+    Aws::Crt::String EchoStreamingRequest::GetModelName() const noexcept
     {
-        return Crt::String("awstest#EchoStreamingRequest");
+        return Aws::Crt::String("awstest#EchoStreamingRequest");
     }
 
-    Crt::ScopedResource<OperationRequest> EchoStreamingRequest::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<OperationRequest> EchoStreamingRequest::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<EchoStreamingRequest> shape(
-            Crt::New<EchoStreamingRequest>(allocator), EchoStreamingRequest::s_customDeleter);
+        Aws::Crt::ScopedResource<EchoStreamingRequest> shape(
+            Aws::Crt::New<EchoStreamingRequest>(allocator), EchoStreamingRequest::s_customDeleter);
         shape->m_allocator = allocator;
         EchoStreamingRequest::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<OperationRequest *>(shape.release());
-        return Crt::ScopedResource<OperationRequest>(operationResponse, OperationRequest::s_customDeleter);
+        return Aws::Crt::ScopedResource<OperationRequest>(operationResponse, OperationRequest::s_customDeleter);
     }
 
     void EchoStreamingRequest::s_customDeleter(EchoStreamingRequest *shape) noexcept
@@ -791,7 +796,7 @@ namespace Awstest
         OperationRequest::s_customDeleter(static_cast<OperationRequest *>(shape));
     }
 
-    void ServiceError::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void ServiceError::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         if (m_message.has_value())
         {
@@ -803,33 +808,34 @@ namespace Awstest
         }
     }
 
-    void ServiceError::s_loadFromJsonView(ServiceError &serviceError, const Crt::JsonView &jsonView) noexcept
+    void ServiceError::s_loadFromJsonView(ServiceError &serviceError, const Aws::Crt::JsonView &jsonView) noexcept
     {
         if (jsonView.ValueExists("message"))
         {
-            serviceError.m_message = Crt::Optional<Crt::String>(jsonView.GetString("message"));
+            serviceError.m_message = Aws::Crt::Optional<Aws::Crt::String>(jsonView.GetString("message"));
         }
         if (jsonView.ValueExists("value"))
         {
-            serviceError.m_value = Crt::Optional<Crt::String>(jsonView.GetString("value"));
+            serviceError.m_value = Aws::Crt::Optional<Aws::Crt::String>(jsonView.GetString("value"));
         }
     }
 
-    Crt::String ServiceError::GetModelName() const noexcept { return Crt::String("awstest#ServiceError"); }
+    Aws::Crt::String ServiceError::GetModelName() const noexcept { return Aws::Crt::String("awstest#ServiceError"); }
 
-    Crt::ScopedResource<OperationError> ServiceError::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<OperationError> ServiceError::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<ServiceError> shape(Crt::New<ServiceError>(allocator), ServiceError::s_customDeleter);
+        Aws::Crt::ScopedResource<ServiceError> shape(
+            Aws::Crt::New<ServiceError>(allocator), ServiceError::s_customDeleter);
         shape->m_allocator = allocator;
         ServiceError::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<OperationError *>(shape.release());
-        return Crt::ScopedResource<OperationError>(operationResponse, OperationError::s_customDeleter);
+        return Aws::Crt::ScopedResource<OperationError>(operationResponse, OperationError::s_customDeleter);
     }
 
     void ServiceError::s_customDeleter(ServiceError *shape) noexcept
@@ -837,38 +843,38 @@ namespace Awstest
         OperationError::s_customDeleter(static_cast<OperationError *>(shape));
     }
 
-    void CauseServiceErrorResponse::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void CauseServiceErrorResponse::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         (void)payloadObject;
     }
 
     void CauseServiceErrorResponse::s_loadFromJsonView(
         CauseServiceErrorResponse &causeServiceErrorResponse,
-        const Crt::JsonView &jsonView) noexcept
+        const Aws::Crt::JsonView &jsonView) noexcept
     {
         (void)causeServiceErrorResponse;
         (void)jsonView;
     }
 
-    Crt::String CauseServiceErrorResponse::GetModelName() const noexcept
+    Aws::Crt::String CauseServiceErrorResponse::GetModelName() const noexcept
     {
-        return Crt::String("awstest#CauseServiceErrorResponse");
+        return Aws::Crt::String("awstest#CauseServiceErrorResponse");
     }
 
-    Crt::ScopedResource<OperationResponse> CauseServiceErrorResponse::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<OperationResponse> CauseServiceErrorResponse::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<CauseServiceErrorResponse> shape(
-            Crt::New<CauseServiceErrorResponse>(allocator), CauseServiceErrorResponse::s_customDeleter);
+        Aws::Crt::ScopedResource<CauseServiceErrorResponse> shape(
+            Aws::Crt::New<CauseServiceErrorResponse>(allocator), CauseServiceErrorResponse::s_customDeleter);
         shape->m_allocator = allocator;
         CauseServiceErrorResponse::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<OperationResponse *>(shape.release());
-        return Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
+        return Aws::Crt::ScopedResource<OperationResponse>(operationResponse, OperationResponse::s_customDeleter);
     }
 
     void CauseServiceErrorResponse::s_customDeleter(CauseServiceErrorResponse *shape) noexcept
@@ -876,38 +882,38 @@ namespace Awstest
         OperationResponse::s_customDeleter(static_cast<OperationResponse *>(shape));
     }
 
-    void CauseServiceErrorRequest::SerializeToJsonObject(Crt::JsonObject &payloadObject) const noexcept
+    void CauseServiceErrorRequest::SerializeToJsonObject(Aws::Crt::JsonObject &payloadObject) const noexcept
     {
         (void)payloadObject;
     }
 
     void CauseServiceErrorRequest::s_loadFromJsonView(
         CauseServiceErrorRequest &causeServiceErrorRequest,
-        const Crt::JsonView &jsonView) noexcept
+        const Aws::Crt::JsonView &jsonView) noexcept
     {
         (void)causeServiceErrorRequest;
         (void)jsonView;
     }
 
-    Crt::String CauseServiceErrorRequest::GetModelName() const noexcept
+    Aws::Crt::String CauseServiceErrorRequest::GetModelName() const noexcept
     {
-        return Crt::String("awstest#CauseServiceErrorRequest");
+        return Aws::Crt::String("awstest#CauseServiceErrorRequest");
     }
 
-    Crt::ScopedResource<OperationRequest> CauseServiceErrorRequest::s_allocateFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) noexcept
+    Aws::Crt::ScopedResource<OperationRequest> CauseServiceErrorRequest::s_allocateFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) noexcept
     {
-        Crt::String payload = {stringView.begin(), stringView.end()};
-        Crt::JsonObject jsonObject(payload);
-        Crt::JsonView jsonView(jsonObject);
+        Aws::Crt::String payload = {stringView.begin(), stringView.end()};
+        Aws::Crt::JsonObject jsonObject(payload);
+        Aws::Crt::JsonView jsonView(jsonObject);
 
-        Crt::ScopedResource<CauseServiceErrorRequest> shape(
-            Crt::New<CauseServiceErrorRequest>(allocator), CauseServiceErrorRequest::s_customDeleter);
+        Aws::Crt::ScopedResource<CauseServiceErrorRequest> shape(
+            Aws::Crt::New<CauseServiceErrorRequest>(allocator), CauseServiceErrorRequest::s_customDeleter);
         shape->m_allocator = allocator;
         CauseServiceErrorRequest::s_loadFromJsonView(*shape, jsonView);
         auto operationResponse = static_cast<OperationRequest *>(shape.release());
-        return Crt::ScopedResource<OperationRequest>(operationResponse, OperationRequest::s_customDeleter);
+        return Aws::Crt::ScopedResource<OperationRequest>(operationResponse, OperationRequest::s_customDeleter);
     }
 
     void CauseServiceErrorRequest::s_customDeleter(CauseServiceErrorRequest *shape) noexcept
@@ -920,38 +926,38 @@ namespace Awstest
     {
     }
 
-    Crt::ScopedResource<OperationResponse> GetAllProductsOperationContext::AllocateInitialResponseFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) const noexcept
+    Aws::Crt::ScopedResource<OperationResponse> GetAllProductsOperationContext::AllocateInitialResponseFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) const noexcept
     {
         return GetAllProductsResponse::s_allocateFromPayload(stringView, allocator);
     }
 
-    Crt::ScopedResource<OperationResponse> GetAllProductsOperationContext::AllocateStreamingResponseFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) const noexcept
+    Aws::Crt::ScopedResource<OperationResponse> GetAllProductsOperationContext::AllocateStreamingResponseFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) const noexcept
     {
         return nullptr;
     }
 
-    Crt::String GetAllProductsOperationContext::GetRequestModelName() const noexcept
+    Aws::Crt::String GetAllProductsOperationContext::GetRequestModelName() const noexcept
     {
-        return Crt::String("awstest#GetAllProductsRequest");
+        return Aws::Crt::String("awstest#GetAllProductsRequest");
     }
 
-    Crt::String GetAllProductsOperationContext::GetInitialResponseModelName() const noexcept
+    Aws::Crt::String GetAllProductsOperationContext::GetInitialResponseModelName() const noexcept
     {
-        return Crt::String("awstest#GetAllProductsResponse");
+        return Aws::Crt::String("awstest#GetAllProductsResponse");
     }
 
-    Crt::Optional<Crt::String> GetAllProductsOperationContext::GetStreamingResponseModelName() const noexcept
+    Aws::Crt::Optional<Aws::Crt::String> GetAllProductsOperationContext::GetStreamingResponseModelName() const noexcept
     {
-        return Crt::Optional<Crt::String>();
+        return Aws::Crt::Optional<Aws::Crt::String>();
     }
 
-    Crt::String GetAllProductsOperationContext::GetOperationName() const noexcept
+    Aws::Crt::String GetAllProductsOperationContext::GetOperationName() const noexcept
     {
-        return Crt::String("awstest#GetAllProducts");
+        return Aws::Crt::String("awstest#GetAllProducts");
     }
 
     std::future<GetAllProductsResult> GetAllProductsOperation::GetResult() noexcept
@@ -964,7 +970,7 @@ namespace Awstest
     GetAllProductsOperation::GetAllProductsOperation(
         ClientConnection &connection,
         const GetAllProductsOperationContext &operationContext,
-        Crt::Allocator *allocator) noexcept
+        Aws::Crt::Allocator *allocator) noexcept
         : ClientOperation(connection, nullptr, operationContext, allocator)
     {
     }
@@ -976,7 +982,7 @@ namespace Awstest
         return ClientOperation::Activate(static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
     }
 
-    Crt::String GetAllProductsOperation::GetModelName() const noexcept
+    Aws::Crt::String GetAllProductsOperation::GetModelName() const noexcept
     {
         return m_operationModelContext.GetOperationName();
     }
@@ -987,38 +993,39 @@ namespace Awstest
     {
     }
 
-    Crt::ScopedResource<OperationResponse> CauseServiceErrorOperationContext::AllocateInitialResponseFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) const noexcept
+    Aws::Crt::ScopedResource<OperationResponse> CauseServiceErrorOperationContext::AllocateInitialResponseFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) const noexcept
     {
         return CauseServiceErrorResponse::s_allocateFromPayload(stringView, allocator);
     }
 
-    Crt::ScopedResource<OperationResponse> CauseServiceErrorOperationContext::AllocateStreamingResponseFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) const noexcept
+    Aws::Crt::ScopedResource<OperationResponse> CauseServiceErrorOperationContext::AllocateStreamingResponseFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) const noexcept
     {
         return nullptr;
     }
 
-    Crt::String CauseServiceErrorOperationContext::GetRequestModelName() const noexcept
+    Aws::Crt::String CauseServiceErrorOperationContext::GetRequestModelName() const noexcept
     {
-        return Crt::String("awstest#CauseServiceErrorRequest");
+        return Aws::Crt::String("awstest#CauseServiceErrorRequest");
     }
 
-    Crt::String CauseServiceErrorOperationContext::GetInitialResponseModelName() const noexcept
+    Aws::Crt::String CauseServiceErrorOperationContext::GetInitialResponseModelName() const noexcept
     {
-        return Crt::String("awstest#CauseServiceErrorResponse");
+        return Aws::Crt::String("awstest#CauseServiceErrorResponse");
     }
 
-    Crt::Optional<Crt::String> CauseServiceErrorOperationContext::GetStreamingResponseModelName() const noexcept
+    Aws::Crt::Optional<Aws::Crt::String> CauseServiceErrorOperationContext::GetStreamingResponseModelName()
+        const noexcept
     {
-        return Crt::Optional<Crt::String>();
+        return Aws::Crt::Optional<Aws::Crt::String>();
     }
 
-    Crt::String CauseServiceErrorOperationContext::GetOperationName() const noexcept
+    Aws::Crt::String CauseServiceErrorOperationContext::GetOperationName() const noexcept
     {
-        return Crt::String("awstest#CauseServiceError");
+        return Aws::Crt::String("awstest#CauseServiceError");
     }
 
     std::future<CauseServiceErrorResult> CauseServiceErrorOperation::GetResult() noexcept
@@ -1031,7 +1038,7 @@ namespace Awstest
     CauseServiceErrorOperation::CauseServiceErrorOperation(
         ClientConnection &connection,
         const CauseServiceErrorOperationContext &operationContext,
-        Crt::Allocator *allocator) noexcept
+        Aws::Crt::Allocator *allocator) noexcept
         : ClientOperation(connection, nullptr, operationContext, allocator)
     {
     }
@@ -1043,21 +1050,21 @@ namespace Awstest
         return ClientOperation::Activate(static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
     }
 
-    Crt::String CauseServiceErrorOperation::GetModelName() const noexcept
+    Aws::Crt::String CauseServiceErrorOperation::GetModelName() const noexcept
     {
         return m_operationModelContext.GetOperationName();
     }
 
-    void CauseStreamServiceToErrorStreamHandler::OnStreamEvent(Crt::ScopedResource<OperationResponse> response)
+    void CauseStreamServiceToErrorStreamHandler::OnStreamEvent(Aws::Crt::ScopedResource<OperationResponse> response)
     {
         OnStreamEvent(static_cast<EchoStreamingMessage *>(response.get()));
     }
 
     bool CauseStreamServiceToErrorStreamHandler::OnStreamError(
-        Crt::ScopedResource<OperationError> operationError,
+        Aws::Crt::ScopedResource<OperationError> operationError,
         RpcError rpcError)
     {
-        if (operationError->GetModelName() == Crt::String("awstest#ServiceError"))
+        if (operationError->GetModelName() == Aws::Crt::String("awstest#ServiceError"))
         {
             return OnStreamError(static_cast<ServiceError *>(operationError.get()), rpcError);
         }
@@ -1070,36 +1077,39 @@ namespace Awstest
     {
     }
 
-    Crt::ScopedResource<OperationResponse> CauseStreamServiceToErrorOperationContext::
-        AllocateInitialResponseFromPayload(Crt::StringView stringView, Crt::Allocator *allocator) const noexcept
+    Aws::Crt::ScopedResource<OperationResponse> CauseStreamServiceToErrorOperationContext::
+        AllocateInitialResponseFromPayload(Aws::Crt::StringView stringView, Aws::Crt::Allocator *allocator)
+            const noexcept
     {
         return EchoStreamingResponse::s_allocateFromPayload(stringView, allocator);
     }
 
-    Crt::ScopedResource<OperationResponse> CauseStreamServiceToErrorOperationContext::
-        AllocateStreamingResponseFromPayload(Crt::StringView stringView, Crt::Allocator *allocator) const noexcept
+    Aws::Crt::ScopedResource<OperationResponse> CauseStreamServiceToErrorOperationContext::
+        AllocateStreamingResponseFromPayload(Aws::Crt::StringView stringView, Aws::Crt::Allocator *allocator)
+            const noexcept
     {
         return EchoStreamingMessage::s_allocateFromPayload(stringView, allocator);
     }
 
-    Crt::String CauseStreamServiceToErrorOperationContext::GetRequestModelName() const noexcept
+    Aws::Crt::String CauseStreamServiceToErrorOperationContext::GetRequestModelName() const noexcept
     {
-        return Crt::String("awstest#EchoStreamingRequest");
+        return Aws::Crt::String("awstest#EchoStreamingRequest");
     }
 
-    Crt::String CauseStreamServiceToErrorOperationContext::GetInitialResponseModelName() const noexcept
+    Aws::Crt::String CauseStreamServiceToErrorOperationContext::GetInitialResponseModelName() const noexcept
     {
-        return Crt::String("awstest#EchoStreamingResponse");
+        return Aws::Crt::String("awstest#EchoStreamingResponse");
     }
 
-    Crt::Optional<Crt::String> CauseStreamServiceToErrorOperationContext::GetStreamingResponseModelName() const noexcept
+    Aws::Crt::Optional<Aws::Crt::String> CauseStreamServiceToErrorOperationContext::GetStreamingResponseModelName()
+        const noexcept
     {
-        return Crt::String("awstest#EchoStreamingMessage");
+        return Aws::Crt::String("awstest#EchoStreamingMessage");
     }
 
-    Crt::String CauseStreamServiceToErrorOperationContext::GetOperationName() const noexcept
+    Aws::Crt::String CauseStreamServiceToErrorOperationContext::GetOperationName() const noexcept
     {
-        return Crt::String("awstest#CauseStreamServiceToError");
+        return Aws::Crt::String("awstest#CauseStreamServiceToError");
     }
 
     std::future<CauseStreamServiceToErrorResult> CauseStreamServiceToErrorOperation::GetResult() noexcept
@@ -1113,30 +1123,30 @@ namespace Awstest
         ClientConnection &connection,
         CauseStreamServiceToErrorStreamHandler *streamHandler,
         const CauseStreamServiceToErrorOperationContext &operationContext,
-        Crt::Allocator *allocator) noexcept
+        Aws::Crt::Allocator *allocator) noexcept
         : ClientOperation(connection, streamHandler, operationContext, allocator)
     {
     }
 
     std::future<RpcError> CauseStreamServiceToErrorOperation::Activate(
-        const CauseStreamServiceToErrorRequest &request,
+        const EchoStreamingRequest &request,
         OnMessageFlushCallback onMessageFlushCallback) noexcept
     {
         return ClientOperation::Activate(static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
     }
 
-    Crt::String CauseStreamServiceToErrorOperation::GetModelName() const noexcept
+    Aws::Crt::String CauseStreamServiceToErrorOperation::GetModelName() const noexcept
     {
         return m_operationModelContext.GetOperationName();
     }
 
-    void EchoStreamMessagesStreamHandler::OnStreamEvent(Crt::ScopedResource<OperationResponse> response)
+    void EchoStreamMessagesStreamHandler::OnStreamEvent(Aws::Crt::ScopedResource<OperationResponse> response)
     {
         OnStreamEvent(static_cast<EchoStreamingMessage *>(response.get()));
     }
 
     bool EchoStreamMessagesStreamHandler::OnStreamError(
-        Crt::ScopedResource<OperationError> operationError,
+        Aws::Crt::ScopedResource<OperationError> operationError,
         RpcError rpcError)
     {
         return true;
@@ -1148,38 +1158,39 @@ namespace Awstest
     {
     }
 
-    Crt::ScopedResource<OperationResponse> EchoStreamMessagesOperationContext::AllocateInitialResponseFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) const noexcept
+    Aws::Crt::ScopedResource<OperationResponse> EchoStreamMessagesOperationContext::AllocateInitialResponseFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) const noexcept
     {
         return EchoStreamingResponse::s_allocateFromPayload(stringView, allocator);
     }
 
-    Crt::ScopedResource<OperationResponse> EchoStreamMessagesOperationContext::AllocateStreamingResponseFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) const noexcept
+    Aws::Crt::ScopedResource<OperationResponse> EchoStreamMessagesOperationContext::
+        AllocateStreamingResponseFromPayload(Aws::Crt::StringView stringView, Aws::Crt::Allocator *allocator)
+            const noexcept
     {
         return EchoStreamingMessage::s_allocateFromPayload(stringView, allocator);
     }
 
-    Crt::String EchoStreamMessagesOperationContext::GetRequestModelName() const noexcept
+    Aws::Crt::String EchoStreamMessagesOperationContext::GetRequestModelName() const noexcept
     {
-        return Crt::String("awstest#EchoStreamingRequest");
+        return Aws::Crt::String("awstest#EchoStreamingRequest");
     }
 
-    Crt::String EchoStreamMessagesOperationContext::GetInitialResponseModelName() const noexcept
+    Aws::Crt::String EchoStreamMessagesOperationContext::GetInitialResponseModelName() const noexcept
     {
-        return Crt::String("awstest#EchoStreamingResponse");
+        return Aws::Crt::String("awstest#EchoStreamingResponse");
     }
 
-    Crt::Optional<Crt::String> EchoStreamMessagesOperationContext::GetStreamingResponseModelName() const noexcept
+    Aws::Crt::Optional<Aws::Crt::String> EchoStreamMessagesOperationContext::GetStreamingResponseModelName()
+        const noexcept
     {
-        return Crt::String("awstest#EchoStreamingMessage");
+        return Aws::Crt::String("awstest#EchoStreamingMessage");
     }
 
-    Crt::String EchoStreamMessagesOperationContext::GetOperationName() const noexcept
+    Aws::Crt::String EchoStreamMessagesOperationContext::GetOperationName() const noexcept
     {
-        return Crt::String("awstest#EchoStreamMessages");
+        return Aws::Crt::String("awstest#EchoStreamMessages");
     }
 
     std::future<EchoStreamMessagesResult> EchoStreamMessagesOperation::GetResult() noexcept
@@ -1193,19 +1204,19 @@ namespace Awstest
         ClientConnection &connection,
         EchoStreamMessagesStreamHandler *streamHandler,
         const EchoStreamMessagesOperationContext &operationContext,
-        Crt::Allocator *allocator) noexcept
+        Aws::Crt::Allocator *allocator) noexcept
         : ClientOperation(connection, streamHandler, operationContext, allocator)
     {
     }
 
     std::future<RpcError> EchoStreamMessagesOperation::Activate(
-        const EchoStreamMessagesRequest &request,
+        const EchoStreamingRequest &request,
         OnMessageFlushCallback onMessageFlushCallback) noexcept
     {
         return ClientOperation::Activate(static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
     }
 
-    Crt::String EchoStreamMessagesOperation::GetModelName() const noexcept
+    Aws::Crt::String EchoStreamMessagesOperation::GetModelName() const noexcept
     {
         return m_operationModelContext.GetOperationName();
     }
@@ -1215,38 +1226,38 @@ namespace Awstest
     {
     }
 
-    Crt::ScopedResource<OperationResponse> EchoMessageOperationContext::AllocateInitialResponseFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) const noexcept
+    Aws::Crt::ScopedResource<OperationResponse> EchoMessageOperationContext::AllocateInitialResponseFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) const noexcept
     {
         return EchoMessageResponse::s_allocateFromPayload(stringView, allocator);
     }
 
-    Crt::ScopedResource<OperationResponse> EchoMessageOperationContext::AllocateStreamingResponseFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) const noexcept
+    Aws::Crt::ScopedResource<OperationResponse> EchoMessageOperationContext::AllocateStreamingResponseFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) const noexcept
     {
         return nullptr;
     }
 
-    Crt::String EchoMessageOperationContext::GetRequestModelName() const noexcept
+    Aws::Crt::String EchoMessageOperationContext::GetRequestModelName() const noexcept
     {
-        return Crt::String("awstest#EchoMessageRequest");
+        return Aws::Crt::String("awstest#EchoMessageRequest");
     }
 
-    Crt::String EchoMessageOperationContext::GetInitialResponseModelName() const noexcept
+    Aws::Crt::String EchoMessageOperationContext::GetInitialResponseModelName() const noexcept
     {
-        return Crt::String("awstest#EchoMessageResponse");
+        return Aws::Crt::String("awstest#EchoMessageResponse");
     }
 
-    Crt::Optional<Crt::String> EchoMessageOperationContext::GetStreamingResponseModelName() const noexcept
+    Aws::Crt::Optional<Aws::Crt::String> EchoMessageOperationContext::GetStreamingResponseModelName() const noexcept
     {
-        return Crt::Optional<Crt::String>();
+        return Aws::Crt::Optional<Aws::Crt::String>();
     }
 
-    Crt::String EchoMessageOperationContext::GetOperationName() const noexcept
+    Aws::Crt::String EchoMessageOperationContext::GetOperationName() const noexcept
     {
-        return Crt::String("awstest#EchoMessage");
+        return Aws::Crt::String("awstest#EchoMessage");
     }
 
     std::future<EchoMessageResult> EchoMessageOperation::GetResult() noexcept
@@ -1259,7 +1270,7 @@ namespace Awstest
     EchoMessageOperation::EchoMessageOperation(
         ClientConnection &connection,
         const EchoMessageOperationContext &operationContext,
-        Crt::Allocator *allocator) noexcept
+        Aws::Crt::Allocator *allocator) noexcept
         : ClientOperation(connection, nullptr, operationContext, allocator)
     {
     }
@@ -1271,7 +1282,7 @@ namespace Awstest
         return ClientOperation::Activate(static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
     }
 
-    Crt::String EchoMessageOperation::GetModelName() const noexcept
+    Aws::Crt::String EchoMessageOperation::GetModelName() const noexcept
     {
         return m_operationModelContext.GetOperationName();
     }
@@ -1282,38 +1293,38 @@ namespace Awstest
     {
     }
 
-    Crt::ScopedResource<OperationResponse> GetAllCustomersOperationContext::AllocateInitialResponseFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) const noexcept
+    Aws::Crt::ScopedResource<OperationResponse> GetAllCustomersOperationContext::AllocateInitialResponseFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) const noexcept
     {
         return GetAllCustomersResponse::s_allocateFromPayload(stringView, allocator);
     }
 
-    Crt::ScopedResource<OperationResponse> GetAllCustomersOperationContext::AllocateStreamingResponseFromPayload(
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) const noexcept
+    Aws::Crt::ScopedResource<OperationResponse> GetAllCustomersOperationContext::AllocateStreamingResponseFromPayload(
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) const noexcept
     {
         return nullptr;
     }
 
-    Crt::String GetAllCustomersOperationContext::GetRequestModelName() const noexcept
+    Aws::Crt::String GetAllCustomersOperationContext::GetRequestModelName() const noexcept
     {
-        return Crt::String("awstest#GetAllCustomersRequest");
+        return Aws::Crt::String("awstest#GetAllCustomersRequest");
     }
 
-    Crt::String GetAllCustomersOperationContext::GetInitialResponseModelName() const noexcept
+    Aws::Crt::String GetAllCustomersOperationContext::GetInitialResponseModelName() const noexcept
     {
-        return Crt::String("awstest#GetAllCustomersResponse");
+        return Aws::Crt::String("awstest#GetAllCustomersResponse");
     }
 
-    Crt::Optional<Crt::String> GetAllCustomersOperationContext::GetStreamingResponseModelName() const noexcept
+    Aws::Crt::Optional<Aws::Crt::String> GetAllCustomersOperationContext::GetStreamingResponseModelName() const noexcept
     {
-        return Crt::Optional<Crt::String>();
+        return Aws::Crt::Optional<Aws::Crt::String>();
     }
 
-    Crt::String GetAllCustomersOperationContext::GetOperationName() const noexcept
+    Aws::Crt::String GetAllCustomersOperationContext::GetOperationName() const noexcept
     {
-        return Crt::String("awstest#GetAllCustomers");
+        return Aws::Crt::String("awstest#GetAllCustomers");
     }
 
     std::future<GetAllCustomersResult> GetAllCustomersOperation::GetResult() noexcept
@@ -1326,7 +1337,7 @@ namespace Awstest
     GetAllCustomersOperation::GetAllCustomersOperation(
         ClientConnection &connection,
         const GetAllCustomersOperationContext &operationContext,
-        Crt::Allocator *allocator) noexcept
+        Aws::Crt::Allocator *allocator) noexcept
         : ClientOperation(connection, nullptr, operationContext, allocator)
     {
     }
@@ -1338,7 +1349,7 @@ namespace Awstest
         return ClientOperation::Activate(static_cast<const OperationRequest *>(&request), onMessageFlushCallback);
     }
 
-    Crt::String GetAllCustomersOperation::GetModelName() const noexcept
+    Aws::Crt::String GetAllCustomersOperation::GetModelName() const noexcept
     {
         return m_operationModelContext.GetOperationName();
     }
@@ -1350,10 +1361,10 @@ namespace Awstest
     {
     }
 
-    Crt::ScopedResource<OperationError> EchoTestRpcServiceModel::AllocateOperationErrorFromPayload(
-        const Crt::String &errorModelName,
-        Crt::StringView stringView,
-        Crt::Allocator *allocator) const noexcept
+    Aws::Crt::ScopedResource<OperationError> EchoTestRpcServiceModel::AllocateOperationErrorFromPayload(
+        const Aws::Crt::String &errorModelName,
+        Aws::Crt::StringView stringView,
+        Aws::Crt::Allocator *allocator) const noexcept
     {
         auto it = m_modelNameToErrorResponse.find(errorModelName);
         if (it == m_modelNameToErrorResponse.end())
@@ -1367,7 +1378,7 @@ namespace Awstest
     }
 
     void EchoTestRpcServiceModel::AssignModelNameToErrorResponse(
-        Crt::String modelName,
+        Aws::Crt::String modelName,
         ErrorResponseFactory factory) noexcept
     {
         m_modelNameToErrorResponse[modelName] = factory;

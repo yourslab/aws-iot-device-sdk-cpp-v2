@@ -1,13 +1,15 @@
 #include <aws/crt/io/Bootstrap.h>
-#include <aws/awstest/EchoTestRpcClient.h>
+#include <awstest/EchoTestRpcClient.h>
 
 namespace Awstest
 {
-    EchoTestRpcClient::EchoTestRpcClient(Crt::Io::ClientBootstrap &clientBootstrap, Crt::Allocator *allocator) noexcept
+    EchoTestRpcClient::EchoTestRpcClient(
+        Aws::Crt::Io::ClientBootstrap &clientBootstrap,
+        Aws::Crt::Allocator *allocator) noexcept
         : m_connection(allocator), m_clientBootstrap(clientBootstrap), m_allocator(allocator)
     {
         m_echoTestRpcServiceModel.AssignModelNameToErrorResponse(
-            Crt::String("awstest#ServiceError"), ServiceError::s_allocateFromPayload);
+            Aws::Crt::String("awstest#ServiceError"), ServiceError::s_allocateFromPayload);
     }
 
     std::future<RpcError> EchoTestRpcClient::Connect(

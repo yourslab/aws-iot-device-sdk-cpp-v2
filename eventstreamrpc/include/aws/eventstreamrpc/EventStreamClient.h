@@ -621,7 +621,9 @@ namespace Aws
             const OperationModelContext &m_operationModelContext;
 
           private:
-            EventStreamRpcStatusCode HandleData(const Crt::String &modelName, const Crt::Optional<Crt::ByteBuf> &payload);
+            EventStreamRpcStatusCode HandleData(
+                const Crt::String &modelName,
+                const Crt::Optional<Crt::ByteBuf> &payload);
             EventStreamRpcStatusCode HandleError(
                 const Crt::String &modelName,
                 const Crt::Optional<Crt::ByteBuf> &payload,

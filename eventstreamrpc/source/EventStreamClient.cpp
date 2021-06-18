@@ -32,7 +32,8 @@ namespace Aws
             std::promise<RpcError> onFlushPromise;
         };
 
-        MessageAmendment::MessageAmendment(Crt::Allocator *allocator) noexcept : m_headers(), m_payload(), m_allocator(allocator)
+        MessageAmendment::MessageAmendment(Crt::Allocator *allocator) noexcept
+            : m_headers(), m_payload(), m_allocator(allocator)
         {
         }
 
@@ -247,7 +248,7 @@ namespace Aws
 
             struct aws_event_stream_rpc_client_connection_options connOptions;
             AWS_ZERO_STRUCT(connOptions);
-            if(connectionConfig.GetHostName().has_value())
+            if (connectionConfig.GetHostName().has_value())
             {
                 connOptions.host_name = connectionConfig.GetHostName().value().c_str();
             }
@@ -255,7 +256,7 @@ namespace Aws
             {
                 baseError = EVENT_STREAM_RPC_NULL_PARAMETER;
             }
-            if(connectionConfig.GetPort().has_value())
+            if (connectionConfig.GetPort().has_value())
             {
                 connOptions.port = connectionConfig.GetPort().value();
             }
@@ -264,7 +265,7 @@ namespace Aws
                 baseError = EVENT_STREAM_RPC_NULL_PARAMETER;
             }
 
-            if(connectionConfig.GetClientBootstrap() != nullptr)
+            if (connectionConfig.GetClientBootstrap() != nullptr)
             {
                 connOptions.bootstrap = connectionConfig.GetClientBootstrap()->GetUnderlyingHandle();
             }
@@ -287,7 +288,7 @@ namespace Aws
             if (connectionConfig.GetSocketType().has_value())
             {
                 socketOptions.SetSocketType(connectionConfig.GetSocketType().value());
-            }        
+            }
             connOptions.socket_options = &socketOptions.GetImpl();
 
             connOptions.on_connection_setup = ClientConnection::s_onConnectionSetup;
@@ -295,7 +296,8 @@ namespace Aws
             connOptions.on_connection_shutdown = ClientConnection::s_onConnectionShutdown;
             connOptions.user_data = reinterpret_cast<void *>(this);
             m_lifecycleHandler = connectionLifecycleHandler;
-            if(connectMessageAmender) {
+            if (connectMessageAmender)
+            {
                 m_connectMessageAmender = connectMessageAmender;
             }
 

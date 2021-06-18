@@ -24,8 +24,8 @@ namespace Aws
         {
           public:
             GreengrassCoreIpcClient(
-                Crt::Io::ClientBootstrap &clientBootstrap,
-                Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+                Aws::Crt::Io::ClientBootstrap &clientBootstrap,
+                Aws::Crt::Allocator *allocator = Aws::Crt::g_allocator) noexcept;
             std::future<RpcError> Connect(
                 ConnectionLifecycleHandler &lifecycleHandler,
                 ConnectionConfig connectionConfig = DefaultConnectionConfig()) noexcept;
@@ -64,8 +64,8 @@ namespace Aws
           private:
             GreengrassCoreIpcServiceModel m_greengrassCoreIpcServiceModel;
             ClientConnection m_connection;
-            Crt::Io::ClientBootstrap &m_clientBootstrap;
-            Crt::Allocator *m_allocator;
+            Aws::Crt::Io::ClientBootstrap &m_clientBootstrap;
+            Aws::Crt::Allocator *m_allocator;
             MessageAmendment m_connectAmendment;
         };
     } // namespace Greengrass
