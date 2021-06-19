@@ -2438,6 +2438,11 @@ namespace Aws
             {
                 return static_cast<SubscribeToIoTCoreResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -2487,6 +2492,11 @@ namespace Aws
             {
                 return static_cast<PublishToIoTCoreResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -2568,6 +2578,11 @@ namespace Aws
             {
                 return static_cast<SubscribeToConfigurationUpdateResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -2617,6 +2632,11 @@ namespace Aws
             {
                 return static_cast<DeleteThingShadowResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -2667,6 +2687,11 @@ namespace Aws
             {
                 return static_cast<DeferComponentUpdateResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -2743,6 +2768,11 @@ namespace Aws
                 return static_cast<SubscribeToValidateConfigurationUpdatesResponse *>(
                     m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -2792,6 +2822,11 @@ namespace Aws
             {
                 return static_cast<GetConfigurationResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -2877,6 +2912,11 @@ namespace Aws
             {
                 return static_cast<SubscribeToTopicResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -2926,6 +2966,11 @@ namespace Aws
             {
                 return static_cast<GetComponentDetailsResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -2974,6 +3019,11 @@ namespace Aws
             {
                 return static_cast<PublishToTopicResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3022,6 +3072,11 @@ namespace Aws
             {
                 return static_cast<ListComponentsResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3070,6 +3125,11 @@ namespace Aws
             {
                 return static_cast<CreateDebugPasswordResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3118,6 +3178,11 @@ namespace Aws
             {
                 return static_cast<GetThingShadowResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3169,6 +3234,11 @@ namespace Aws
             {
                 return static_cast<SendConfigurationValidityReportResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3217,6 +3287,11 @@ namespace Aws
             {
                 return static_cast<UpdateThingShadowResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3265,6 +3340,11 @@ namespace Aws
             {
                 return static_cast<UpdateConfigurationResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3316,6 +3396,11 @@ namespace Aws
             {
                 return static_cast<ValidateAuthorizationTokenResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3364,6 +3449,11 @@ namespace Aws
             {
                 return static_cast<RestartComponentResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3415,6 +3505,11 @@ namespace Aws
             {
                 return static_cast<GetLocalDeploymentStatusResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3463,6 +3558,11 @@ namespace Aws
             {
                 return static_cast<GetSecretValueResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3511,6 +3611,11 @@ namespace Aws
             {
                 return static_cast<UpdateStateResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3562,6 +3667,11 @@ namespace Aws
             {
                 return static_cast<ListNamedShadowsForThingResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3643,6 +3753,11 @@ namespace Aws
             {
                 return static_cast<SubscribeToComponentUpdatesResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3694,6 +3809,11 @@ namespace Aws
             {
                 return static_cast<ListLocalDeploymentsResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3742,6 +3862,11 @@ namespace Aws
             {
                 return static_cast<StopComponentResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -3792,6 +3917,11 @@ namespace Aws
             {
                 return static_cast<CreateLocalDeploymentResponse *>(m_taggedResult.GetOperationResponse());
             }
+            /**
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
+             */
+            operator bool() const noexcept { return m_taggedResult == true; }
             OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
             RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
             ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }

@@ -509,6 +509,11 @@ namespace Awstest
         {
             return static_cast<GetAllProductsResponse *>(m_taggedResult.GetOperationResponse());
         }
+        /**
+         * @return true if the response is associated with an expected response;
+         * false if the response is associated with an error.
+         */
+        operator bool() const noexcept { return m_taggedResult == true; }
         OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
         RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
         ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -557,6 +562,11 @@ namespace Awstest
         {
             return static_cast<CauseServiceErrorResponse *>(m_taggedResult.GetOperationResponse());
         }
+        /**
+         * @return true if the response is associated with an expected response;
+         * false if the response is associated with an error.
+         */
+        operator bool() const noexcept { return m_taggedResult == true; }
         OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
         RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
         ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -630,6 +640,11 @@ namespace Awstest
         {
             return static_cast<EchoStreamingResponse *>(m_taggedResult.GetOperationResponse());
         }
+        /**
+         * @return true if the response is associated with an expected response;
+         * false if the response is associated with an error.
+         */
+        operator bool() const noexcept { return m_taggedResult == true; }
         OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
         RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
         ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -696,6 +711,11 @@ namespace Awstest
         {
             return static_cast<EchoStreamingResponse *>(m_taggedResult.GetOperationResponse());
         }
+        /**
+         * @return true if the response is associated with an expected response;
+         * false if the response is associated with an error.
+         */
+        operator bool() const noexcept { return m_taggedResult == true; }
         OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
         RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
         ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -745,6 +765,11 @@ namespace Awstest
         {
             return static_cast<EchoMessageResponse *>(m_taggedResult.GetOperationResponse());
         }
+        /**
+         * @return true if the response is associated with an expected response;
+         * false if the response is associated with an error.
+         */
+        operator bool() const noexcept { return m_taggedResult == true; }
         OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
         RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
         ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
@@ -793,6 +818,11 @@ namespace Awstest
         {
             return static_cast<GetAllCustomersResponse *>(m_taggedResult.GetOperationResponse());
         }
+        /**
+         * @return true if the response is associated with an expected response;
+         * false if the response is associated with an error.
+         */
+        operator bool() const noexcept { return m_taggedResult == true; }
         OperationError *GetOperationError() const noexcept { return m_taggedResult.GetOperationError(); }
         RpcError GetRpcError() const noexcept { return m_taggedResult.GetRpcError(); }
         ResultType GetResultType() const noexcept { return m_taggedResult.GetResultType(); }
