@@ -6,7 +6,9 @@ namespace Awstest
     {
         m_hostName = Aws::Crt::String("127.0.0.1");
         m_port = 8033;
-        m_socketDomain = Aws::Crt::Io::SocketDomain::IPv4;
-        m_socketType = Aws::Crt::Io::SocketType::Stream;
+        Aws::Crt::Io::SocketOptions socketOptions;
+        socketOptions.SetSocketDomain(Aws::Crt::Io::SocketDomain::IPv4);
+        socketOptions.SetSocketType(Aws::Crt::Io::SocketType::Stream);
+        m_socketOptions = std::move(socketOptions);
     }
 } // namespace Awstest

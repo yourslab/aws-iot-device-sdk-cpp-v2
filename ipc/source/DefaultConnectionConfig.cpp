@@ -24,8 +24,10 @@ namespace Aws
             }
 
             m_port = 0;
-            m_socketDomain = Crt::Io::SocketDomain::Local;
-            m_socketType = Crt::Io::SocketType::Stream;
+            Crt::Io::SocketOptions socketOptions;
+            socketOptions.SetSocketDomain(Crt::Io::SocketDomain::Local);
+            socketOptions.SetSocketType(Crt::Io::SocketType::Stream);
+            m_socketOptions = std::move(socketOptions);
         }
     } // namespace Greengrass
 } // namespace Aws

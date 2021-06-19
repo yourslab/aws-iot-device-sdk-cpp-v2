@@ -38,7 +38,8 @@ namespace Aws
         }
 
         MessageAmendment::MessageAmendment(const Crt::ByteBuf &payload, Crt::Allocator *allocator) noexcept
-            : m_headers(), m_payload(payload), m_allocator(allocator)
+            : m_headers(), m_payload(Crt::ByteBufNewCopy(allocator, payload.buffer, payload.len)),
+              m_allocator(allocator)
         {
         }
 
@@ -58,8 +59,42 @@ namespace Aws
             const Crt::List<EventStreamHeader> &headers,
             Crt::Optional<Crt::ByteBuf> &payload,
             Crt::Allocator *allocator) noexcept
-            : m_headers(headers), m_payload(payload), m_allocator(allocator)
+            : m_headers(headers), m_payload(), m_allocator(allocator)
         {
+            if (payload.has_value())
+            {
+                m_payload = Crt::ByteBufNewCopy(allocator, payload.value().buffer, payload.value().len);
+            }
+        }
+
+        MessageAmendment::MessageAmendment(const MessageAmendment &lhs)
+            : m_headers(lhs.m_headers), m_payload(), m_allocator(lhs.m_allocator)
+        {
+            if (lhs.m_payload.has_value())
+            {
+                m_payload =
+                    Crt::ByteBufNewCopy(lhs.m_allocator, lhs.m_payload.value().buffer, lhs.m_payload.value().len);
+            }
+        }
+
+        MessageAmendment &MessageAmendment::operator=(const MessageAmendment &lhs)
+        {
+            m_headers = lhs.m_headers;
+            if (lhs.m_payload.has_value())
+            {
+                m_payload =
+                    Crt::ByteBufNewCopy(lhs.m_allocator, lhs.m_payload.value().buffer, lhs.m_payload.value().len);
+            }
+            m_allocator = lhs.m_allocator;
+
+            return *this;
+        }
+
+        MessageAmendment::MessageAmendment(MessageAmendment &&rhs)
+            : m_headers(std::move(rhs.m_headers)), m_payload(rhs.m_payload), m_allocator(rhs.m_allocator)
+        {
+            rhs.m_allocator = nullptr;
+            rhs.m_payload = Crt::Optional<Crt::ByteBuf>();
         }
 
         Crt::List<EventStreamHeader> &MessageAmendment::GetHeaders() noexcept { return m_headers; }
@@ -237,7 +272,8 @@ namespace Aws
         std::future<RpcError> ClientConnection::Connect(
             const ConnectionConfig &connectionConfig,
             ConnectionLifecycleHandler *connectionLifecycleHandler,
-            ConnectMessageAmender connectMessageAmender) noexcept
+            ConnectMessageAmender connectMessageAmender,
+            Crt::Io::ClientBootstrap &clientBootstrap) noexcept
         {
             m_connectAckedPromise.Reset();
             m_closedPromise = {};
@@ -248,9 +284,11 @@ namespace Aws
 
             struct aws_event_stream_rpc_client_connection_options connOptions;
             AWS_ZERO_STRUCT(connOptions);
+            Crt::String hostName;
             if (connectionConfig.GetHostName().has_value())
             {
-                connOptions.host_name = connectionConfig.GetHostName().value().c_str();
+                hostName = connectionConfig.GetHostName().value();
+                connOptions.host_name = hostName.c_str();
             }
             else
             {
@@ -265,14 +303,7 @@ namespace Aws
                 baseError = EVENT_STREAM_RPC_NULL_PARAMETER;
             }
 
-            if (connectionConfig.GetClientBootstrap() != nullptr)
-            {
-                connOptions.bootstrap = connectionConfig.GetClientBootstrap()->GetUnderlyingHandle();
-            }
-            else
-            {
-                baseError = EVENT_STREAM_RPC_NULL_PARAMETER;
-            }
+            connOptions.bootstrap = clientBootstrap.GetUnderlyingHandle();
 
             if (baseError)
             {
@@ -280,13 +311,9 @@ namespace Aws
                 return m_connectAckedPromise.GetFuture();
             }
 
-            if (connectionConfig.GetSocketDomain().has_value())
+            if (connectionConfig.GetSocketOptions().has_value())
             {
-                m_socketOptions.SetSocketDomain(connectionConfig.GetSocketDomain().value());
-            }
-            if (connectionConfig.GetSocketType().has_value())
-            {
-                m_socketOptions.SetSocketType(connectionConfig.GetSocketType().value());
+                m_socketOptions = connectionConfig.GetSocketOptions().value();
             }
             connOptions.socket_options = &m_socketOptions.GetImpl();
 
@@ -566,6 +593,14 @@ namespace Aws
                         messageAmendmentHeaders.splice(messageAmendmentHeaders.end(), amenderHeaderList);
                     }
                     messageAmendment.SetPayload(connectAmendment.GetPayload());
+                    if(messageAmendment.GetPayload().has_value())
+                    {
+                    std::cout << "wtf is going on" << std::endl;
+                    std::cout << Crt::String(
+                            (char *)messageAmendment.GetPayload().value().buffer,
+                            messageAmendment.GetPayload().value().len)
+                    << std::endl;
+                    }
                 }
 
                 /* Send a CONNECT packet to the server. */

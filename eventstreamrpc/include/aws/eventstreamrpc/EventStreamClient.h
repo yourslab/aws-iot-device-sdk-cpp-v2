@@ -116,9 +116,9 @@ namespace Aws
         class AWS_EVENTSTREAMRPC_API MessageAmendment final
         {
           public:
-            MessageAmendment(const MessageAmendment &lhs) = default;
-            MessageAmendment(MessageAmendment &&rhs) = default;
-            MessageAmendment &operator=(const MessageAmendment &rhs) = default;
+            MessageAmendment(const MessageAmendment &lhs);
+            MessageAmendment(MessageAmendment &&rhs);
+            MessageAmendment &operator=(const MessageAmendment &lhs);
             ~MessageAmendment() noexcept;
             explicit MessageAmendment(Crt::Allocator *allocator = Crt::g_allocator) noexcept;
             MessageAmendment(
@@ -152,8 +152,7 @@ namespace Aws
             ConnectionConfig() noexcept : m_clientBootstrap(nullptr), m_connectRequestCallback(nullptr) {}
             Crt::Optional<Crt::String> GetHostName() const noexcept { return m_hostName; }
             Crt::Optional<uint16_t> GetPort() const noexcept { return m_port; }
-            Crt::Optional<Crt::Io::SocketDomain> GetSocketDomain() const noexcept { return m_socketDomain; }
-            Crt::Optional<Crt::Io::SocketType> GetSocketType() const noexcept { return m_socketType; }
+            Crt::Optional<Crt::Io::SocketOptions> GetSocketOptions() const noexcept { return m_socketOptions; }
             Crt::Optional<MessageAmendment> GetConnectAmendment() const noexcept { return m_connectAmendment; }
             Crt::Optional<Crt::Io::TlsConnectionOptions> GetTlsConnectionOptions() const noexcept
             {
@@ -163,21 +162,13 @@ namespace Aws
             OnMessageFlushCallback GetConnectRequestCallback() const noexcept { return m_connectRequestCallback; }
             ConnectMessageAmender GetConnectMessageAmender() const noexcept
             {
-                if (m_connectAmendment.has_value())
-                {
-                    return [&](void) -> const MessageAmendment & { return m_connectAmendment.value(); };
-                }
-                else
-                {
-                    return nullptr;
-                }
+                return [&](void) -> const MessageAmendment & { return m_connectAmendment; };
             }
 
             void SetHostName(Crt::String hostName) noexcept { m_hostName = hostName; }
             void SetPort(uint16_t port) noexcept { m_port = port; }
-            void SetSocketDomain(Crt::Io::SocketDomain socketDomain) noexcept { m_socketDomain = socketDomain; }
-            void SetSocketType(Crt::Io::SocketType socketType) noexcept { m_socketType = socketType; }
-            void SetConnectAmendment(MessageAmendment connectAmendment) noexcept
+            void SetSocketOptions(const Crt::Io::SocketOptions &socketOptions) noexcept { m_socketOptions = socketOptions; }
+            void SetConnectAmendment(const MessageAmendment &connectAmendment) noexcept
             {
                 m_connectAmendment = connectAmendment;
             }
@@ -197,11 +188,10 @@ namespace Aws
           protected:
             Crt::Optional<Crt::String> m_hostName;
             Crt::Optional<uint16_t> m_port;
-            Crt::Optional<Crt::Io::SocketDomain> m_socketDomain;
-            Crt::Optional<Crt::Io::SocketType> m_socketType;
+            Crt::Optional<Crt::Io::SocketOptions> m_socketOptions;
             Crt::Optional<Crt::Io::TlsConnectionOptions> m_tlsConnectionOptions;
             Crt::Io::ClientBootstrap *m_clientBootstrap;
-            Crt::Optional<MessageAmendment> m_connectAmendment;
+            MessageAmendment m_connectAmendment;
             OnMessageFlushCallback m_connectRequestCallback;
         };
 
@@ -309,7 +299,8 @@ namespace Aws
             std::future<RpcError> Connect(
                 const ConnectionConfig &connectionOptions,
                 ConnectionLifecycleHandler *connectionLifecycleHandler,
-                ConnectMessageAmender connectMessageAmender) noexcept;
+                ConnectMessageAmender connectMessageAmender,
+                Crt::Io::ClientBootstrap &clientBootstrap) noexcept;
 
             std::future<RpcError> SendPing(
                 const Crt::List<EventStreamHeader> &headers,
