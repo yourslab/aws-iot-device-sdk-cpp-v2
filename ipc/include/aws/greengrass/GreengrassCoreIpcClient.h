@@ -28,7 +28,7 @@ namespace Aws
                 Aws::Crt::Allocator *allocator = Aws::Crt::g_allocator) noexcept;
             std::future<RpcError> Connect(
                 ConnectionLifecycleHandler &lifecycleHandler,
-                const ConnectionConfig &connectionConfig = DefaultConnectionConfig()) noexcept;
+                ConnectionConfig connectionConfig = DefaultConnectionConfig()) noexcept;
             void Close() noexcept;
             SubscribeToIoTCoreOperation NewSubscribeToIoTCore(SubscribeToIoTCoreStreamHandler &) noexcept;
             PublishToIoTCoreOperation NewPublishToIoTCore() noexcept;

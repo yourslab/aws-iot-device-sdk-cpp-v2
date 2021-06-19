@@ -253,6 +253,7 @@ namespace Aws
 
         bool ConnectionLifecycleHandler::OnErrorCallback(int errorCode)
         {
+            (void) errorCode;
             /* Returning true implies that the connection will close upon receiving an error. */
             return true;
         }

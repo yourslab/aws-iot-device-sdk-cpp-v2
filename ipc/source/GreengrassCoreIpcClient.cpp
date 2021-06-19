@@ -38,8 +38,14 @@ namespace Aws
 
         std::future<RpcError> GreengrassCoreIpcClient::Connect(
             ConnectionLifecycleHandler &lifecycleHandler,
-            const ConnectionConfig& connectionConfig) noexcept
+            ConnectionConfig connectionConfig) noexcept
         {
+            /* If a client bootstrap has not been set in the config, use the one from the client. */
+            if (connectionConfig.GetClientBootstrap() == nullptr)
+            {
+                connectionConfig.SetClientBootstrap(&m_clientBootstrap);
+            }
+
             return m_connection.Connect(
                 connectionConfig, &lifecycleHandler, connectionConfig.GetConnectMessageAmender(), m_clientBootstrap);
         }

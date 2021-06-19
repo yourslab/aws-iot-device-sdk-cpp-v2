@@ -40,8 +40,8 @@ static int s_connectToServer(struct aws_allocator *allocator, void *ctx)
 
         ConnectionLifecycleHandler lifecycleHandler;
         Awstest::EchoTestRpcClient client(clientBootstrap);
-        // auto connectedStatus = client.Connect(lifecycleHandler);
-        // ASSERT_TRUE(connectedStatus.get().baseStatus == EVENT_STREAM_RPC_SUCCESS);
+        auto connectedStatus = client.Connect(lifecycleHandler);
+        ASSERT_TRUE(connectedStatus.get().baseStatus == EVENT_STREAM_RPC_SUCCESS);
 
         client.Close();
     }
