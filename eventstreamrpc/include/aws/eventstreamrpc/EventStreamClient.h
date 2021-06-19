@@ -352,6 +352,7 @@ namespace Aws
             ProtectedPromise<RpcError> m_connectAckedPromise;
             std::promise<RpcError> m_closedPromise;
             OnMessageFlushCallback m_onConnectRequestCallback;
+            Crt::Io::SocketOptions m_socketOptions;
             static void s_customDeleter(ClientConnection *connection) noexcept;
             std::future<RpcError> SendProtocolMessage(
                 const Crt::List<EventStreamHeader> &headers,

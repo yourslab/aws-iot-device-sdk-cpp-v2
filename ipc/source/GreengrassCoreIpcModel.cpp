@@ -4736,7 +4736,7 @@ namespace Aws
         std::future<SubscribeToIoTCoreResult> SubscribeToIoTCoreOperation::GetResult() noexcept
         {
             std::promise<SubscribeToIoTCoreResult> result;
-            result.set_value(SubscribeToIoTCoreResult(std::move(GetOperationResult().get())));
+            result.set_value(SubscribeToIoTCoreResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -4805,7 +4805,7 @@ namespace Aws
         std::future<PublishToIoTCoreResult> PublishToIoTCoreOperation::GetResult() noexcept
         {
             std::promise<PublishToIoTCoreResult> result;
-            result.set_value(PublishToIoTCoreResult(std::move(GetOperationResult().get())));
+            result.set_value(PublishToIoTCoreResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -4894,7 +4894,7 @@ namespace Aws
         std::future<SubscribeToConfigurationUpdateResult> SubscribeToConfigurationUpdateOperation::GetResult() noexcept
         {
             std::promise<SubscribeToConfigurationUpdateResult> result;
-            result.set_value(SubscribeToConfigurationUpdateResult(std::move(GetOperationResult().get())));
+            result.set_value(SubscribeToConfigurationUpdateResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -4963,7 +4963,7 @@ namespace Aws
         std::future<DeleteThingShadowResult> DeleteThingShadowOperation::GetResult() noexcept
         {
             std::promise<DeleteThingShadowResult> result;
-            result.set_value(DeleteThingShadowResult(std::move(GetOperationResult().get())));
+            result.set_value(DeleteThingShadowResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5031,7 +5031,7 @@ namespace Aws
         std::future<DeferComponentUpdateResult> DeferComponentUpdateOperation::GetResult() noexcept
         {
             std::promise<DeferComponentUpdateResult> result;
-            result.set_value(DeferComponentUpdateResult(std::move(GetOperationResult().get())));
+            result.set_value(DeferComponentUpdateResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5119,7 +5119,7 @@ namespace Aws
             GetResult() noexcept
         {
             std::promise<SubscribeToValidateConfigurationUpdatesResult> result;
-            result.set_value(SubscribeToValidateConfigurationUpdatesResult(std::move(GetOperationResult().get())));
+            result.set_value(SubscribeToValidateConfigurationUpdatesResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5188,7 +5188,7 @@ namespace Aws
         std::future<GetConfigurationResult> GetConfigurationOperation::GetResult() noexcept
         {
             std::promise<GetConfigurationResult> result;
-            result.set_value(GetConfigurationResult(std::move(GetOperationResult().get())));
+            result.set_value(GetConfigurationResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5280,7 +5280,7 @@ namespace Aws
         std::future<SubscribeToTopicResult> SubscribeToTopicOperation::GetResult() noexcept
         {
             std::promise<SubscribeToTopicResult> result;
-            result.set_value(SubscribeToTopicResult(std::move(GetOperationResult().get())));
+            result.set_value(SubscribeToTopicResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5349,7 +5349,7 @@ namespace Aws
         std::future<GetComponentDetailsResult> GetComponentDetailsOperation::GetResult() noexcept
         {
             std::promise<GetComponentDetailsResult> result;
-            result.set_value(GetComponentDetailsResult(std::move(GetOperationResult().get())));
+            result.set_value(GetComponentDetailsResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5417,7 +5417,7 @@ namespace Aws
         std::future<PublishToTopicResult> PublishToTopicOperation::GetResult() noexcept
         {
             std::promise<PublishToTopicResult> result;
-            result.set_value(PublishToTopicResult(std::move(GetOperationResult().get())));
+            result.set_value(PublishToTopicResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5485,7 +5485,7 @@ namespace Aws
         std::future<ListComponentsResult> ListComponentsOperation::GetResult() noexcept
         {
             std::promise<ListComponentsResult> result;
-            result.set_value(ListComponentsResult(std::move(GetOperationResult().get())));
+            result.set_value(ListComponentsResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5553,7 +5553,7 @@ namespace Aws
         std::future<CreateDebugPasswordResult> CreateDebugPasswordOperation::GetResult() noexcept
         {
             std::promise<CreateDebugPasswordResult> result;
-            result.set_value(CreateDebugPasswordResult(std::move(GetOperationResult().get())));
+            result.set_value(CreateDebugPasswordResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5621,7 +5621,7 @@ namespace Aws
         std::future<GetThingShadowResult> GetThingShadowOperation::GetResult() noexcept
         {
             std::promise<GetThingShadowResult> result;
-            result.set_value(GetThingShadowResult(std::move(GetOperationResult().get())));
+            result.set_value(GetThingShadowResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5690,7 +5690,7 @@ namespace Aws
             GetResult() noexcept
         {
             std::promise<SendConfigurationValidityReportResult> result;
-            result.set_value(SendConfigurationValidityReportResult(std::move(GetOperationResult().get())));
+            result.set_value(SendConfigurationValidityReportResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5758,7 +5758,7 @@ namespace Aws
         std::future<UpdateThingShadowResult> UpdateThingShadowOperation::GetResult() noexcept
         {
             std::promise<UpdateThingShadowResult> result;
-            result.set_value(UpdateThingShadowResult(std::move(GetOperationResult().get())));
+            result.set_value(UpdateThingShadowResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5826,7 +5826,7 @@ namespace Aws
         std::future<UpdateConfigurationResult> UpdateConfigurationOperation::GetResult() noexcept
         {
             std::promise<UpdateConfigurationResult> result;
-            result.set_value(UpdateConfigurationResult(std::move(GetOperationResult().get())));
+            result.set_value(UpdateConfigurationResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5894,7 +5894,7 @@ namespace Aws
         std::future<ValidateAuthorizationTokenResult> ValidateAuthorizationTokenOperation::GetResult() noexcept
         {
             std::promise<ValidateAuthorizationTokenResult> result;
-            result.set_value(ValidateAuthorizationTokenResult(std::move(GetOperationResult().get())));
+            result.set_value(ValidateAuthorizationTokenResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -5962,7 +5962,7 @@ namespace Aws
         std::future<RestartComponentResult> RestartComponentOperation::GetResult() noexcept
         {
             std::promise<RestartComponentResult> result;
-            result.set_value(RestartComponentResult(std::move(GetOperationResult().get())));
+            result.set_value(RestartComponentResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -6030,7 +6030,7 @@ namespace Aws
         std::future<GetLocalDeploymentStatusResult> GetLocalDeploymentStatusOperation::GetResult() noexcept
         {
             std::promise<GetLocalDeploymentStatusResult> result;
-            result.set_value(GetLocalDeploymentStatusResult(std::move(GetOperationResult().get())));
+            result.set_value(GetLocalDeploymentStatusResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -6098,7 +6098,7 @@ namespace Aws
         std::future<GetSecretValueResult> GetSecretValueOperation::GetResult() noexcept
         {
             std::promise<GetSecretValueResult> result;
-            result.set_value(GetSecretValueResult(std::move(GetOperationResult().get())));
+            result.set_value(GetSecretValueResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -6165,7 +6165,7 @@ namespace Aws
         std::future<UpdateStateResult> UpdateStateOperation::GetResult() noexcept
         {
             std::promise<UpdateStateResult> result;
-            result.set_value(UpdateStateResult(std::move(GetOperationResult().get())));
+            result.set_value(UpdateStateResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -6233,7 +6233,7 @@ namespace Aws
         std::future<ListNamedShadowsForThingResult> ListNamedShadowsForThingOperation::GetResult() noexcept
         {
             std::promise<ListNamedShadowsForThingResult> result;
-            result.set_value(ListNamedShadowsForThingResult(std::move(GetOperationResult().get())));
+            result.set_value(ListNamedShadowsForThingResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -6322,7 +6322,7 @@ namespace Aws
         std::future<SubscribeToComponentUpdatesResult> SubscribeToComponentUpdatesOperation::GetResult() noexcept
         {
             std::promise<SubscribeToComponentUpdatesResult> result;
-            result.set_value(SubscribeToComponentUpdatesResult(std::move(GetOperationResult().get())));
+            result.set_value(SubscribeToComponentUpdatesResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -6391,7 +6391,7 @@ namespace Aws
         std::future<ListLocalDeploymentsResult> ListLocalDeploymentsOperation::GetResult() noexcept
         {
             std::promise<ListLocalDeploymentsResult> result;
-            result.set_value(ListLocalDeploymentsResult(std::move(GetOperationResult().get())));
+            result.set_value(ListLocalDeploymentsResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -6459,7 +6459,7 @@ namespace Aws
         std::future<StopComponentResult> StopComponentOperation::GetResult() noexcept
         {
             std::promise<StopComponentResult> result;
-            result.set_value(StopComponentResult(std::move(GetOperationResult().get())));
+            result.set_value(StopComponentResult(GetOperationResult().get()));
             return result.get_future();
         }
 
@@ -6527,7 +6527,7 @@ namespace Aws
         std::future<CreateLocalDeploymentResult> CreateLocalDeploymentOperation::GetResult() noexcept
         {
             std::promise<CreateLocalDeploymentResult> result;
-            result.set_value(CreateLocalDeploymentResult(std::move(GetOperationResult().get())));
+            result.set_value(CreateLocalDeploymentResult(GetOperationResult().get()));
             return result.get_future();
         }
 

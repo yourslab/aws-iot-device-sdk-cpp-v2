@@ -280,16 +280,15 @@ namespace Aws
                 return m_connectAckedPromise.GetFuture();
             }
 
-            Crt::Io::SocketOptions socketOptions;
             if (connectionConfig.GetSocketDomain().has_value())
             {
-                socketOptions.SetSocketDomain(connectionConfig.GetSocketDomain().value());
+                m_socketOptions.SetSocketDomain(connectionConfig.GetSocketDomain().value());
             }
             if (connectionConfig.GetSocketType().has_value())
             {
-                socketOptions.SetSocketType(connectionConfig.GetSocketType().value());
+                m_socketOptions.SetSocketType(connectionConfig.GetSocketType().value());
             }
-            connOptions.socket_options = &socketOptions.GetImpl();
+            connOptions.socket_options = &m_socketOptions.GetImpl();
 
             connOptions.on_connection_setup = ClientConnection::s_onConnectionSetup;
             connOptions.on_connection_protocol_message = ClientConnection::s_onProtocolMessage;

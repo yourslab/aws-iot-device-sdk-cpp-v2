@@ -963,7 +963,7 @@ namespace Awstest
     std::future<GetAllProductsResult> GetAllProductsOperation::GetResult() noexcept
     {
         std::promise<GetAllProductsResult> result;
-        result.set_value(GetAllProductsResult(std::move(GetOperationResult().get())));
+        result.set_value(GetAllProductsResult(GetOperationResult().get()));
         return result.get_future();
     }
 
@@ -1031,7 +1031,7 @@ namespace Awstest
     std::future<CauseServiceErrorResult> CauseServiceErrorOperation::GetResult() noexcept
     {
         std::promise<CauseServiceErrorResult> result;
-        result.set_value(CauseServiceErrorResult(std::move(GetOperationResult().get())));
+        result.set_value(CauseServiceErrorResult(GetOperationResult().get()));
         return result.get_future();
     }
 
@@ -1115,7 +1115,7 @@ namespace Awstest
     std::future<CauseStreamServiceToErrorResult> CauseStreamServiceToErrorOperation::GetResult() noexcept
     {
         std::promise<CauseStreamServiceToErrorResult> result;
-        result.set_value(CauseStreamServiceToErrorResult(std::move(GetOperationResult().get())));
+        result.set_value(CauseStreamServiceToErrorResult(GetOperationResult().get()));
         return result.get_future();
     }
 
@@ -1196,7 +1196,7 @@ namespace Awstest
     std::future<EchoStreamMessagesResult> EchoStreamMessagesOperation::GetResult() noexcept
     {
         std::promise<EchoStreamMessagesResult> result;
-        result.set_value(EchoStreamMessagesResult(std::move(GetOperationResult().get())));
+        result.set_value(EchoStreamMessagesResult(GetOperationResult().get()));
         return result.get_future();
     }
 
@@ -1263,7 +1263,7 @@ namespace Awstest
     std::future<EchoMessageResult> EchoMessageOperation::GetResult() noexcept
     {
         std::promise<EchoMessageResult> result;
-        result.set_value(EchoMessageResult(std::move(GetOperationResult().get())));
+        result.set_value(EchoMessageResult(GetOperationResult().get()));
         return result.get_future();
     }
 
@@ -1330,7 +1330,7 @@ namespace Awstest
     std::future<GetAllCustomersResult> GetAllCustomersOperation::GetResult() noexcept
     {
         std::promise<GetAllCustomersResult> result;
-        result.set_value(GetAllCustomersResult(std::move(GetOperationResult().get())));
+        result.set_value(GetAllCustomersResult(GetOperationResult().get()));
         return result.get_future();
     }
 
