@@ -7,15 +7,18 @@
 #include <aws/eventstreamrpc/Exports.h>
 
 #include <aws/crt/DateTime.h>
+#include <aws/crt/JsonObject.h>
 #include <aws/crt/StlAllocator.h>
 #include <aws/crt/Types.h>
 #include <aws/crt/UUID.h>
 #include <aws/crt/io/EventLoopGroup.h>
 #include <aws/crt/io/SocketOptions.h>
 #include <aws/crt/io/TlsOptions.h>
-#include <aws/crt/JsonObject.h>
+
+#include <aws/crt/io/HostResolver.h>
 
 #include <aws/event-stream/event_stream_rpc_client.h>
+#include <aws/io/host_resolver.h>
 
 #include <atomic>
 #include <functional>
@@ -34,29 +37,40 @@ namespace Aws
     namespace Eventstreamrpc
     {
         class EventStreamHeader;
-        class EventStreamRpcClient;
+        class MessageAmendment;
         class ClientConnection;
         class ClientContinuation;
-        class MessageAmendment;
+        class ClientOperation;
 
         using HeaderValueType = aws_event_stream_header_value_type;
         using MessageType = aws_event_stream_rpc_message_type;
 
+        /**
+         * A callback prototype that is called upon flushing a message over the wire.
+         * @param errorCode A non-zero value if an error occured while attempting to flush the message.
+         */
         using OnMessageFlushCallback = std::function<void(int errorCode)>;
 
         /**
-         * Allows the application to append headers and change the payload of the CONNECT
-         * packet being sent out.
+         * Allows the application to add headers and change the payload of the CONNECT
+         * packet sent out by the client.
+         * @return The `MessageAmendment` for the client to use during an attempt to connect.
          */
-        using ConnectMessageAmender = std::function<MessageAmendment &(void)>;
+        using ConnectMessageAmender = std::function<const MessageAmendment &(void)>;
 
+        /**
+         * A wrapper around an `aws_event_stream_header_value_pair` object.
+         */
         class AWS_EVENTSTREAMRPC_API EventStreamHeader final
         {
           public:
             EventStreamHeader(const EventStreamHeader &lhs) noexcept;
             EventStreamHeader(EventStreamHeader &&rhs) noexcept;
+            EventStreamHeader &operator=(const EventStreamHeader &lhs) noexcept;
             ~EventStreamHeader() noexcept;
-            EventStreamHeader(const struct aws_event_stream_header_value_pair &header);
+            EventStreamHeader(
+                const struct aws_event_stream_header_value_pair &header,
+                Crt::Allocator *allocator = Crt::g_allocator);
             EventStreamHeader(const Crt::String &name, bool value);
             EventStreamHeader(const Crt::String &name, int8_t value);
             EventStreamHeader(const Crt::String &name, int16_t value);
@@ -94,18 +108,30 @@ namespace Aws
             struct aws_event_stream_header_value_pair m_underlyingHandle;
         };
 
+        /**
+         * A means to append headers or modify the payload of a message to be sent by the client.
+         * @note The exception specifiers for move, copy constructors & assignment operators are required since
+         * this class is usually wrapped with `Crt::Optional`.
+         */
         class AWS_EVENTSTREAMRPC_API MessageAmendment final
         {
           public:
-            MessageAmendment() = default;
-            MessageAmendment(const MessageAmendment &lhs) = default;
-            MessageAmendment(MessageAmendment &&rhs) = default;
-            explicit MessageAmendment(
+            MessageAmendment(const MessageAmendment &lhs);
+            MessageAmendment(MessageAmendment &&rhs);
+            MessageAmendment &operator=(const MessageAmendment &lhs);
+            ~MessageAmendment() noexcept;
+            explicit MessageAmendment(Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+            MessageAmendment(
                 const Crt::List<EventStreamHeader> &headers,
-                Crt::Optional<Crt::ByteBuf> &payload) noexcept;
-            explicit MessageAmendment(const Crt::List<EventStreamHeader> &headers) noexcept;
-            explicit MessageAmendment(Crt::List<EventStreamHeader> &&headers) noexcept;
-            explicit MessageAmendment(const Crt::ByteBuf &payload) noexcept;
+                Crt::Optional<Crt::ByteBuf> &payload,
+                Crt::Allocator *allocator) noexcept;
+            MessageAmendment(
+                const Crt::List<EventStreamHeader> &headers,
+                Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+            MessageAmendment(
+                Crt::List<EventStreamHeader> &&headers,
+                Crt::Allocator *allocator = Crt::g_allocator) noexcept;
+            MessageAmendment(const Crt::ByteBuf &payload, Crt::Allocator *allocator = Crt::g_allocator) noexcept;
             void AddHeader(EventStreamHeader &&header) noexcept;
             void SetPayload(const Crt::Optional<Crt::ByteBuf> &payload) noexcept;
             Crt::List<EventStreamHeader> &GetHeaders() noexcept;
@@ -114,28 +140,59 @@ namespace Aws
           private:
             Crt::List<EventStreamHeader> m_headers;
             Crt::Optional<Crt::ByteBuf> m_payload;
+            Crt::Allocator *m_allocator;
         };
 
         /**
-         * Configuration structure holding all options relating to eventstream RPC connection establishment
+         * Configuration structure holding all configurations relating to eventstream RPC connection establishment
          */
-        class AWS_EVENTSTREAMRPC_API ClientConnectionOptions final
+        class ConnectionConfig
         {
           public:
-            ClientConnectionOptions();
-            ClientConnectionOptions(const ClientConnectionOptions &rhs) = default;
-            ClientConnectionOptions(ClientConnectionOptions &&rhs) = default;
+            ConnectionConfig() noexcept : m_clientBootstrap(nullptr), m_connectRequestCallback(nullptr) {}
+            Crt::Optional<Crt::String> GetHostName() const noexcept { return m_hostName; }
+            Crt::Optional<uint16_t> GetPort() const noexcept { return m_port; }
+            Crt::Optional<Crt::Io::SocketOptions> GetSocketOptions() const noexcept { return m_socketOptions; }
+            Crt::Optional<MessageAmendment> GetConnectAmendment() const noexcept { return m_connectAmendment; }
+            Crt::Optional<Crt::Io::TlsConnectionOptions> GetTlsConnectionOptions() const noexcept
+            {
+                return m_tlsConnectionOptions;
+            }
+            Crt::Io::ClientBootstrap *GetClientBootstrap() const noexcept { return m_clientBootstrap; }
+            OnMessageFlushCallback GetConnectRequestCallback() const noexcept { return m_connectRequestCallback; }
+            ConnectMessageAmender GetConnectMessageAmender() const noexcept
+            {
+                return [&](void) -> const MessageAmendment & { return m_connectAmendment; };
+            }
 
-            ~ClientConnectionOptions() = default;
+            void SetHostName(Crt::String hostName) noexcept { m_hostName = hostName; }
+            void SetPort(uint16_t port) noexcept { m_port = port; }
+            void SetSocketOptions(const Crt::Io::SocketOptions &socketOptions) noexcept { m_socketOptions = socketOptions; }
+            void SetConnectAmendment(const MessageAmendment &connectAmendment) noexcept
+            {
+                m_connectAmendment = connectAmendment;
+            }
+            void SetTlsConnectionOptions(Crt::Io::TlsConnectionOptions tlsConnectionOptions) noexcept
+            {
+                m_tlsConnectionOptions = tlsConnectionOptions;
+            }
+            void SetClientBootstrap(Crt::Io::ClientBootstrap *clientBootstrap) noexcept
+            {
+                m_clientBootstrap = clientBootstrap;
+            }
+            void SetConnectRequestCallback(OnMessageFlushCallback connectRequestCallback) noexcept
+            {
+                m_connectRequestCallback = connectRequestCallback;
+            }
 
-            ClientConnectionOptions &operator=(const ClientConnectionOptions &rhs) = default;
-            ClientConnectionOptions &operator=(ClientConnectionOptions &&rhs) = default;
-
-            Crt::Io::ClientBootstrap *Bootstrap;
-            Crt::Io::SocketOptions SocketOptions;
-            Crt::Optional<Crt::Io::TlsConnectionOptions> TlsOptions;
-            Crt::String HostName;
-            uint16_t Port;
+          protected:
+            Crt::Optional<Crt::String> m_hostName;
+            Crt::Optional<uint16_t> m_port;
+            Crt::Optional<Crt::Io::SocketOptions> m_socketOptions;
+            Crt::Optional<Crt::Io::TlsConnectionOptions> m_tlsConnectionOptions;
+            Crt::Io::ClientBootstrap *m_clientBootstrap;
+            MessageAmendment m_connectAmendment;
+            OnMessageFlushCallback m_connectRequestCallback;
         };
 
         class AWS_EVENTSTREAMRPC_API ConnectionLifecycleHandler
@@ -189,44 +246,74 @@ namespace Aws
             virtual void OnContinuationClosed() = 0;
         };
 
-        enum EventStreamErrors
+        enum EventStreamRpcStatusCode
         {
-            /* If error messages are added to `aws_event_stream_errors`, this will need to be updated. */
-            AWS_ERROR_EVENT_STREAM_RPC_UNKNOWN_PROTOCOL_MESSAGE = AWS_ERROR_EVENT_STREAM_RPC_STREAM_NOT_ACTIVATED + 1,
-            AWS_ERROR_EVENT_STREAM_RPC_UNMAPPED_DATA,
-            AWS_ERROR_EVENT_STREAM_RPC_UNSUPPORTED_CONTENT_TYPE,
-            AWS_ERROR_EVENT_STREAM_RPC_STREAM_CLOSED_ERROR
+            EVENT_STREAM_RPC_SUCCESS = 0,
+            EVENT_STREAM_RPC_NULL_PARAMETER,
+            EVENT_STREAM_RPC_INITIALIZATION_ERROR,
+            EVENT_STREAM_RPC_CONNECTION_CLOSED_BEFORE_CONNACK,
+            EVENT_STREAM_RPC_UNKNOWN_PROTOCOL_MESSAGE,
+            EVENT_STREAM_RPC_UNMAPPED_DATA,
+            EVENT_STREAM_RPC_UNSUPPORTED_CONTENT_TYPE,
+            EVENT_STREAM_RPC_STREAM_CLOSED_PREMATURELY,
+            EVENT_STREAM_RPC_CRT_ERROR
+        };
+
+        struct RpcError
+        {
+            EventStreamRpcStatusCode baseStatus;
+            int crtError;
+            operator bool() const noexcept { return baseStatus == EVENT_STREAM_RPC_SUCCESS; }
+        };
+
+        template <class T> class ProtectedPromise
+        {
+            /* A wrapper around std::promise so that it cannot be set twice without having to catch exceptions. */
+          public:
+            ProtectedPromise();
+            ProtectedPromise(const ProtectedPromise &lhs) = delete;
+            ProtectedPromise(ProtectedPromise &&rhs);
+            ProtectedPromise &operator=(ProtectedPromise &&);
+            ProtectedPromise(std::promise<T> &&promise);
+            void SetValue(T &&r);
+            void SetValue(const T &r);
+            std::future<T> GetFuture();
+            void Reset();
+
+          private:
+            bool m_fulfilled;
+            std::promise<T> m_promise;
+            std::mutex m_mutex;
         };
 
         class AWS_EVENTSTREAMRPC_API ClientConnection final
         {
           public:
-            ClientConnection(Crt::Allocator *allocator) noexcept;
+            ClientConnection(Crt::Allocator *allocator = Crt::g_allocator) noexcept;
             ~ClientConnection() noexcept;
-            ClientConnection(const ClientConnection &) = delete;
-            ClientConnection(ClientConnection &&) = delete;
-            ClientConnection &operator=(const ClientConnection &) = delete;
-            ClientConnection &operator=(ClientConnection &&) = delete;
+            ClientConnection(const ClientConnection &) noexcept = delete;
+            ClientConnection &operator=(const ClientConnection &) noexcept = delete;
+            ClientConnection(ClientConnection &&) noexcept;
+            ClientConnection &operator=(ClientConnection &&) noexcept;
 
-            bool Connect(
-                const ClientConnectionOptions &connectionOptions,
+            std::future<RpcError> Connect(
+                const ConnectionConfig &connectionOptions,
                 ConnectionLifecycleHandler *connectionLifecycleHandler,
-                ConnectMessageAmender connectMessageAmender) noexcept;
+                Crt::Io::ClientBootstrap &clientBootstrap) noexcept;
 
-            void SendPing(
+            std::future<RpcError> SendPing(
                 const Crt::List<EventStreamHeader> &headers,
                 const Crt::Optional<Crt::ByteBuf> &payload,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept;
 
-            void SendPingResponse(
+            std::future<RpcError> SendPingResponse(
                 const Crt::List<EventStreamHeader> &headers,
                 const Crt::Optional<Crt::ByteBuf> &payload,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept;
 
-            ClientContinuation NewStream(ClientContinuationHandler *clientContinuationHandler) noexcept;
+            ClientContinuation NewStream(ClientContinuationHandler &clientContinuationHandler) noexcept;
 
             void Close() noexcept;
-            void Close(int errorCode) noexcept;
 
             /**
              * @return true if the instance is in a valid state, false otherwise.
@@ -242,18 +329,23 @@ namespace Aws
             enum ClientState
             {
                 DISCONNECTED = 1,
-                CONNECTING_TO_SOCKET,
                 WAITING_FOR_CONNECT_ACK,
                 CONNECTED,
                 DISCONNECTING,
             };
+            std::mutex m_stateMutex;
             Crt::Allocator *m_allocator;
             struct aws_event_stream_rpc_client_connection *m_underlyingConnection;
             ClientState m_clientState;
             ConnectionLifecycleHandler *m_lifecycleHandler;
             ConnectMessageAmender m_connectMessageAmender;
+            ProtectedPromise<RpcError> m_connectAckedPromise;
+            std::promise<RpcError> m_closedPromise;
+            OnMessageFlushCallback m_onConnectRequestCallback;
+            Crt::Io::SocketOptions m_socketOptions;
+            ConnectionConfig m_connectionConfig;
             static void s_customDeleter(ClientConnection *connection) noexcept;
-            void SendProtocolMessage(
+            std::future<RpcError> SendProtocolMessage(
                 const Crt::List<EventStreamHeader> &headers,
                 const Crt::Optional<Crt::ByteBuf> &payload,
                 MessageType messageType,
@@ -274,7 +366,7 @@ namespace Aws
                 void *userData) noexcept;
 
             static void s_protocolMessageCallback(int errorCode, void *userData) noexcept;
-            static void s_sendProtocolMessage(
+            static std::future<RpcError> s_sendProtocolMessage(
                 ClientConnection *connection,
                 const Crt::List<EventStreamHeader> &headers,
                 const Crt::Optional<Crt::ByteBuf> &payload,
@@ -282,13 +374,13 @@ namespace Aws
                 uint32_t messageFlags,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept;
 
-            static void s_sendPing(
+            static std::future<RpcError> s_sendPing(
                 ClientConnection *connection,
                 const Crt::List<EventStreamHeader> &headers,
                 const Crt::Optional<Crt::ByteBuf> &payload,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept;
 
-            static void s_sendPingResponse(
+            static std::future<RpcError> s_sendPingResponse(
                 ClientConnection *connection,
                 const Crt::List<EventStreamHeader> &headers,
                 const Crt::Optional<Crt::ByteBuf> &payload,
@@ -300,10 +392,10 @@ namespace Aws
           public:
             ClientContinuation(
                 ClientConnection *connection,
-                ClientContinuationHandler *handler,
+                ClientContinuationHandler &continuationHandler,
                 Crt::Allocator *allocator) noexcept;
             ~ClientContinuation() noexcept;
-            void Activate(
+            std::future<RpcError> Activate(
                 const Crt::String &operation,
                 const Crt::List<EventStreamHeader> &headers,
                 const Crt::Optional<Crt::ByteBuf> &payload,
@@ -311,7 +403,7 @@ namespace Aws
                 uint32_t messageFlags,
                 OnMessageFlushCallback onMessageFlushCallback) noexcept;
             bool IsClosed() noexcept;
-            void SendMessage(
+            std::future<RpcError> SendMessage(
                 const Crt::List<EventStreamHeader> &headers,
                 const Crt::Optional<Crt::ByteBuf> &payload,
                 MessageType messageType,
@@ -320,7 +412,7 @@ namespace Aws
 
           private:
             Crt::Allocator *m_allocator;
-            ClientContinuationHandler *m_handler;
+            ClientContinuationHandler &m_continuationHandler;
             struct aws_event_stream_rpc_client_continuation_token *m_continuationToken;
             static void s_onContinuationMessage(
                 struct aws_event_stream_rpc_client_continuation_token *continuationToken,
@@ -334,10 +426,12 @@ namespace Aws
         class AWS_EVENTSTREAMRPC_API AbstractShapeBase
         {
           public:
+            AbstractShapeBase() noexcept;
+            virtual ~AbstractShapeBase() noexcept;
             static void s_customDeleter(AbstractShapeBase *shape) noexcept;
             virtual void SerializeToJsonObject(Crt::JsonObject &payloadObject) const = 0;
-          protected:
             virtual Crt::String GetModelName() const noexcept = 0;
+
           private:
             Crt::Allocator *m_allocator;
         };
@@ -345,6 +439,7 @@ namespace Aws
         class AWS_EVENTSTREAMRPC_API OperationResponse : public AbstractShapeBase
         {
           public:
+            OperationResponse() noexcept;
             static void s_customDeleter(OperationResponse *shape) noexcept;
             /* A response does not necessarily have to be serialized so provide a default implementation. */
             virtual void SerializeToJsonObject(Crt::JsonObject &payloadObject) const override;
@@ -352,21 +447,17 @@ namespace Aws
 
         class AWS_EVENTSTREAMRPC_API OperationRequest : public AbstractShapeBase
         {
+          public:
+            OperationRequest() noexcept;
         };
 
         class AWS_EVENTSTREAMRPC_API OperationError : public AbstractShapeBase
         {
           public:
-            OperationError() noexcept;
-            OperationError(int errorCode) noexcept;
-            const Crt::Optional<int> &GetErrorCode() const noexcept;
-            void SetErrorCode(int errorCode) noexcept;
+            explicit OperationError() noexcept;
             static void s_customDeleter(OperationError *shape) noexcept;
             virtual void SerializeToJsonObject(Crt::JsonObject &payloadObject) const override;
-          protected:
-            Crt::String GetModelName() const noexcept override;
-          private:
-            Crt::Optional<int> m_errorCode;
+            virtual Crt::Optional<Crt::String> GetMessage() noexcept = 0;
         };
 
         /**
@@ -378,6 +469,13 @@ namespace Aws
         {
           public:
             /**
+             * Invoked when stream is closed, so no more messages will be receivied.
+             */
+            virtual void OnStreamClosed();
+
+          protected:
+            friend class ClientOperation;
+            /**
              * Invoked when a message is received on this continuation.
              */
             virtual void OnStreamEvent(Crt::ScopedResource<OperationResponse> response);
@@ -386,69 +484,139 @@ namespace Aws
              *
              * This callback can return true so that the stream is closed afterwards.
              */
-            virtual bool OnStreamError(Crt::ScopedResource<OperationError> error);
+            virtual bool OnStreamError(Crt::ScopedResource<OperationError> operationError, RpcError rpcError);
+        };
+
+        enum AWS_EVENTSTREAMRPC_API ResultType
+        {
+            OPERATION_RESPONSE,
+            OPERATION_ERROR,
+            RPC_ERROR
+        };
+
+        class AWS_EVENTSTREAMRPC_API TaggedResult
+        {
+          public:
+            TaggedResult() noexcept;
+            explicit TaggedResult(Crt::ScopedResource<OperationResponse> response) noexcept;
+            explicit TaggedResult(Crt::ScopedResource<OperationError> error) noexcept;
+            explicit TaggedResult(RpcError rpcError) noexcept;
+            TaggedResult(TaggedResult &&rhs) noexcept;
+            ~TaggedResult() noexcept;
             /**
-             * Invoked when stream is closed, so no more messages will be receivied.
+             * @return true if the response is associated with an expected response;
+             * false if the response is associated with an error.
              */
-            virtual void OnStreamClosed();
-        };
+            operator bool() const noexcept;
 
-        union AWS_EVENTSTREAMRPC_API ResponseResult
-        {
-            ResponseResult() {}
-            ~ResponseResult() {}
-            Crt::ScopedResource<OperationResponse> response;
-            Crt::ScopedResource<OperationError> error;
-        };
+            OperationResponse *GetOperationResponse() const noexcept;
+            OperationError *GetOperationError() const noexcept;
+            RpcError GetRpcError() const noexcept;
+            ResultType GetResultType() const noexcept { return m_responseType; }
 
-        enum AWS_EVENTSTREAMRPC_API ResponseType
-        {
-            EXPECTED_RESPONSE,
-            ERROR_RESPONSE
-        };
-
-        struct TaggedResponse
-        {
-            TaggedResponse() {}
-            TaggedResponse(TaggedResponse &&taggedResponse)
+          private:
+            union AWS_EVENTSTREAMRPC_API OperationResult
             {
-                if (responseType == EXPECTED_RESPONSE)
+                OperationResult(Crt::ScopedResource<OperationResponse> &&response) noexcept
+                    : m_response(std::move(response))
                 {
-                    responseResult.response = std::move(taggedResponse.responseResult.response);
                 }
-                else if (responseType == ERROR_RESPONSE)
-                {
-                    responseResult.error = std::move(taggedResponse.responseResult.error);
-                }
-            }
-            ResponseType responseType;
-            ResponseResult responseResult;
+                OperationResult(Crt::ScopedResource<OperationError> &&error) noexcept : m_error(std::move(error)) {}
+                OperationResult() noexcept : m_response(nullptr) {}
+                ~OperationResult() noexcept {};
+                Crt::ScopedResource<OperationResponse> m_response;
+                Crt::ScopedResource<OperationError> m_error;
+            };
+            ResultType m_responseType;
+            OperationResult m_operationResult;
+            RpcError m_rpcError;
         };
 
-        using ExpectedResponseFactory =
-            std::function<Crt::ScopedResource<OperationResponse>(const Crt::StringView &payload, Crt::Allocator* allocator)>;
-        using ErrorResponseFactory = std::function<Crt::ScopedResource<OperationError>(const Crt::StringView &payload, Crt::Allocator* allocator)>;
+        using ExpectedResponseFactory = std::function<
+            Crt::ScopedResource<OperationResponse>(const Crt::StringView &payload, Crt::Allocator *allocator)>;
+        using ErrorResponseFactory = std::function<
+            Crt::ScopedResource<OperationError>(const Crt::StringView &payload, Crt::Allocator *allocator)>;
+
+        using LoneResponseRetriever = std::function<ExpectedResponseFactory(const Crt::String &modelName)>;
+        using StreamingResponseRetriever = std::function<ExpectedResponseFactory(const Crt::String &modelName)>;
+        using ErrorResponseRetriever = std::function<ErrorResponseFactory(const Crt::String &modelName)>;
+
+        class AWS_EVENTSTREAMRPC_API ResponseRetriever
+        {
+            /* An interface shared by all operations for retrieving the response object given the model name. */
+          public:
+            virtual ExpectedResponseFactory GetInitialResponseFromModelName(
+                const Crt::String &modelName) const noexcept = 0;
+            virtual ExpectedResponseFactory GetStreamingResponseFromModelName(
+                const Crt::String &modelName) const noexcept = 0;
+            virtual ErrorResponseFactory GetOperationErrorFromModelName(
+                const Crt::String &modelName) const noexcept = 0;
+        };
+
+        class AWS_EVENTSTREAMRPC_API ServiceModel
+        {
+          public:
+            virtual Crt::ScopedResource<OperationError> AllocateOperationErrorFromPayload(
+                const Crt::String &errorModelName,
+                Crt::StringView stringView,
+                Crt::Allocator *allocator) const noexcept = 0;
+        };
+
+        class AWS_EVENTSTREAMRPC_API OperationModelContext
+        {
+          public:
+            OperationModelContext(const ServiceModel &serviceModel) noexcept;
+            virtual Crt::ScopedResource<OperationResponse> AllocateInitialResponseFromPayload(
+                Crt::StringView stringView,
+                Crt::Allocator *allocator) const noexcept = 0;
+            virtual Crt::ScopedResource<OperationResponse> AllocateStreamingResponseFromPayload(
+                Crt::StringView stringView,
+                Crt::Allocator *allocator) const noexcept = 0;
+            virtual Crt::String GetInitialResponseModelName() const noexcept = 0;
+            virtual Crt::String GetRequestModelName() const noexcept = 0;
+            virtual Crt::Optional<Crt::String> GetStreamingResponseModelName() const noexcept = 0;
+            virtual Crt::String GetOperationName() const noexcept = 0;
+            Crt::ScopedResource<OperationError> AllocateOperationErrorFromPayload(
+                const Crt::String &errorModelName,
+                Crt::StringView stringView,
+                Crt::Allocator *allocator) const noexcept
+            {
+                return m_serviceModel.AllocateOperationErrorFromPayload(errorModelName, stringView, allocator);
+            }
+
+          private:
+            const ServiceModel &m_serviceModel;
+        };
 
         class AWS_EVENTSTREAMRPC_API ClientOperation : private ClientContinuationHandler
         {
           public:
-            ClientOperation(ClientConnection &connection, StreamResponseHandler *streamHandler) noexcept;
-            std::future<void> Close(OnMessageFlushCallback onMessageFlushCallback = nullptr) noexcept;
-            std::future<TaggedResponse> GetResponse() noexcept;
-            // virtual bool IsStreaming() = 0;
+            ClientOperation(
+                ClientConnection &connection,
+                StreamResponseHandler *streamHandler,
+                const OperationModelContext &operationModelContext,
+                Crt::Allocator *allocator) noexcept;
+            ~ClientOperation() noexcept;
+            ClientOperation(const ClientOperation &clientOperation) noexcept = delete;
+            ClientOperation(ClientOperation &&clientOperation) noexcept;
+            std::future<RpcError> Close(OnMessageFlushCallback onMessageFlushCallback = nullptr) noexcept;
+            std::future<TaggedResult> GetOperationResult() noexcept;
 
           protected:
-            void Activate(const OperationRequest *shape, OnMessageFlushCallback onMessageFlushCallback) noexcept;
-            void SendStreamEvent(OperationRequest *shape, OnMessageFlushCallback onMessageFlushCallback) noexcept;
-            virtual const Crt::String &GetResponseName() = 0;
-            Crt::Map<Crt::String, ExpectedResponseFactory> m_SingleResponseNameToObject;
-            Crt::Map<Crt::String, ExpectedResponseFactory> m_StreamingResponseNameToObject;
-            Crt::Map<Crt::String, ErrorResponseFactory> m_ErrorNameToObject;
+            std::future<RpcError> Activate(
+                const OperationRequest *shape,
+                OnMessageFlushCallback onMessageFlushCallback) noexcept;
+            std::future<RpcError> SendStreamEvent(
+                OperationRequest *shape,
+                OnMessageFlushCallback onMessageFlushCallback) noexcept;
             virtual Crt::String GetModelName() const noexcept = 0;
+            const OperationModelContext &m_operationModelContext;
 
           private:
-            int HandleData(const Crt::String &modelName, const Crt::Optional<Crt::ByteBuf> &payload);
-            int HandleError(
+            EventStreamRpcStatusCode HandleData(
+                const Crt::String &modelName,
+                const Crt::Optional<Crt::ByteBuf> &payload);
+            EventStreamRpcStatusCode HandleError(
                 const Crt::String &modelName,
                 const Crt::Optional<Crt::ByteBuf> &payload,
                 uint16_t messageFlags);
@@ -476,8 +644,10 @@ namespace Aws
             Crt::Allocator *m_allocator;
             StreamResponseHandler *m_streamHandler;
             ClientContinuation m_clientContinuation;
-            std::promise<TaggedResponse> m_initialResponsePromise;
+            ProtectedPromise<TaggedResult> m_initialResponsePromise;
+            /* ProtectedPromise not necessary because it's only ever being set by one thread. */
             std::promise<void> m_closedPromise;
+            std::atomic<bool> m_isClosed;
         };
     } // namespace Eventstreamrpc
 } // namespace Aws
