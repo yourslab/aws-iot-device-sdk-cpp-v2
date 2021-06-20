@@ -43,10 +43,8 @@ set(TEST_BINARY_NAME ${PROJECT_NAME}-tests)
 aws_use_package(aws-crt-cpp)
 aws_use_package(GreengrassIpc-cpp)
 
-if (UNIX AND NOT APPLE)
-    add_test_case(EventStreamConnect)
-    generate_cpp_test_driver(${TEST_BINARY_NAME})
-    target_include_directories(${TEST_BINARY_NAME} PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>)
-endif()
+add_test_case(EventStreamConnect)
+generate_cpp_test_driver(${TEST_BINARY_NAME})
+target_include_directories(${TEST_BINARY_NAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>)

@@ -26,7 +26,7 @@ namespace Awstest
             Aws::Crt::Allocator *allocator = Aws::Crt::g_allocator) noexcept;
         std::future<RpcError> Connect(
             ConnectionLifecycleHandler &lifecycleHandler,
-            ConnectionConfig connectionConfig = DefaultConnectionConfig()) noexcept;
+            const ConnectionConfig &connectionConfig = DefaultConnectionConfig()) noexcept;
         void Close() noexcept;
         GetAllProductsOperation NewGetAllProducts() noexcept;
         CauseServiceErrorOperation NewCauseServiceError() noexcept;

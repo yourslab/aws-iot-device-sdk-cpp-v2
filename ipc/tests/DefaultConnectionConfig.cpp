@@ -10,5 +10,7 @@ namespace Awstest
         socketOptions.SetSocketDomain(Aws::Crt::Io::SocketDomain::IPv4);
         socketOptions.SetSocketType(Aws::Crt::Io::SocketType::Stream);
         m_socketOptions = std::move(socketOptions);
+        m_connectAmendment.AddHeader(EventStreamHeader(
+                Aws::Crt::String("client-name"), Aws::Crt::String("accepted.testy_mc_testerson")));
     }
 } // namespace Awstest

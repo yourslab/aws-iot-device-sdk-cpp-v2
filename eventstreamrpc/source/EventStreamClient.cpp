@@ -273,31 +273,31 @@ namespace Aws
         std::future<RpcError> ClientConnection::Connect(
             const ConnectionConfig &connectionConfig,
             ConnectionLifecycleHandler *connectionLifecycleHandler,
-            ConnectMessageAmender connectMessageAmender,
             Crt::Io::ClientBootstrap &clientBootstrap) noexcept
         {
             m_connectAckedPromise.Reset();
             m_closedPromise = {};
+            m_connectionConfig = connectionConfig;
             m_lifecycleHandler = connectionLifecycleHandler;
             EventStreamRpcStatusCode baseError = EVENT_STREAM_RPC_SUCCESS;
 
-            m_onConnectRequestCallback = connectionConfig.GetConnectRequestCallback();
+            m_onConnectRequestCallback = m_connectionConfig.GetConnectRequestCallback();
 
             struct aws_event_stream_rpc_client_connection_options connOptions;
             AWS_ZERO_STRUCT(connOptions);
             Crt::String hostName;
-            if (connectionConfig.GetHostName().has_value())
+            if (m_connectionConfig.GetHostName().has_value())
             {
-                hostName = connectionConfig.GetHostName().value();
+                hostName = m_connectionConfig.GetHostName().value();
                 connOptions.host_name = hostName.c_str();
             }
             else
             {
                 baseError = EVENT_STREAM_RPC_NULL_PARAMETER;
             }
-            if (connectionConfig.GetPort().has_value())
+            if (m_connectionConfig.GetPort().has_value())
             {
-                connOptions.port = connectionConfig.GetPort().value();
+                connOptions.port = m_connectionConfig.GetPort().value();
             }
             else
             {
@@ -312,9 +312,9 @@ namespace Aws
                 return m_connectAckedPromise.GetFuture();
             }
 
-            if (connectionConfig.GetSocketOptions().has_value())
+            if (m_connectionConfig.GetSocketOptions().has_value())
             {
-                m_socketOptions = connectionConfig.GetSocketOptions().value();
+                m_socketOptions = m_connectionConfig.GetSocketOptions().value();
             }
             connOptions.socket_options = &m_socketOptions.GetImpl();
 
@@ -322,15 +322,13 @@ namespace Aws
             connOptions.on_connection_protocol_message = ClientConnection::s_onProtocolMessage;
             connOptions.on_connection_shutdown = ClientConnection::s_onConnectionShutdown;
             connOptions.user_data = reinterpret_cast<void *>(this);
-            m_lifecycleHandler = connectionLifecycleHandler;
-            if (connectMessageAmender)
-            {
-                m_connectMessageAmender = connectMessageAmender;
-            }
 
-            if (connectionConfig.GetTlsConnectionOptions().has_value())
+            m_lifecycleHandler = connectionLifecycleHandler;
+            m_connectMessageAmender = m_connectionConfig.GetConnectMessageAmender();
+
+            if (m_connectionConfig.GetTlsConnectionOptions().has_value())
             {
-                connOptions.tls_options = connectionConfig.GetTlsConnectionOptions()->GetUnderlyingHandle();
+                connOptions.tls_options = m_connectionConfig.GetTlsConnectionOptions()->GetUnderlyingHandle();
             }
 
             int crtError = aws_event_stream_rpc_client_connection_connect(m_allocator, &connOptions);

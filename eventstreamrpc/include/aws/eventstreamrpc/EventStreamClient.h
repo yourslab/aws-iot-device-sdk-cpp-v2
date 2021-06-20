@@ -299,7 +299,6 @@ namespace Aws
             std::future<RpcError> Connect(
                 const ConnectionConfig &connectionOptions,
                 ConnectionLifecycleHandler *connectionLifecycleHandler,
-                ConnectMessageAmender connectMessageAmender,
                 Crt::Io::ClientBootstrap &clientBootstrap) noexcept;
 
             std::future<RpcError> SendPing(
@@ -344,6 +343,7 @@ namespace Aws
             std::promise<RpcError> m_closedPromise;
             OnMessageFlushCallback m_onConnectRequestCallback;
             Crt::Io::SocketOptions m_socketOptions;
+            ConnectionConfig m_connectionConfig;
             static void s_customDeleter(ClientConnection *connection) noexcept;
             std::future<RpcError> SendProtocolMessage(
                 const Crt::List<EventStreamHeader> &headers,

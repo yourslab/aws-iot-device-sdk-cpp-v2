@@ -35,11 +35,9 @@ static int s_connectToServer(struct aws_allocator *allocator, void *ctx)
         Aws::Crt::Io::ClientBootstrap clientBootstrap(eventLoopGroup, socketResolver, allocator);
         ASSERT_TRUE(clientBootstrap);
         clientBootstrap.EnableBlockingShutdown();
-        MessageAmendment connectionAmendment;
-        auto messageAmender = [&](void) -> MessageAmendment & { return connectionAmendment; };
 
         ConnectionLifecycleHandler lifecycleHandler;
-        Awstest::EchoTestRpcClient client(clientBootstrap);
+        Awstest::EchoTestRpcClient client(clientBootstrap, allocator);
         auto connectedStatus = client.Connect(lifecycleHandler);
         ASSERT_TRUE(connectedStatus.get().baseStatus == EVENT_STREAM_RPC_SUCCESS);
 
